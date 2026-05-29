@@ -61,6 +61,11 @@ class RetrievalConfig:
     mmr_lambda: float = 0.70           # 0.65–0.80 range
     reranker_top_n: int = 20           # cross-encoder sees this many candidates
     intent_llm_fn: Callable[[str], str] | None = None  # LLM for low-confidence intents
+    # Sub-phase 2.7 — HyDE knobs
+    enable_hyde: bool = False          # opt-in — adds LLM latency + extra embedding
+    hyde_llm_fn: Callable[[str], str] | None = None   # LLM for hypothetical doc generation
+    hyde_combination: str = "avg"      # avg | max | query | hyde
+    hyde_confidence_threshold: float = 0.70  # below this intent confidence → use HyDE
 
 
 # ---------------------------------------------------------------------------
@@ -88,6 +93,8 @@ class RetrievalResult:
     intent_confidence: float = 0.5
     reranked: bool = False
     mmr_applied: bool = False
+    # Sub-phase 2.7 telemetry
+    hyde_used: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -139,9 +146,10 @@ def retrieve(
     )
 
     # ------------------------------------------------------------------
-    # Step 2: Embed query for dense leg
+    # Step 2: Embed query for dense leg (+ optional HyDE augmentation)
     # ------------------------------------------------------------------
     query_vector: list[float] | None = None
+    hyde_used = False
     if config.embed_query and allowed_ids:
         try:
             from app.services.semantic_classifier import embed_text
@@ -149,6 +157,29 @@ def retrieve(
             query_vector = np.frombuffer(emb_bytes, dtype=np.float32).tolist()
         except Exception:
             query_vector = None
+
+    # Sub-phase 2.7: HyDE augmentation (applied after base embedding)
+    if (
+        config.enable_hyde
+        and config.hyde_llm_fn is not None
+        and query_vector is not None
+    ):
+        from app.services.retrieval.hyde import (
+            HyDEConfig, generate_hyde_vector, should_use_hyde,
+        )
+        from app.services.retrieval.intent_classifier import classify_intent
+
+        # Quick intent check to gate HyDE (avoids HyDE on precise factual queries)
+        _intent, _conf = classify_intent(query)
+        if should_use_hyde(_intent.value, _conf, config.hyde_confidence_threshold):
+            hyde_cfg = HyDEConfig(
+                llm_fn=config.hyde_llm_fn,
+                combination=config.hyde_combination,
+            )
+            augmented = generate_hyde_vector(query, hyde_cfg, query_vector)
+            if augmented is not None:
+                query_vector = augmented
+                hyde_used = True
 
     # ------------------------------------------------------------------
     # Step 3: Three candidate generators
@@ -324,6 +355,7 @@ def retrieve(
         "top_k": config.top_k,
         "intent": detected_intent.value,
         "mmr_lambda": config.mmr_lambda,
+        "hyde_used": hyde_used,
     })
 
     try:
@@ -350,4 +382,5 @@ def retrieve(
         intent_confidence=intent_confidence,
         reranked=reranked,
         mmr_applied=mmr_applied,
+        hyde_used=hyde_used,
     )

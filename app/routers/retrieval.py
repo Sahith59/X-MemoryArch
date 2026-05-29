@@ -597,6 +597,107 @@ def validate_vector_index(
 
 
 # ---------------------------------------------------------------------------
+# Sub-phase 2.7 — Contextual embeddings endpoint
+# ---------------------------------------------------------------------------
+
+class ContextualEmbeddingsRequest(BaseModel):
+    embedding_model: str = Field("all-MiniLM-L6-v2", description="Model for re-embedding")
+    batch_size: int = Field(50, ge=1, le=500)
+    force_regenerate: bool = Field(False, description="Re-generate even if prefix exists")
+    use_llm: bool = Field(False, description="Use LLM for richer prefix (requires llm config)")
+
+
+class ContextualEmbeddingsResponse(BaseModel):
+    project_id: str
+    total_processed: int
+    already_had_prefix: int
+    newly_prefixed: int
+    failed: int
+    used_llm: bool
+    memory_ids_updated: list[str]
+    message: str
+
+
+@router.post(
+    "/memories/generate-contextual-embeddings",
+    response_model=ContextualEmbeddingsResponse,
+)
+def generate_contextual_embeddings(
+    project_id: str,
+    body: ContextualEmbeddingsRequest,
+    db: Session = Depends(_get_db),
+) -> ContextualEmbeddingsResponse:
+    """
+    Generate context prefixes and re-embed all active memories for a project.
+
+    Architectural basis (Anthropic research):
+      Prepending a 50-100 token context prefix before embedding reduces
+      retrieval failure by 67%.
+
+    After calling this endpoint:
+      1. All active memories have contextual_prefix set and embeddings updated.
+      2. Run POST /vector-index/backfill to rebuild the ANN index.
+      3. Run POST /vector-index/validate to activate the new index.
+
+    The LLM path (use_llm=True) requires ANTHROPIC_API_KEY to be set.
+    Falls back to template prefix if LLM is unavailable.
+    """
+    from app import crud
+    from app.services.retrieval.contextual_embeddings import generate_contextual_embeddings as _gen
+
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail=f"Project {project_id} not found")
+
+    llm_fn = None
+    if body.use_llm:
+        try:
+            import os
+            import anthropic
+
+            client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", ""))
+
+            def _claude_prefix(prompt: str) -> str:
+                msg = client.messages.create(
+                    model="claude-haiku-4-5-20251001",
+                    max_tokens=150,
+                    messages=[{"role": "user", "content": prompt}],
+                )
+                return msg.content[0].text if msg.content else ""
+
+            llm_fn = _claude_prefix
+        except Exception:
+            llm_fn = None  # graceful degradation to template
+
+    try:
+        result = _gen(
+            db=db,
+            project_id=project_id,
+            llm_fn=llm_fn,
+            batch_size=body.batch_size,
+            force_regenerate=body.force_regenerate,
+            embedding_model=body.embedding_model,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Contextual embedding generation failed: {exc}")
+
+    return ContextualEmbeddingsResponse(
+        project_id=project_id,
+        total_processed=result.total_processed,
+        already_had_prefix=result.already_had_prefix,
+        newly_prefixed=result.newly_prefixed,
+        failed=result.failed,
+        used_llm=result.used_llm,
+        memory_ids_updated=result.memory_ids_updated,
+        message=(
+            f"Generated contextual prefixes for {result.newly_prefixed}/{result.total_processed} memories. "
+            f"Skipped {result.already_had_prefix} already prefixed. "
+            f"Failed: {result.failed}. "
+            "Now run /vector-index/backfill to rebuild the ANN index."
+        ),
+    )
+
+
+# ---------------------------------------------------------------------------
 # GET /vector-backends  (global, not project-scoped)
 # ---------------------------------------------------------------------------
 
