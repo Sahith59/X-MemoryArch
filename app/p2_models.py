@@ -11,7 +11,7 @@ import json
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Float, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, Float, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base  # Phase 1's Base via extended __path__
@@ -73,3 +73,33 @@ class RetrievalRun(Base):
 
     def set_filters(self, d: dict) -> None:
         self.filters_applied = json.dumps(d)
+
+
+class VectorIndexState(Base):
+    """
+    Sub-phase 2.6 — Per-project vector index metadata.
+
+    Tracks which ANN backend + embedding model is active, backfill progress,
+    and a checksum for drift detection. One active row per project at any time.
+    Multiple historical rows are allowed (is_active=False) for audit.
+    """
+    __tablename__ = "vector_index_state"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=_uuid)
+    project_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
+
+    # Which backend and model are in use
+    backend: Mapped[str] = mapped_column(String, nullable=False)          # sqlite_exact/chroma/faiss/qdrant
+    embedding_model: Mapped[str] = mapped_column(String, nullable=False)
+    embedding_dim: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    # Backfill tracking
+    index_checksum: Mapped[str | None] = mapped_column(String, nullable=True)   # sha256 of (backend+model+dim)
+    total_indexed: Mapped[int] = mapped_column(Integer, default=0)
+    last_backfill_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # Only one row per project should be is_active=True
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, onupdate=_now)

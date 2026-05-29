@@ -1,5 +1,5 @@
 """
-Phase 2.1/2.2/2.4 — Retrieval API router.
+Phase 2.1/2.2/2.4/2.6 — Retrieval API router.
 
 Endpoints:
   POST /projects/{project_id}/retrieve
@@ -13,6 +13,18 @@ Endpoints:
   POST /projects/{project_id}/memories/generate-cluster-summaries
     Generate RAPTOR-style cluster summaries for clusters ≥ min_cluster_size.
     Stores each summary as a Memory row (type="cluster_summary").
+
+  POST /projects/{project_id}/vector-index/backfill
+    Backfill memories from SQLite into an ANN backend.
+
+  GET /projects/{project_id}/vector-index/status
+    Return active VectorIndexState and available backends.
+
+  POST /projects/{project_id}/vector-index/validate
+    Shadow-run ANN vs exact; compute Recall@k. If ≥ 0.95, activate.
+
+  GET /vector-backends
+    List all backend types and their availability.
 
 Mounts onto the Phase 1 FastAPI app at merge time.
 """
@@ -343,3 +355,256 @@ def generate_cluster_summaries(
             for r in results
         ],
     )
+
+
+# ---------------------------------------------------------------------------
+# Sub-phase 2.6 — Vector index management endpoints
+# ---------------------------------------------------------------------------
+
+class BackfillRequest(BaseModel):
+    backend: str = Field("chroma", description="Backend type: chroma, faiss, qdrant")
+    embedding_model: str = Field("all-MiniLM-L6-v2")
+    batch_size: int = Field(100, ge=1, le=1000)
+    backend_config: dict = Field(default_factory=dict, description="Backend-specific config")
+
+
+class BackfillResponse(BaseModel):
+    project_id: str
+    state_id: str
+    backend: str
+    embedding_model: str
+    embedding_dim: int
+    total_indexed: int
+    index_checksum: str | None
+    is_active: bool
+    message: str
+
+
+class VectorIndexStatusResponse(BaseModel):
+    project_id: str
+    active_state: dict | None
+    available_backends: list[dict]
+
+
+class ValidateResponse(BaseModel):
+    project_id: str
+    backend: str
+    overall_ann_recall: float
+    passes_threshold: bool
+    threshold: float
+    sample_size: int
+    per_query_recalls: list[float]
+    activated: bool
+    message: str
+
+
+@router.post("/vector-index/backfill", response_model=BackfillResponse)
+def backfill_vector_index(
+    project_id: str,
+    body: BackfillRequest,
+    db: Session = Depends(_get_db),
+) -> BackfillResponse:
+    """
+    Backfill embedded memories from SQLite into an ANN backend.
+
+    Builds a new index without activating it (activation requires
+    validate to pass Recall@k ≥ 0.95).
+
+    Architectural rule: Never replace embeddings in place. Always build
+    a new index, shadow-run, verify recall, then switch.
+    """
+    from app import crud
+    from app.services.vector_backends.backend_factory import BackendType, create_backend
+    from app.services.vector_backends.migration import BackfillService
+
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail=f"Project {project_id} not found")
+
+    try:
+        BackendType(body.backend)
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown backend: {body.backend!r}. Valid: chroma, faiss, qdrant, sqlite_exact",
+        )
+
+    if body.backend == "sqlite_exact":
+        raise HTTPException(
+            status_code=400,
+            detail="sqlite_exact is the baseline — backfill only applies to ANN backends",
+        )
+
+    try:
+        target_backend = create_backend(body.backend, body.backend_config)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to create backend: {exc}")
+
+    svc = BackfillService()
+    try:
+        state = svc.backfill_project(
+            db=db,
+            project_id=project_id,
+            target_backend=target_backend,
+            embedding_model=body.embedding_model,
+            batch_size=body.batch_size,
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Backfill failed: {exc}")
+
+    return BackfillResponse(
+        project_id=project_id,
+        state_id=state.id,
+        backend=state.backend,
+        embedding_model=state.embedding_model,
+        embedding_dim=state.embedding_dim,
+        total_indexed=state.total_indexed,
+        index_checksum=state.index_checksum,
+        is_active=state.is_active,
+        message=(
+            f"Backfilled {state.total_indexed} memories to {state.backend}. "
+            "Run /validate to activate (requires Recall@k ≥ 0.95)."
+        ),
+    )
+
+
+@router.get("/vector-index/status", response_model=VectorIndexStatusResponse)
+def get_vector_index_status(
+    project_id: str,
+    db: Session = Depends(_get_db),
+) -> VectorIndexStatusResponse:
+    """
+    Return the active VectorIndexState for the project and all available backends.
+    """
+    from app import crud
+    from app.p2_models import VectorIndexState
+    from app.services.vector_backends.backend_factory import list_available_backends
+
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail=f"Project {project_id} not found")
+
+    state = (
+        db.query(VectorIndexState)
+        .filter(
+            VectorIndexState.project_id == project_id,
+            VectorIndexState.is_active == True,  # noqa: E712
+        )
+        .first()
+    )
+
+    active = None
+    if state:
+        active = {
+            "id": state.id,
+            "backend": state.backend,
+            "embedding_model": state.embedding_model,
+            "embedding_dim": state.embedding_dim,
+            "total_indexed": state.total_indexed,
+            "index_checksum": state.index_checksum,
+            "last_backfill_at": state.last_backfill_at.isoformat() if state.last_backfill_at else None,
+            "is_active": state.is_active,
+        }
+
+    return VectorIndexStatusResponse(
+        project_id=project_id,
+        active_state=active,
+        available_backends=list_available_backends(),
+    )
+
+
+class ValidateRequest(BaseModel):
+    backend: str = Field("chroma", description="Backend type to validate")
+    backend_config: dict = Field(default_factory=dict)
+    k: int = Field(10, ge=1, le=100)
+    sample_size: int = Field(50, ge=1, le=500)
+    min_recall: float = Field(0.95, ge=0.0, le=1.0)
+    auto_activate: bool = Field(True, description="Activate backend if recall passes threshold")
+
+
+@router.post("/vector-index/validate", response_model=ValidateResponse)
+def validate_vector_index(
+    project_id: str,
+    body: ValidateRequest,
+    db: Session = Depends(_get_db),
+) -> ValidateResponse:
+    """
+    Shadow-run ANN backend vs SQLiteExact; compute Recall@k.
+
+    Architectural rule 11: ANN must achieve ≥ 0.95 Recall@k vs exact
+    before activation. If auto_activate=True and recall passes, the
+    most recent inactive state for this backend is activated.
+    """
+    from app import crud
+    from app.p2_models import VectorIndexState
+    from app.services.vector_backends.backend_factory import BackendType, create_backend
+    from app.services.vector_backends.migration import BackfillService
+
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail=f"Project {project_id} not found")
+
+    try:
+        BackendType(body.backend)
+    except ValueError:
+        raise HTTPException(status_code=400, detail=f"Unknown backend: {body.backend!r}")
+
+    try:
+        ann_backend = create_backend(body.backend, body.backend_config)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to create backend: {exc}")
+
+    svc = BackfillService()
+    validation = svc.validate_ann_recall(
+        db=db,
+        project_id=project_id,
+        ann_backend=ann_backend,
+        k=body.k,
+        sample_size=body.sample_size,
+        min_recall=body.min_recall,
+    )
+
+    activated = False
+    if validation["passes_threshold"] and body.auto_activate:
+        # Find the most recent inactive state for this backend
+        state = (
+            db.query(VectorIndexState)
+            .filter(
+                VectorIndexState.project_id == project_id,
+                VectorIndexState.backend == body.backend,
+                VectorIndexState.is_active == False,  # noqa: E712
+            )
+            .order_by(VectorIndexState.created_at.desc())
+            .first()
+        )
+        if state:
+            svc.activate_backend(db=db, project_id=project_id, backend=ann_backend, state=state)
+            activated = True
+
+    passes = validation["passes_threshold"]
+    return ValidateResponse(
+        project_id=project_id,
+        backend=body.backend,
+        overall_ann_recall=validation["overall_ann_recall"],
+        passes_threshold=passes,
+        threshold=validation["threshold"],
+        sample_size=validation["sample_size"],
+        per_query_recalls=validation["per_query_recalls"],
+        activated=activated,
+        message=(
+            f"Recall@{body.k} = {validation['overall_ann_recall']:.3f} "
+            f"({'PASS' if passes else 'FAIL'} threshold={body.min_recall}). "
+            + ("Backend activated." if activated else "")
+        ),
+    )
+
+
+# ---------------------------------------------------------------------------
+# GET /vector-backends  (global, not project-scoped)
+# ---------------------------------------------------------------------------
+
+_global_router = APIRouter(tags=["retrieval"])
+
+
+@_global_router.get("/vector-backends")
+def list_vector_backends() -> list[dict]:
+    """List all vector backend types and their availability on this host."""
+    from app.services.vector_backends.backend_factory import list_available_backends
+    return list_available_backends()
