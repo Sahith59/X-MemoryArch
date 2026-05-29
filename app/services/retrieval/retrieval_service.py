@@ -65,6 +65,7 @@ class RetrievalResult:
     fused_count: int
     forbidden_candidate_count: int
     selected_memory_ids: list[str]
+    rrf_scores: dict                   # {memory_id: rrf_score} — used by context assembly
     query: str
     config: RetrievalConfig
 
@@ -172,7 +173,9 @@ def retrieve(
     # ------------------------------------------------------------------
     # Step 5: Load top-K memory objects (preserve RRF order)
     # ------------------------------------------------------------------
-    top_k_ids = [mid for mid, _ in fused[: config.top_k]]
+    top_k_fused = fused[: config.top_k]
+    top_k_ids = [mid for mid, _ in top_k_fused]
+    rrf_scores = {mid: score for mid, score in top_k_fused}
 
     memories_by_id: dict = {}
     if top_k_ids:
@@ -228,6 +231,7 @@ def retrieve(
         fused_count=len(fused),
         forbidden_candidate_count=forbidden_count,
         selected_memory_ids=top_k_ids,
+        rrf_scores=rrf_scores,
         query=query,
         config=config,
     )
