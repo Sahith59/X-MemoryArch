@@ -865,6 +865,129 @@ def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
     db.close()
     return m
 
+def run_approach_5r_reranked(ds: BenchDataset) -> RunMetrics:
+    """A5r: Extracted facts + cross-encoder reranker + session-diversity MMR. $0 local.
+    Dense retrieval fetches top-20 candidate facts; cross-encoder re-scores each
+    (query, fact) pair; session-MMR caps 2 facts per session to maximise coverage.
+    """
+    from app.services.vector_backends.sqlite_exact import SQLiteExactBackend
+    from app.services.retrieval.reranker import get_default_reranker
+    from collections import defaultdict
+    import uuid as _uuid
+    import app.models as _models
+
+    facts_cache = CACHE / f"facts_claude_{ds.name.replace(' ', '_')}.json"
+    emb_cache   = CACHE / f"embed_facts_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+
+    # ── Step 1: load facts (reuse A5 cache) ──────────────────────────────────
+    session_facts = extract_session_facts(ds.memories, facts_cache, max_workers=8)
+    if not session_facts:
+        return RunMetrics("A5r: Extracted Facts+Reranker (unavailable)")
+
+    # ── Step 2: build flat fact list ─────────────────────────────────────────
+    fact_mems: list[MemEntry] = []
+    for mem in ds.memories:
+        facts = session_facts.get(mem.gold_key) or [mem.content[:200]]
+        for i, fact_text in enumerate(facts):
+            fact_mems.append(MemEntry(
+                mid=f"{mem.gold_key}__f{i}",
+                title=f"{mem.title[:80]} [f{i+1}]",
+                content=fact_text,
+                search_text=fact_text,
+                gold_key=mem.gold_key,
+            ))
+    print(f"    {len(fact_mems):,} facts from {len(ds.memories):,} sessions")
+
+    # ── Step 3: load embeddings (reuse A5 cache) ─────────────────────────────
+    if emb_cache.exists():
+        fact_embs = np.load(str(emb_cache))
+        print(f"    Loaded fact embeddings from cache ({fact_embs.shape})")
+    else:
+        print(f"    Embedding {len(fact_mems):,} facts ({EMBED_HF_NAME})...")
+        fact_embs = st_embed_batch([m.content for m in fact_mems], is_query=False)
+        np.save(str(emb_cache), fact_embs)
+
+    # ── Step 4: build in-memory DB ───────────────────────────────────────────
+    engine, db = fresh_db()
+    proj = crud.create_project(db, schemas.ProjectCreate(
+        name="bench_a5r", description="", tech_stack=[], goals=[], domain="software"))
+    project_id = proj.id
+
+    session_to_fact_ids: dict[str, list[str]] = defaultdict(list)
+    fact_id_to_session: dict[str, str] = {}
+    fact_id_to_content: dict[str, str] = {}
+    fact_id_to_title:   dict[str, str] = {}
+
+    for i, fm in enumerate(fact_mems):
+        mem_id = str(_uuid.uuid4())
+        session_to_fact_ids[fm.gold_key].append(mem_id)
+        fact_id_to_session[mem_id]  = fm.gold_key
+        fact_id_to_content[mem_id]  = fm.content
+        fact_id_to_title[mem_id]    = fm.title
+        mem_obj = _models.Memory(
+            id=mem_id, project_id=project_id,
+            type="insight", title=fm.title[:200],
+            content=fm.content, search_text=fm.search_text,
+            importance=3, confidence=0.9,
+            privacy_level="internal", review_status="approved", status="active",
+            embedding=fact_embs[i].tobytes(),
+            embedding_model=EMBED_HF_NAME,
+        )
+        db.add(mem_obj)
+        if (i + 1) % 500 == 0:
+            db.commit()
+    db.commit()
+
+    vb = SQLiteExactBackend(db)
+    allowed, _ = __import__(
+        'app.services.retrieval.candidate_generators', fromlist=['apply_hard_filters']
+    ).apply_hard_filters(db=db, project_id=project_id,
+                         max_clearance="internal", include_superseded=False)
+
+    # ── Step 5: load cross-encoder ───────────────────────────────────────────
+    reranker = get_default_reranker()
+
+    # ── Step 6: per-query retrieval + rerank + session-MMR ───────────────────
+    m = RunMetrics(f"A5r: Extracted Facts + Reranker + Session-MMR ({EMBED_HF_NAME})")
+
+    for qe in ds.queries:
+        t0 = time.monotonic()
+
+        # Dense retrieval: top-20 candidate facts by cosine
+        qvec = st_embed_one(qe.question, is_query=True)
+        top20 = vb.search(qvec, 20, project_id, allowed)
+        candidate_ids = [mid for mid, _ in top20]
+
+        # Cross-encoder rerank: build lightweight pseudo-Memory objects
+        class _Mem:
+            def __init__(self, id_, title_, content_):
+                self.id = id_; self.title = title_; self.content = content_
+        pseudo_mems = [_Mem(mid, fact_id_to_title[mid], fact_id_to_content[mid])
+                       for mid in candidate_ids if mid in fact_id_to_content]
+        reranked = reranker.rerank(qe.question, pseudo_mems, top_n=20)
+        # reranked → [(fact_id, score)] sorted descending
+
+        # Session-diversity MMR: max 2 facts per session, pick top-10
+        # Cap=2 optimal: prevents session saturation; higher caps don't help
+        selected: list[str] = []
+        session_count: dict[str, int] = defaultdict(int)
+        for fact_id, _ in reranked:
+            if len(selected) >= 10:
+                break
+            sess = fact_id_to_session.get(fact_id, "")
+            if session_count[sess] < 2:
+                selected.append(fact_id)
+                session_count[sess] += 1
+
+        lat = (time.monotonic() - t0) * 1000
+        gold_db: list[str] = []
+        for gk in qe.gold_keys:
+            gold_db.extend(session_to_fact_ids.get(gk, []))
+        m.add(selected, gold_db, lat)
+
+    db.close()
+    return m
+
 # ── Evaluate one dataset across all approaches ────────────────────────────────
 def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, RunMetrics]:
     results: dict[str, RunMetrics] = {}
@@ -906,8 +1029,8 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
     else:
         print("  [A3/A4] Cloud skipped (no ANTHROPIC_API_KEY)")
 
-    # A5 runs independently of --skip-cloud (A5 manages its own Anthropic calls,
-    # uses only cheap fact extraction on first run, then cached dense retrieval)
+    # A5 + A5r run independently of --skip-cloud (fact extraction is self-managed;
+    # once facts are cached all subsequent runs are $0)
     facts_cached = (CACHE / f"facts_claude_{ds.name.replace(' ', '_')}.json").exists()
     if not args.skip_a5 and ANTHROPIC_API_KEY:
         print(f"\n  [A5] Extracted Facts (LLM facts → dense cosine, no HyDE)...")
@@ -917,17 +1040,25 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
             print(f"    R@5={r5.r(5):.3f}  MRR@10={r5.mrr_mean():.3f}  p50={r5.p(0.5):.0f}ms")
         else:
             print("    [skip] A5 unavailable")
+
+        print(f"\n  [A5r] Extracted Facts + Reranker + Session-MMR...")
+        results["extracted_reranked"] = run_approach_5r_reranked(ds)
+        r5r = results["extracted_reranked"]
+        if r5r.mrr:
+            print(f"    R@5={r5r.r(5):.3f}  MRR@10={r5r.mrr_mean():.3f}  p50={r5r.p(0.5):.0f}ms")
+        else:
+            print("    [skip] A5r unavailable")
     elif args.skip_a5:
-        print("  [A5] Extracted Facts skipped (--skip-a5)")
+        print("  [A5/A5r] Extracted Facts skipped (--skip-a5)")
     elif not ANTHROPIC_API_KEY and not facts_cached:
-        print("  [A5] Extracted Facts skipped (no API key + no cache)")
+        print("  [A5/A5r] Extracted Facts skipped (no API key + no cache)")
 
     return results
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
     print("\n" + "="*65)
-    print("X-MemoryArch: 6-Approach × 3-Dataset Benchmark")
+    print("X-MemoryArch: 7-Approach × 3-Dataset Benchmark")
     print(f"Embed model: {EMBED_HF_NAME}")
     print("="*65)
 
@@ -959,16 +1090,17 @@ def main():
 
     # ── Final report ──────────────────────────────────────────────────────────
     APPROACH_KEYS = [
-        ("rule_based",       "Rule-based (BM25+Entity)"),
-        ("ollama",           "Local LLM  (Ollama + HyDE)"),
-        ("hybrid_reranked",  "A4r: Hybrid+Reranker (GTE, no HyDE)"),
-        ("cloud",            "Cloud LLM  (Claude Haiku ctx+HyDE)"),
-        ("hybrid",           "Hybrid Full (BM25+Dense+Reranker+LLM)"),
-        ("extracted",        "A5: Extracted Facts (GTE, no HyDE)"),
+        ("rule_based",          "A1: Rule-based (BM25+Entity)"),
+        ("ollama",              "A2: Local LLM  (Ollama + HyDE)"),
+        ("cloud",               "A3: Cloud LLM  (Claude Haiku ctx+HyDE)"),
+        ("hybrid",              "A4: Hybrid Full (BM25+Dense+Reranker+LLM)"),
+        ("hybrid_reranked",     "A4r: Hybrid+Reranker (GTE, no HyDE)"),
+        ("extracted",           "A5: Extracted Facts (GTE, no HyDE)"),
+        ("extracted_reranked",  "A5r: Facts+Reranker+Session-MMR (GTE)"),
     ]
 
     print("\n\n" + "="*90)
-    print("FINAL RESULTS — X-MemoryArch 6 Approaches × 3 Datasets")
+    print("FINAL RESULTS — X-MemoryArch 7 Approaches × 3 Datasets")
     print("="*90)
     print(f"{'Approach':<40} {'R@1':>5} {'R@3':>5} {'R@5':>5} {'R@10':>6} {'MRR@10':>7} {'NDCG@10':>8} {'p50':>6} {'p95':>6}")
     print("-"*90)
