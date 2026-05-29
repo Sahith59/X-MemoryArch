@@ -67,6 +67,7 @@ parser.add_argument("--n", type=int, default=200, help="queries per dataset (def
 parser.add_argument("--ollama-n", type=int, default=100, help="max queries for Ollama (slow)")
 parser.add_argument("--skip-ollama", action="store_true")
 parser.add_argument("--skip-cloud", action="store_true")
+parser.add_argument("--skip-a5", action="store_true", help="skip approach 5 (extracted facts)")
 parser.add_argument("--seed", type=int, default=42)
 args = parser.parse_args()
 random.seed(args.seed)
@@ -373,6 +374,55 @@ def st_embed_one(text: str) -> list[float]:
     return get_st_model().encode(text, convert_to_numpy=True, normalize_embeddings=True).tolist()
 
 # ── Contextual prefix generator (cached per dataset × LLM) ───────────────────
+_FACT_PROMPT = """\
+Extract 3-5 specific, self-contained facts from this conversation.
+Each fact must stand alone without context. Capture specific events, decisions,
+preferences, relationships, or information shared. One fact per line, no bullets or numbering.
+
+Conversation:
+{content}"""
+
+def extract_session_facts(
+    mems: list[MemEntry],
+    cache_path: Path,
+    max_workers: int = 8,
+) -> dict[str, list[str]]:
+    """Return {gold_key: [fact1, fact2, ...]}. Uses Claude Haiku directly; cached to disk."""
+    if cache_path.exists():
+        return json.loads(cache_path.read_text())
+    if not ANTHROPIC_API_KEY:
+        return {}
+    import anthropic
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    print(f"    Extracting facts from {len(mems):,} sessions via LLM...")
+    results: dict[str, list[str]] = {}
+
+    def _call(mem: MemEntry):
+        content = mem.content[:800]
+        try:
+            msg = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=300,
+                messages=[{"role": "user", "content": _FACT_PROMPT.format(content=content)}],
+            )
+            raw = msg.content[0].text.strip()
+            facts = [f.strip() for f in raw.split("\n") if f.strip()][:5]
+        except Exception:
+            facts = []
+        return mem.gold_key, facts if facts else [mem.content[:200]]
+
+    done = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        futs = {ex.submit(_call, m): m for m in mems}
+        for f in as_completed(futs):
+            key, facts = f.result()
+            results[key] = facts
+            done += 1
+            if done % 200 == 0:
+                print(f"      {done}/{len(mems)} sessions done", flush=True)
+    cache_path.write_text(json.dumps(results, ensure_ascii=False))
+    return results
+
 _CTX_PROMPT = """\
 Write a single-sentence context tag (max 20 words) for this memory snippet that describes
 what it is about — who, what topic, or what event. Be specific and factual.
@@ -649,6 +699,89 @@ def run_approach_4_hybrid(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
     db.close()
     return m
 
+def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
+    """A5: Dense cosine over LLM-extracted atomic facts. No HyDE — diagnostic baseline."""
+    from app.services.vector_backends.sqlite_exact import SQLiteExactBackend
+    from collections import defaultdict
+    import uuid as _uuid
+
+    facts_cache = CACHE / f"facts_claude_{ds.name.replace(' ', '_')}.json"
+    emb_cache   = CACHE / f"embed_facts_{ds.name.replace(' ', '_')}.npy"
+
+    # Step 1: load or extract facts
+    session_facts = extract_session_facts(ds.memories, facts_cache, max_workers=8)
+    if not session_facts:
+        return RunMetrics("A5: Extracted Facts (unavailable)")
+
+    # Step 2: flatten to one MemEntry per fact
+    fact_mems: list[MemEntry] = []
+    for mem in ds.memories:
+        facts = session_facts.get(mem.gold_key) or [mem.content[:200]]
+        for i, fact_text in enumerate(facts):
+            fact_mems.append(MemEntry(
+                mid=f"{mem.gold_key}__f{i}",
+                title=f"{mem.title[:80]} [f{i+1}]",
+                content=fact_text,
+                search_text=fact_text,
+                gold_key=mem.gold_key,  # tracks parent session
+            ))
+    print(f"    {len(fact_mems):,} facts from {len(ds.memories):,} sessions")
+
+    # Step 3: embed facts (cached)
+    if emb_cache.exists():
+        fact_embs = np.load(str(emb_cache))
+        print(f"    Loaded fact embeddings from cache ({fact_embs.shape})")
+    else:
+        print(f"    Embedding {len(fact_mems):,} facts (sentence-transformers)...")
+        fact_embs = st_embed_batch([m.content for m in fact_mems])
+        np.save(str(emb_cache), fact_embs)
+
+    # Step 4: build in-memory DB, track session_id → [fact_db_ids]
+    engine, db = fresh_db()
+    proj = crud.create_project(db, schemas.ProjectCreate(
+        name="bench_a5", description="", tech_stack=[], goals=[], domain="software"))
+    project_id = proj.id
+
+    session_to_fact_ids: dict[str, list[str]] = defaultdict(list)
+    for i, fm in enumerate(fact_mems):
+        mem_id = str(_uuid.uuid4())
+        session_to_fact_ids[fm.gold_key].append(mem_id)
+        mem = models.Memory(
+            id=mem_id, project_id=project_id,
+            type="insight", title=fm.title[:200],
+            content=fm.content, search_text=fm.search_text,
+            importance=3, confidence=0.9,
+            privacy_level="internal", review_status="approved", status="active",
+            embedding=fact_embs[i].tobytes(),
+            embedding_model="all-MiniLM-L6-v2",
+        )
+        db.add(mem)
+        if (i + 1) % 500 == 0:
+            db.commit()
+    db.commit()
+
+    vb = SQLiteExactBackend(db)
+    allowed, _ = __import__(
+        'app.services.retrieval.candidate_generators', fromlist=['apply_hard_filters']
+    ).apply_hard_filters(db=db, project_id=project_id,
+                         max_clearance="internal", include_superseded=False)
+
+    # Step 5: retrieve via plain cosine — no HyDE, $0 diagnostic
+    m = RunMetrics("A5: Extracted Facts (Dense, no HyDE)")
+    for qe in ds.queries:
+        t0 = time.monotonic()
+        qvec = st_embed_one(qe.question)
+        results = vb.search(qvec, 10, project_id, allowed)
+        lat = (time.monotonic() - t0) * 1000
+        retrieved_ids = [mid for mid, _ in results]
+        gold_db: list[str] = []
+        for gk in qe.gold_keys:
+            gold_db.extend(session_to_fact_ids.get(gk, []))
+        m.add(retrieved_ids, gold_db, lat)
+
+    db.close()
+    return m
+
 # ── Evaluate one dataset across all approaches ────────────────────────────────
 def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, RunMetrics]:
     results: dict[str, RunMetrics] = {}
@@ -684,12 +817,28 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
     else:
         print("  [A3/A4] Cloud skipped (no ANTHROPIC_API_KEY)")
 
+    # A5 runs independently of --skip-cloud (A5 manages its own Anthropic calls,
+    # uses only cheap fact extraction on first run, then cached dense retrieval)
+    facts_cached = (CACHE / f"facts_claude_{ds.name.replace(' ', '_')}.json").exists()
+    if not args.skip_a5 and ANTHROPIC_API_KEY:
+        print(f"\n  [A5] Extracted Facts (LLM facts → dense cosine, no HyDE)...")
+        results["extracted"] = run_approach_5_extracted_facts(ds)
+        r5 = results["extracted"]
+        if r5.mrr:
+            print(f"    R@5={r5.r(5):.3f}  MRR@10={r5.mrr_mean():.3f}  p50={r5.p(0.5):.0f}ms")
+        else:
+            print("    [skip] A5 unavailable")
+    elif args.skip_a5:
+        print("  [A5] Extracted Facts skipped (--skip-a5)")
+    elif not ANTHROPIC_API_KEY and not facts_cached:
+        print("  [A5] Extracted Facts skipped (no API key + no cache)")
+
     return results
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
     print("\n" + "="*65)
-    print("X-MemoryArch: 4-Approach × 3-Dataset Benchmark")
+    print("X-MemoryArch: 5-Approach × 3-Dataset Benchmark")
     print("="*65)
 
     # Load LLM
@@ -724,10 +873,11 @@ def main():
         ("ollama",     "Local LLM  (Ollama + HyDE)"),
         ("cloud",      "Cloud LLM  (Claude Haiku ctx+HyDE)"),
         ("hybrid",     "Hybrid Full (BM25+Dense+LLM)"),
+        ("extracted",  "A5: Extracted Facts (Dense, no HyDE)"),
     ]
 
     print("\n\n" + "="*90)
-    print("FINAL RESULTS — X-MemoryArch 4 Approaches × 3 Datasets")
+    print("FINAL RESULTS — X-MemoryArch 5 Approaches × 3 Datasets")
     print("="*90)
     print(f"{'Approach':<40} {'R@1':>5} {'R@3':>5} {'R@5':>5} {'R@10':>6} {'MRR@10':>7} {'NDCG@10':>8} {'p50':>6} {'p95':>6}")
     print("-"*90)
