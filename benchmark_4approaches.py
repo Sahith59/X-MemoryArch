@@ -68,8 +68,8 @@ parser.add_argument("--ollama-n", type=int, default=100, help="max queries for O
 parser.add_argument("--skip-ollama", action="store_true")
 parser.add_argument("--skip-cloud", action="store_true")
 parser.add_argument("--skip-a5", action="store_true", help="skip approach 5 (extracted facts)")
-parser.add_argument("--embed-model", choices=["minilm", "bge"], default="minilm",
-                    help="dense embedding model: minilm=all-MiniLM-L6-v2 (default), bge=BAAI/bge-small-en-v1.5")
+parser.add_argument("--embed-model", choices=["minilm", "bge", "gte"], default="gte",
+                    help="dense embedding model: gte=thenlper/gte-small (default), minilm=all-MiniLM-L6-v2, bge=BAAI/bge-small-en-v1.5")
 parser.add_argument("--seed", type=int, default=42)
 args = parser.parse_args()
 random.seed(args.seed)
@@ -90,6 +90,12 @@ _EMBED_CONFIGS = {
         "cache_tag":  "bge_small",
         # BGE retrieval models benefit from an instruction prefix on queries only
         "query_prefix": "Represent this sentence for searching relevant passages: ",
+    },
+    "gte": {
+        "hf_name":    "thenlper/gte-small",
+        "cache_tag":  "gte_small",
+        # GTE uses symmetric embeddings — no special prefix for queries or documents
+        "query_prefix": "",
     },
 }
 _ECFG = _EMBED_CONFIGS[args.embed_model]
