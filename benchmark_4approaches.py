@@ -705,12 +705,13 @@ def run_approach_4_hybrid(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
 
     cfg = RetrievalConfig(
         top_k=10, embed_query=True,
-        enable_weighted_ranking=True, enable_reranker=False,
+        enable_weighted_ranking=True, enable_reranker=True,   # 2.9b: reranker on by default
+        reranker_top_n=20,
         enable_mmr=True, mmr_lambda=0.70,
         enable_entity_boost=True, enable_graph_expansion=True, enable_2hop=False,
     )
 
-    m = RunMetrics(f"Hybrid Full (BM25+Dense+RRF+Graph+MMR + {EMBED_HF_NAME} + Cloud LLM)")
+    m = RunMetrics(f"Hybrid Full (BM25+Dense+RRF+Graph+Reranker+MMR + {EMBED_HF_NAME} + Cloud LLM)")
     with mock.patch("app.services.semantic_classifier.embed_text",
                     side_effect=lambda t: st_embed_batch([t], is_query=False)[0].tobytes()):
         retrieve(db=db, project_id=project_id, query="warm", vector_backend=vb, config=cfg)  # warm-up
@@ -723,6 +724,55 @@ def run_approach_4_hybrid(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
             hyde_bytes = np.array(qvec, dtype=np.float32).tobytes()
             with mock.patch("app.services.semantic_classifier.embed_text",
                             return_value=hyde_bytes):
+                res = retrieve(db=db, project_id=project_id, query=qe.question,
+                               vector_backend=vb, config=cfg)
+            lat = (time.monotonic() - t0) * 1000
+            gold_db = [gid_to_dbid[g] for g in qe.gold_keys if g in gid_to_dbid]
+            m.add(res.selected_memory_ids, gold_db, lat)
+
+    db.close()
+    return m
+
+def run_approach_4r_dense_reranked(ds: BenchDataset) -> RunMetrics:
+    """A4r: Full hybrid pipeline + cross-encoder reranker, plain GTE query (no HyDE).
+    $0 diagnostic — isolates reranker effect without any cloud API calls."""
+    from app.services.retrieval.retrieval_service import RetrievalConfig, retrieve
+    from app.services.vector_backends.sqlite_exact import SQLiteExactBackend
+    import unittest.mock as mock
+
+    # Use plain GTE embeddings (no contextual prefix — this is the diagnostic, not the full A4)
+    emb_cache = CACHE / f"embed_facts_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+    plain_cache = CACHE / f"embed_plain_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+
+    if plain_cache.exists():
+        embs = np.load(str(plain_cache))
+    else:
+        print(f"    Embedding {len(ds.memories):,} memories ({EMBED_HF_NAME})...")
+        embs = st_embed_batch([m.content for m in ds.memories], is_query=False)
+        np.save(str(plain_cache), embs)
+
+    engine, db = fresh_db()
+    project_id, gid_to_dbid = build_corpus(ds.memories, engine, db, embs, EMBED_HF_NAME)
+    vb = SQLiteExactBackend(db)
+
+    cfg = RetrievalConfig(
+        top_k=10, embed_query=True,
+        enable_weighted_ranking=True, enable_reranker=True,
+        reranker_top_n=20,
+        enable_mmr=True, mmr_lambda=0.70,
+        enable_entity_boost=True, enable_graph_expansion=True, enable_2hop=False,
+    )
+
+    m = RunMetrics(f"A4r: Hybrid+Reranker ({EMBED_HF_NAME}, no HyDE)")
+    with mock.patch("app.services.semantic_classifier.embed_text",
+                    side_effect=lambda t: st_embed_batch([t], is_query=False)[0].tobytes()):
+        retrieve(db=db, project_id=project_id, query="warm", vector_backend=vb, config=cfg)  # warm-up
+        for qe in ds.queries:
+            t0 = time.monotonic()
+            qvec = st_embed_one(qe.question, is_query=True)
+            qbytes = np.array(qvec, dtype=np.float32).tobytes()
+            with mock.patch("app.services.semantic_classifier.embed_text",
+                            return_value=qbytes):
                 res = retrieve(db=db, project_id=project_id, query=qe.question,
                                vector_backend=vb, config=cfg)
             lat = (time.monotonic() - t0) * 1000
@@ -835,13 +885,19 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
     else:
         print("  [A2] Ollama skipped (--skip-ollama)")
 
+    # A4r: full hybrid pipeline + cross-encoder reranker, no HyDE — $0 diagnostic
+    print(f"\n  [A4r] Hybrid+Reranker (GTE dense, no HyDE)...")
+    results["hybrid_reranked"] = run_approach_4r_dense_reranked(ds)
+    r4r = results["hybrid_reranked"]
+    print(f"    R@5={r4r.r(5):.3f}  MRR@10={r4r.mrr_mean():.3f}  p50={r4r.p(0.5):.0f}ms")
+
     if not args.skip_cloud and llm_fn is not None:
         print(f"\n  [A3] Cloud LLM (Claude Haiku contextual+HyDE)...")
         results["cloud"] = run_approach_3_cloud(ds, llm_fn)
         r3 = results["cloud"]
         print(f"    R@5={r3.r(5):.3f}  MRR@10={r3.mrr_mean():.3f}  p50={r3.p(0.5):.0f}ms")
 
-        print(f"\n  [A4] Hybrid Full pipeline + Cloud LLM...")
+        print(f"\n  [A4] Hybrid Full pipeline + Cloud LLM + Reranker...")
         results["hybrid"] = run_approach_4_hybrid(ds, llm_fn)
         r4 = results["hybrid"]
         print(f"    R@5={r4.r(5):.3f}  MRR@10={r4.mrr_mean():.3f}  p50={r4.p(0.5):.0f}ms")
@@ -871,7 +927,7 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
     print("\n" + "="*65)
-    print("X-MemoryArch: 5-Approach × 3-Dataset Benchmark")
+    print("X-MemoryArch: 6-Approach × 3-Dataset Benchmark")
     print(f"Embed model: {EMBED_HF_NAME}")
     print("="*65)
 
@@ -903,15 +959,16 @@ def main():
 
     # ── Final report ──────────────────────────────────────────────────────────
     APPROACH_KEYS = [
-        ("rule_based", "Rule-based (BM25+Entity)"),
-        ("ollama",     "Local LLM  (Ollama + HyDE)"),
-        ("cloud",      "Cloud LLM  (Claude Haiku ctx+HyDE)"),
-        ("hybrid",     "Hybrid Full (BM25+Dense+LLM)"),
-        ("extracted",  "A5: Extracted Facts (Dense, no HyDE)"),
+        ("rule_based",       "Rule-based (BM25+Entity)"),
+        ("ollama",           "Local LLM  (Ollama + HyDE)"),
+        ("hybrid_reranked",  "A4r: Hybrid+Reranker (GTE, no HyDE)"),
+        ("cloud",            "Cloud LLM  (Claude Haiku ctx+HyDE)"),
+        ("hybrid",           "Hybrid Full (BM25+Dense+Reranker+LLM)"),
+        ("extracted",        "A5: Extracted Facts (GTE, no HyDE)"),
     ]
 
     print("\n\n" + "="*90)
-    print("FINAL RESULTS — X-MemoryArch 5 Approaches × 3 Datasets")
+    print("FINAL RESULTS — X-MemoryArch 6 Approaches × 3 Datasets")
     print("="*90)
     print(f"{'Approach':<40} {'R@1':>5} {'R@3':>5} {'R@5':>5} {'R@10':>6} {'MRR@10':>7} {'NDCG@10':>8} {'p50':>6} {'p95':>6}")
     print("-"*90)
