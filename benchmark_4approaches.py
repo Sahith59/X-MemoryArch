@@ -68,6 +68,8 @@ parser.add_argument("--ollama-n", type=int, default=100, help="max queries for O
 parser.add_argument("--skip-ollama", action="store_true")
 parser.add_argument("--skip-cloud", action="store_true")
 parser.add_argument("--skip-a5", action="store_true", help="skip approach 5 (extracted facts)")
+parser.add_argument("--embed-model", choices=["minilm", "bge"], default="minilm",
+                    help="dense embedding model: minilm=all-MiniLM-L6-v2 (default), bge=BAAI/bge-small-en-v1.5")
 parser.add_argument("--seed", type=int, default=42)
 args = parser.parse_args()
 random.seed(args.seed)
@@ -75,6 +77,25 @@ random.seed(args.seed)
 # ── Cache dir ─────────────────────────────────────────────────────────────────
 CACHE = _RE / "benchmark_cache"
 CACHE.mkdir(exist_ok=True)
+
+# ── Embedding model config ─────────────────────────────────────────────────────
+_EMBED_CONFIGS = {
+    "minilm": {
+        "hf_name":    "all-MiniLM-L6-v2",
+        "cache_tag":  "minilm",
+        "query_prefix": "",   # no instruction prefix needed
+    },
+    "bge": {
+        "hf_name":    "BAAI/bge-small-en-v1.5",
+        "cache_tag":  "bge_small",
+        # BGE retrieval models benefit from an instruction prefix on queries only
+        "query_prefix": "Represent this sentence for searching relevant passages: ",
+    },
+}
+_ECFG = _EMBED_CONFIGS[args.embed_model]
+EMBED_HF_NAME  = _ECFG["hf_name"]
+EMBED_TAG      = _ECFG["cache_tag"]        # used in cache file names
+EMBED_QPREFIX  = _ECFG["query_prefix"]    # prepended to query text only
 
 # ── Load .env ─────────────────────────────────────────────────────────────────
 _env_path = _RE / ".env"
@@ -358,19 +379,25 @@ def get_st_model():
     global _st_model
     if _st_model is None:
         from sentence_transformers import SentenceTransformer
-        _st_model = SentenceTransformer("all-MiniLM-L6-v2")
-        print("    sentence-transformers all-MiniLM-L6-v2 loaded")
+        _st_model = SentenceTransformer(EMBED_HF_NAME)
+        print(f"    sentence-transformers {EMBED_HF_NAME} loaded")
     return _st_model
 
-def st_embed_batch(texts: list[str]) -> np.ndarray:
+def st_embed_batch(texts: list[str], is_query: bool = False) -> np.ndarray:
+    """Embed a batch of texts. Set is_query=True to apply BGE query prefix."""
     model = get_st_model()
+    if is_query and EMBED_QPREFIX:
+        texts = [EMBED_QPREFIX + t for t in texts]
     batch = 256
     parts = []
     for i in range(0, len(texts), batch):
         parts.append(model.encode(texts[i:i+batch], convert_to_numpy=True, normalize_embeddings=True))
     return np.vstack(parts).astype(np.float32)
 
-def st_embed_one(text: str) -> list[float]:
+def st_embed_one(text: str, is_query: bool = True) -> list[float]:
+    """Embed a single text. Defaults is_query=True — queries get the BGE prefix."""
+    if is_query and EMBED_QPREFIX:
+        text = EMBED_QPREFIX + text
     return get_st_model().encode(text, convert_to_numpy=True, normalize_embeddings=True).tolist()
 
 # ── Contextual prefix generator (cached per dataset × LLM) ───────────────────
@@ -603,7 +630,7 @@ def run_approach_3_cloud(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
     from app.services.vector_backends.sqlite_exact import SQLiteExactBackend
     import unittest.mock as mock
 
-    # Load or generate contextual prefixes
+    # Load or generate contextual prefixes (shared across embed models — text is text)
     ctx_cache = CACHE / f"ctx_claude_{ds.name.replace(' ','_')}.json"
     prefixes = generate_contextual_prefixes(ds.memories, llm_fn, ctx_cache, max_workers=10)
 
@@ -613,25 +640,25 @@ def run_approach_3_cloud(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
         pfx = prefixes.get(m.gold_key, "")
         texts.append(f"{pfx}\n\n{m.content}" if pfx else m.content)
 
-    # Embed with sentence-transformers
-    print(f"    Embedding {len(texts):,} contextual memories (sentence-transformers)...")
-    cache_key = CACHE / f"embed_st_ctx_claude_{ds.name.replace(' ','_')}.npy"
+    # Embed with sentence-transformers (cache is model-specific)
+    print(f"    Embedding {len(texts):,} contextual memories ({EMBED_HF_NAME})...")
+    cache_key = CACHE / f"embed_ctx_claude_{EMBED_TAG}_{ds.name.replace(' ','_')}.npy"
     if cache_key.exists():
         embs = np.load(str(cache_key))
         print(f"    Loaded from cache ({embs.shape})")
     else:
-        embs = st_embed_batch(texts)
+        embs = st_embed_batch(texts, is_query=False)
         np.save(str(cache_key), embs)
 
     engine, db = fresh_db()
-    project_id, gid_to_dbid = build_corpus(ds.memories, engine, db, embs, "all-MiniLM-L6-v2")
+    project_id, gid_to_dbid = build_corpus(ds.memories, engine, db, embs, EMBED_HF_NAME)
     vb = SQLiteExactBackend(db)
     allowed, _ = __import__('app.services.retrieval.candidate_generators', fromlist=['apply_hard_filters']).apply_hard_filters(
         db=db, project_id=project_id, max_clearance="internal", include_superseded=False)
 
-    m = RunMetrics("Cloud LLM (all-MiniLM-L6-v2 + Claude Haiku contextual+HyDE)")
+    m = RunMetrics(f"Cloud LLM ({EMBED_HF_NAME} + Claude Haiku contextual+HyDE)")
     with mock.patch("app.services.semantic_classifier.embed_text",
-                    side_effect=lambda t: st_embed_batch([t])[0].tobytes()):
+                    side_effect=lambda t: st_embed_batch([t], is_query=False)[0].tobytes()):
         for qe in ds.queries:
             t0 = time.monotonic()
             qvec = hyde_augment(qe.question, llm_fn, st_embed_one)
@@ -650,9 +677,9 @@ def run_approach_4_hybrid(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
     from app.services.vector_backends.sqlite_exact import SQLiteExactBackend
     import unittest.mock as mock
 
-    # Reuse contextual embeddings from approach 3 (same LLM, same model)
+    # Reuse contextual embeddings from approach 3 (same LLM, same embed model)
     ctx_cache = CACHE / f"ctx_claude_{ds.name.replace(' ','_')}.json"
-    emb_cache = CACHE / f"embed_st_ctx_claude_{ds.name.replace(' ','_')}.npy"
+    emb_cache = CACHE / f"embed_ctx_claude_{EMBED_TAG}_{ds.name.replace(' ','_')}.npy"
 
     if not ctx_cache.exists():
         print("    Generating contextual prefixes (reused from approach 3 if available)...")
@@ -663,11 +690,11 @@ def run_approach_4_hybrid(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
     else:
         prefixes = json.loads(ctx_cache.read_text()) if ctx_cache.exists() else {}
         texts = [f"{prefixes.get(m.gold_key,'')}\n\n{m.content}".strip() for m in ds.memories]
-        embs = st_embed_batch(texts)
+        embs = st_embed_batch(texts, is_query=False)
         np.save(str(emb_cache), embs)
 
     engine, db = fresh_db()
-    project_id, gid_to_dbid = build_corpus(ds.memories, engine, db, embs, "all-MiniLM-L6-v2")
+    project_id, gid_to_dbid = build_corpus(ds.memories, engine, db, embs, EMBED_HF_NAME)
     vb = SQLiteExactBackend(db)
 
     cfg = RetrievalConfig(
@@ -677,9 +704,9 @@ def run_approach_4_hybrid(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
         enable_entity_boost=True, enable_graph_expansion=True, enable_2hop=False,
     )
 
-    m = RunMetrics("Hybrid Full (BM25+Dense+Entity+RRF+Graph+Rank+MMR + Cloud LLM)")
+    m = RunMetrics(f"Hybrid Full (BM25+Dense+RRF+Graph+MMR + {EMBED_HF_NAME} + Cloud LLM)")
     with mock.patch("app.services.semantic_classifier.embed_text",
-                    side_effect=lambda t: st_embed_batch([t])[0].tobytes()):
+                    side_effect=lambda t: st_embed_batch([t], is_query=False)[0].tobytes()):
         retrieve(db=db, project_id=project_id, query="warm", vector_backend=vb, config=cfg)  # warm-up
         for qe in ds.queries:
             t0 = time.monotonic()
@@ -706,7 +733,7 @@ def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
     import uuid as _uuid
 
     facts_cache = CACHE / f"facts_claude_{ds.name.replace(' ', '_')}.json"
-    emb_cache   = CACHE / f"embed_facts_{ds.name.replace(' ', '_')}.npy"
+    emb_cache   = CACHE / f"embed_facts_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
 
     # Step 1: load or extract facts
     session_facts = extract_session_facts(ds.memories, facts_cache, max_workers=8)
@@ -732,8 +759,8 @@ def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
         fact_embs = np.load(str(emb_cache))
         print(f"    Loaded fact embeddings from cache ({fact_embs.shape})")
     else:
-        print(f"    Embedding {len(fact_mems):,} facts (sentence-transformers)...")
-        fact_embs = st_embed_batch([m.content for m in fact_mems])
+        print(f"    Embedding {len(fact_mems):,} facts ({EMBED_HF_NAME})...")
+        fact_embs = st_embed_batch([m.content for m in fact_mems], is_query=False)
         np.save(str(emb_cache), fact_embs)
 
     # Step 4: build in-memory DB, track session_id → [fact_db_ids]
@@ -753,7 +780,7 @@ def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
             importance=3, confidence=0.9,
             privacy_level="internal", review_status="approved", status="active",
             embedding=fact_embs[i].tobytes(),
-            embedding_model="all-MiniLM-L6-v2",
+            embedding_model=EMBED_HF_NAME,
         )
         db.add(mem)
         if (i + 1) % 500 == 0:
@@ -767,10 +794,10 @@ def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
                          max_clearance="internal", include_superseded=False)
 
     # Step 5: retrieve via plain cosine — no HyDE, $0 diagnostic
-    m = RunMetrics("A5: Extracted Facts (Dense, no HyDE)")
+    m = RunMetrics(f"A5: Extracted Facts ({EMBED_HF_NAME}, no HyDE)")
     for qe in ds.queries:
         t0 = time.monotonic()
-        qvec = st_embed_one(qe.question)
+        qvec = st_embed_one(qe.question, is_query=True)
         results = vb.search(qvec, 10, project_id, allowed)
         lat = (time.monotonic() - t0) * 1000
         retrieved_ids = [mid for mid, _ in results]
@@ -839,6 +866,7 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
 def main():
     print("\n" + "="*65)
     print("X-MemoryArch: 5-Approach × 3-Dataset Benchmark")
+    print(f"Embed model: {EMBED_HF_NAME}")
     print("="*65)
 
     # Load LLM
