@@ -50,6 +50,7 @@ from sqlalchemy.pool import StaticPool  # noqa: E402
 
 from app.database import Base  # resolves to Phase 1's database.py via extended __path__
 from app import crud, schemas  # resolves to Phase 1's crud/schemas
+import app.p2_models  # noqa: F401 — registers Phase 2 models (RetrievalRun) with Base.metadata
 
 
 # ---------------------------------------------------------------------------
