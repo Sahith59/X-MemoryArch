@@ -47,6 +47,12 @@ class RetrievalConfig:
     rrf_k: int = 60                    # RRF constant (Cormack et al.)
     embed_query: bool = True           # False → skip dense leg (e.g., FTS-only mode)
     intent: str | None = None          # caller-supplied intent hint (Sub-phase 2.5 uses this)
+    # Sub-phase 2.4 — graph expansion knobs
+    enable_entity_boost: bool = True
+    enable_graph_expansion: bool = True
+    enable_2hop: bool = True
+    max_expansion_total: int = 15
+    entity_boost_weight: float = 0.15
 
 
 # ---------------------------------------------------------------------------
@@ -65,9 +71,10 @@ class RetrievalResult:
     fused_count: int
     forbidden_candidate_count: int
     selected_memory_ids: list[str]
-    rrf_scores: dict                   # {memory_id: rrf_score} — used by context assembly
+    rrf_scores: dict                   # {memory_id: final_score} — used by context assembly
     query: str
     config: RetrievalConfig
+    expanded_via_links: int = 0        # Sub-phase 2.4: memories added by graph expansion
 
 
 # ---------------------------------------------------------------------------
@@ -171,12 +178,36 @@ def retrieve(
     )
 
     # ------------------------------------------------------------------
-    # Step 5: Load top-K memory objects (preserve RRF order)
+    # Step 5: Graph expansion (Sub-phase 2.4)
     # ------------------------------------------------------------------
-    top_k_fused = fused[: config.top_k]
-    top_k_ids = [mid for mid, _ in top_k_fused]
-    rrf_scores = {mid: score for mid, score in top_k_fused}
+    from app.services.retrieval.graph_expansion import graph_expand
 
+    pre_expand_fused = fused[: config.top_k]
+    pre_expand_ids = [mid for mid, _ in pre_expand_fused]
+    pre_expand_scores = {mid: score for mid, score in pre_expand_fused}
+
+    augmented_scores, expanded_count = graph_expand(
+        db=db,
+        project_id=project_id,
+        top_k_ids=pre_expand_ids,
+        rrf_scores=pre_expand_scores,
+        allowed_ids=set(allowed_ids),
+        query=query,
+        enable_entity_boost=config.enable_entity_boost,
+        enable_graph_expansion=config.enable_graph_expansion,
+        enable_2hop=config.enable_2hop,
+        max_expansion_total=config.max_expansion_total,
+        entity_boost_weight=config.entity_boost_weight,
+    )
+
+    # Re-rank by augmented score, preserve top_k limit
+    all_scored = sorted(augmented_scores.items(), key=lambda x: x[1], reverse=True)
+    top_k_ids = [mid for mid, _ in all_scored[: config.top_k]]
+    rrf_scores = {mid: score for mid, score in all_scored[: config.top_k]}
+
+    # ------------------------------------------------------------------
+    # Step 6: Load top-K memory objects (preserve augmented-score order)
+    # ------------------------------------------------------------------
     memories_by_id: dict = {}
     if top_k_ids:
         from app import models as phase1_models
@@ -187,11 +218,11 @@ def retrieve(
         )
         memories_by_id = {m.id: m for m in rows}
 
-    # Preserve RRF rank order
+    # Preserve augmented rank order
     memories = [memories_by_id[mid] for mid in top_k_ids if mid in memories_by_id]
 
     # ------------------------------------------------------------------
-    # Step 6: Telemetry — write to retrieval_runs
+    # Step 7: Telemetry — write to retrieval_runs
     # ------------------------------------------------------------------
     latency_ms = int((time.monotonic() - start) * 1000)
 
@@ -234,4 +265,5 @@ def retrieve(
         rrf_scores=rrf_scores,
         query=query,
         config=config,
+        expanded_via_links=expanded_count,
     )

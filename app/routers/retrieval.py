@@ -1,5 +1,5 @@
 """
-Phase 2.1/2.2 — Retrieval API router.
+Phase 2.1/2.2/2.4 — Retrieval API router.
 
 Endpoints:
   POST /projects/{project_id}/retrieve
@@ -9,6 +9,10 @@ Endpoints:
     Retrieve + assemble a token-budgeted context packet.
     Wires into the existing ContextPacket model.
     Returns the packet content with Compression Ratio + RCD proxy metrics.
+
+  POST /projects/{project_id}/memories/generate-cluster-summaries
+    Generate RAPTOR-style cluster summaries for clusters ≥ min_cluster_size.
+    Stores each summary as a Memory row (type="cluster_summary").
 
 Mounts onto the Phase 1 FastAPI app at merge time.
 """
@@ -277,4 +281,65 @@ def retrieve_context(
         excluded_memory_count=len(assembly.excluded_memory_ids),
         used_abstractive_fallback=assembly.used_abstractive_fallback,
         latency_ms=result.latency_ms,
+    )
+
+
+# ---------------------------------------------------------------------------
+# POST /memories/generate-cluster-summaries  (Sub-phase 2.4)
+# ---------------------------------------------------------------------------
+
+class ClusterSummaryItemOut(BaseModel):
+    cluster_id: int
+    cluster_label: str
+    memory_count: int
+    summary_memory_id: str
+    summary_text: str
+    used_llm: bool
+
+
+class GenerateClusterSummariesResponse(BaseModel):
+    project_id: str
+    summaries_generated: int
+    min_cluster_size: int
+    results: list[ClusterSummaryItemOut]
+
+
+@router.post(
+    "/memories/generate-cluster-summaries",
+    response_model=GenerateClusterSummariesResponse,
+)
+def generate_cluster_summaries(
+    project_id: str,
+    min_cluster_size: int = 10,
+    db: Session = Depends(_get_db),
+) -> GenerateClusterSummariesResponse:
+    """
+    Generate RAPTOR-style cluster summaries for all clusters ≥ min_cluster_size.
+
+    Each summary is stored as a Memory row (type="cluster_summary") so it
+    participates in BM25 and dense retrieval. Re-running updates existing rows.
+    """
+    from app import crud
+    from app.services.retrieval.cluster_summaries import generate_cluster_summaries as _generate
+
+    if crud.get_project(db, project_id) is None:
+        raise HTTPException(status_code=404, detail=f"Project {project_id} not found")
+
+    results = _generate(db=db, project_id=project_id, min_cluster_size=min_cluster_size)
+
+    return GenerateClusterSummariesResponse(
+        project_id=project_id,
+        summaries_generated=len(results),
+        min_cluster_size=min_cluster_size,
+        results=[
+            ClusterSummaryItemOut(
+                cluster_id=r.cluster_id,
+                cluster_label=r.cluster_label,
+                memory_count=r.memory_count,
+                summary_memory_id=r.summary_memory_id,
+                summary_text=r.summary_text,
+                used_llm=r.used_llm,
+            )
+            for r in results
+        ],
     )
