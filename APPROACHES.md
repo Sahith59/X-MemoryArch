@@ -249,6 +249,67 @@ Same pattern for A3 and A4 — Multi-HyDE consistently hurt or was flat across a
 
 ---
 
+## A6 — Multi-Query RRF (Phase 3.1)
+
+**What it does:** Generates 2 alternative phrasings of each query using Claude Haiku (cached), then runs 3 independent searches (original + 2 rephrases). Result lists are merged via Reciprocal Rank Fusion (k=60), followed by session-diversity MMR (max 2 facts/session → top-10 sessions).
+
+**Why this beats Multi-HyDE:** Multi-HyDE (2.9c, -0.009) averaged 3 query vectors into one blurry centroid. Multi-Query RRF keeps each search sharp and independent — the fusion happens on ranked lists, not on embedding space.
+
+**Pipeline:**
+1. Facts extracted and embedded as in A5 (same cache)
+2. Claude Haiku generates 2 query rephrases (cached per dataset, ~$0.01 one-time)
+3. 3 independent cosine searches (original + 2 rephrases), top-20 each
+4. RRF merge: `score(item) = Σ 1/(rank_i + 60)` across all 3 lists
+5. Session-MMR: max 2 facts per session → top-10 sessions
+
+**Cost:** $0 per retrieval (rephrases cached). ~$0.01 one-time for rephrase generation per dataset.
+
+**Latency:** ~44ms p50 (comparable to A5 — 3 matmuls but all parallelizable, no cross-encoder).
+
+**Results:**
+| Dataset | R@5 | MRR@10 | NDCG@10 |
+|---|---|---|---|
+| SQuAD | 0.935 | 0.838 | 0.869 |
+| LoCoMo | **0.635** | 0.484 | 0.542 |
+| LongMemEval | 0.780 | 0.658 | 0.708 |
+| **Aggregate** | **0.783** | **0.660** | **0.706** |
+
+**Key finding — LoCoMo record:** A6 sets a new LoCoMo record at 0.635 (+0.040 vs A5r 0.595, +0.020 vs A5 0.615). The rephrase diversity directly compensates for the ms-marco reranker's domain mismatch on conversational short facts.
+
+**MRR regression vs A5r:** Without the cross-encoder, A6 finds the right session but doesn't guarantee it's ranked #1 within the top-10. MRR=0.660 vs A5r=0.693. Fixed by A6r.
+
+---
+
+## A6r — Multi-Query RRF + Cross-Encoder Reranker (Phase 3.1) ← CURRENT CHAMPION
+
+**What it does:** A6 + the ms-marco cross-encoder reranker on the wider RRF candidate pool. The RRF-merged top-40 candidates (vs A5r's single-search top-20) give the reranker more diverse raw material, partially compensating for its domain mismatch on conversational data.
+
+**Pipeline:**
+1. Same rephrase loading and 3-search RRF as A6
+2. RRF merge → top-40 facts (vs A5r's top-20 from single search)
+3. Cross-encoder reranker scores all (query, fact) pairs
+4. Session-MMR: max 2 facts per session → top-10 sessions
+
+**Cost:** $0 per retrieval. ~$0.01 one-time rephrase generation per dataset (shared with A6).
+
+**Latency:** ~60ms p50 (A6 matmuls + cross-encoder on 40 candidates).
+
+**Results:**
+| Dataset | R@5 | MRR@10 | NDCG@10 | p50 |
+|---|---|---|---|---|
+| SQuAD | **0.970** | **0.882** | **0.904** | 62ms |
+| LoCoMo | 0.630 | **0.532** | **0.583** | 58ms |
+| LongMemEval | **0.825** | **0.688** | **0.731** | 61ms |
+| **Aggregate** | **0.808** | **0.700** | **0.739** | |
+
+**Why A6r beats A5r on LoCoMo:** A5r uses top-20 from one search — many of those 20 slots get occupied by near-duplicate facts from the same session. RRF's 3-search pool forces diversity into the candidate set before the reranker sees it, so the reranker gets better raw material even when it can't fully compensate for the passage-vs-fact domain gap.
+
+**Milestone:** R@5 = 0.808 — first time crossing the 0.80 plan target (aggregate across all 3 datasets). SQuAD at 0.970 and LME at 0.825 are new per-dataset records.
+
+**Remaining gap to Mem0:** LoCoMo 0.630 vs Mem0 92.5%. This is the primary Phase 3 blocker. Phase 3.2 (conversation-tuned cross-encoder) is the next lever.
+
+---
+
 ## Approach Evolution Summary
 
 ```
@@ -262,14 +323,18 @@ A5r  (Facts + reranker + session-MMR, gtel)  → 0.792   ← reranker on facts a
                                                           LongMemEval 0.825 ✓ beats Zep (71.2%)
 A5r+mh (Facts + reranker + Multi-HyDE)      → 0.778   ← -0.014 vs A5r(gtel), Multi-HyDE fails
 A5   (te3l cloud path, OpenAI 3072-dim)      → 0.790   ← best cloud path; reranker hurts here
+A6   (Multi-Query RRF, 3 searches, Phase 3.1) → 0.783  ← LoCoMo record 0.635; MRR dips (no reranker)
+A6r  (Multi-Query RRF + reranker, Phase 3.1) → 0.808 ✓ ← NEW CHAMPION: crosses R@5 0.80 target
+                                                          SQuAD 0.970 (record), LME 0.825, LoCoMo 0.630
 ```
 
-Plan target R@5 ≥ 0.80 hit on SQuAD (0.955), LongMemEval (0.825).
-LoCoMo (0.590-0.620) still below target — requires Phase 3 (conversation-tuned reranker + multi-query retrieval).
+Plan targets: R@5 ≥ 0.80 ✓ (0.808) · MRR@10 ≥ 0.78 ✗ (0.700) · NDCG@10 ≥ 0.55 ✓ (0.739)
+LoCoMo (0.630) is the primary remaining gap — Phase 3.2 (conversation-tuned cross-encoder).
 
 **The key architectural insights:**
 1. Representation quality (what you store) matters more than retrieval algorithm. A5 outperforms A4 by +5.3% simply by decomposing sessions into atomic facts.
 2. Reranker benefit depends on embedding quality. With weak embeddings (GTE-small), the ms-marco reranker rescues precision. With strong embeddings (te3l 3072-dim), it introduces noise — skip the reranker in the cloud path.
+3. Multi-query RRF + reranker is synergistic: RRF's diverse candidate pool compensates for the reranker's domain mismatch on conversational data (LoCoMo +0.035 vs A5r).
 
 ---
 

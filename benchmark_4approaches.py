@@ -540,6 +540,67 @@ def extract_session_facts(
     cache_path.write_text(json.dumps(results, ensure_ascii=False))
     return results
 
+# ── Multi-Query RRF helpers (Phase 3.1) ──────────────────────────────────────
+_MQR_REPHRASE_PROMPT = """\
+Generate 2 alternative phrasings of this question. Same meaning, different wording and structure.
+Return exactly 2 lines, one phrasing per line. No bullets, no numbers, no explanation.
+
+Question: {query}"""
+
+def generate_query_rephrases(
+    queries: list[str],
+    cache_path: Path,
+    max_workers: int = 8,
+) -> dict[str, list[str]]:
+    """Return {original_query: [rephrase1, rephrase2]}. Cached to disk.
+    Cache key is dataset-specific — independent of embedding model (text is text).
+    """
+    if cache_path.exists():
+        return json.loads(cache_path.read_text())
+    if not ANTHROPIC_API_KEY:
+        return {}
+    import anthropic
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    print(f"    Generating rephrases for {len(queries):,} queries via Claude Haiku...")
+    results: dict[str, list[str]] = {}
+
+    def _call(query: str):
+        try:
+            msg = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=150,
+                messages=[{"role": "user", "content": _MQR_REPHRASE_PROMPT.format(query=query)}],
+            )
+            raw = msg.content[0].text.strip()
+            rephrases = [r.strip() for r in raw.split("\n") if r.strip()][:2]
+            while len(rephrases) < 2:
+                rephrases.append(query)  # fallback: repeat original if haiku returns < 2 lines
+        except Exception:
+            rephrases = [query, query]
+        return query, rephrases
+
+    done = 0
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        futs = {ex.submit(_call, q): q for q in queries}
+        for f in as_completed(futs):
+            query, rephrases = f.result()
+            results[query] = rephrases
+            done += 1
+            if done % 100 == 0:
+                print(f"      {done}/{len(queries)} rephrases done", flush=True)
+    cache_path.write_text(json.dumps(results, ensure_ascii=False))
+    return results
+
+def rrf_merge(ranked_lists: list[list[int]], k: int = 60) -> list[tuple[int, float]]:
+    """Reciprocal Rank Fusion over multiple ranked lists of fact row indices.
+    Returns [(fact_row_idx, rrf_score)] sorted descending.
+    """
+    scores: dict[int, float] = {}
+    for ranked in ranked_lists:
+        for rank, idx in enumerate(ranked, 1):
+            scores[idx] = scores.get(idx, 0.0) + 1.0 / (rank + k)
+    return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
 _CTX_PROMPT = """\
 Write a single-sentence context tag (max 20 words) for this memory snippet that describes
 what it is about — who, what topic, or what event. Be specific and factual.
@@ -1209,6 +1270,221 @@ def run_approach_5r_reranked(ds: BenchDataset, llm_fn: Callable | None = None) -
     db.close()
     return m
 
+def run_approach_6_multiqueryRRF(ds: BenchDataset) -> RunMetrics | None:
+    """A6: Multi-Query Retrieval + RRF Fusion (Phase 3.1).
+
+    3 independent searches per query (original + 2 LLM rephrases) over the extracted
+    fact corpus, merged via Reciprocal Rank Fusion (k=60), then session-diversity MMR
+    (max 2 facts per session) → top-10 sessions.
+
+    Contrast with Multi-HyDE (2.9c, -0.009 regression): this approach runs N independent
+    searches and merges RESULTS — it never averages query vectors. Each search is sharp;
+    RRF rewards facts that rank well across multiple phrasings.
+
+    Reuses A5/A5r fact corpus (same cache files). Only new cost: query rephrasing (~$0.01
+    per 200-query dataset, cached after first run → $0 on subsequent runs).
+    """
+    from collections import defaultdict
+
+    facts_cache    = CACHE / f"facts_claude_{ds.name.replace(' ', '_')}.json"
+    emb_cache      = CACHE / f"embed_facts_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+    rephrase_cache = CACHE / f"mqr_rephrases_{ds.name.replace(' ', '_')}.json"
+
+    # ── Step 1: load facts (reuse A5 cache) ──────────────────────────────────
+    session_facts = extract_session_facts(ds.memories, facts_cache, max_workers=8)
+    if not session_facts:
+        return None
+
+    # ── Step 2: build flat fact list ─────────────────────────────────────────
+    fact_mems: list[MemEntry] = []
+    for mem in ds.memories:
+        facts = session_facts.get(mem.gold_key) or [mem.content[:200]]
+        for i, fact_text in enumerate(facts):
+            fact_mems.append(MemEntry(
+                mid=f"{mem.gold_key}__f{i}",
+                title=f"{mem.title[:80]} [f{i+1}]",
+                content=fact_text,
+                search_text=fact_text,
+                gold_key=mem.gold_key,
+            ))
+    print(f"    {len(fact_mems):,} facts from {len(ds.memories):,} sessions")
+
+    # ── Step 3: load fact embeddings (reuse A5 cache) ─────────────────────────
+    if emb_cache.exists():
+        fact_embs = np.load(str(emb_cache))
+        print(f"    Loaded fact embeddings from cache ({fact_embs.shape})")
+    else:
+        print(f"    Embedding {len(fact_mems):,} facts ({EMBED_HF_NAME})...")
+        fact_embs = st_embed_batch([m.content for m in fact_mems], is_query=False)
+        np.save(str(emb_cache), fact_embs)
+
+    # Parallel array: which session does each fact row belong to
+    fact_session_keys = [fm.gold_key for fm in fact_mems]
+
+    # ── Step 4: load / generate query rephrases ───────────────────────────────
+    all_questions = [qe.question for qe in ds.queries]
+    rephrases = generate_query_rephrases(all_questions, rephrase_cache, max_workers=8)
+    if not rephrases:
+        print("    [skip] No ANTHROPIC_API_KEY and no cached rephrases — A6 requires rephrases")
+        return None
+    cached_note = "(from cache)" if rephrase_cache.exists() else "(freshly generated)"
+    print(f"    Query rephrases ready {cached_note}")
+
+    # ── Step 5: per-query multi-search + RRF + session-MMR ───────────────────
+    TOP_PER_SEARCH = 20
+
+    m = RunMetrics(f"A6: Multi-Query RRF ({EMBED_HF_NAME}, 3 searches/query)")
+    for qe in ds.queries:
+        t0 = time.monotonic()
+
+        # 3 query variants: original + 2 rephrases
+        variants = [qe.question] + rephrases.get(qe.question, [qe.question, qe.question])
+        variants = variants[:3]
+
+        # Independent cosine search for each variant → ranked list of fact row indices
+        ranked_lists: list[list[int]] = []
+        for variant in variants:
+            qvec = np.array(st_embed_one(variant, is_query=True), dtype=np.float32)
+            sims  = fact_embs @ qvec                                          # (N_facts,)
+            n     = min(TOP_PER_SEARCH, len(sims))
+            top   = np.argpartition(sims, -n)[-n:]
+            top   = top[np.argsort(sims[top])[::-1]]
+            ranked_lists.append(top.tolist())
+
+        # RRF merge → [(fact_row_idx, rrf_score)] descending
+        merged = rrf_merge(ranked_lists, k=60)
+
+        # Session-diversity MMR: max 2 facts per session, collect top-10 unique sessions
+        selected_sessions: list[str] = []
+        seen_sessions: set[str]      = set()
+        session_count: dict[str, int] = defaultdict(int)
+        for fact_idx, _ in merged:
+            if len(selected_sessions) >= 10:
+                break
+            sess = fact_session_keys[fact_idx]
+            if session_count[sess] < 2:
+                session_count[sess] += 1
+                if sess not in seen_sessions:
+                    selected_sessions.append(sess)
+                    seen_sessions.add(sess)
+
+        lat = (time.monotonic() - t0) * 1000
+        # Both selected_sessions and qe.gold_keys are in gold_key namespace — no DB mapping needed
+        m.add(selected_sessions, qe.gold_keys, lat)
+
+    return m
+
+def run_approach_6r_multiqueryRRF_reranked(ds: BenchDataset) -> RunMetrics | None:
+    """A6r: Multi-Query RRF + Cross-Encoder Reranker + Session-MMR (Phase 3.1).
+
+    A6's multi-query RRF for recall + A5r's cross-encoder reranker for precision.
+    Pipeline: 3 rephrased searches → RRF merge (top-40 pool) → cross-encoder rerank
+    → session-diversity MMR (max 2/session) → top-10 sessions.
+
+    Key diagnostic: does the ms-marco reranker help or hurt when given A6's wider
+    multi-query candidate pool? A5r's reranker hurt LoCoMo standalone (0.595 vs A5 0.615).
+    A6 hits 0.635 without reranker. A6r reveals whether more diverse candidates change
+    the reranker's behaviour on conversational data.
+    """
+    from collections import defaultdict
+    from app.services.retrieval.reranker import get_default_reranker
+
+    facts_cache    = CACHE / f"facts_claude_{ds.name.replace(' ', '_')}.json"
+    emb_cache      = CACHE / f"embed_facts_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+    rephrase_cache = CACHE / f"mqr_rephrases_{ds.name.replace(' ', '_')}.json"
+
+    # ── Steps 1-3: identical to A6 (all from cache) ───────────────────────────
+    session_facts = extract_session_facts(ds.memories, facts_cache, max_workers=8)
+    if not session_facts:
+        return None
+
+    fact_mems: list[MemEntry] = []
+    for mem in ds.memories:
+        facts = session_facts.get(mem.gold_key) or [mem.content[:200]]
+        for i, fact_text in enumerate(facts):
+            fact_mems.append(MemEntry(
+                mid=f"{mem.gold_key}__f{i}",
+                title=f"{mem.title[:80]} [f{i+1}]",
+                content=fact_text,
+                search_text=fact_text,
+                gold_key=mem.gold_key,
+            ))
+    print(f"    {len(fact_mems):,} facts from {len(ds.memories):,} sessions")
+
+    if emb_cache.exists():
+        fact_embs = np.load(str(emb_cache))
+        print(f"    Loaded fact embeddings from cache ({fact_embs.shape})")
+    else:
+        print(f"    Embedding {len(fact_mems):,} facts ({EMBED_HF_NAME})...")
+        fact_embs = st_embed_batch([m.content for m in fact_mems], is_query=False)
+        np.save(str(emb_cache), fact_embs)
+
+    fact_session_keys = [fm.gold_key for fm in fact_mems]
+
+    rephrases = generate_query_rephrases(
+        [qe.question for qe in ds.queries], rephrase_cache, max_workers=8
+    )
+    if not rephrases:
+        print("    [skip] No rephrases available — A6r requires query rephrases")
+        return None
+    print(f"    Query rephrases ready (from cache)")
+
+    # ── Step 4: load cross-encoder ────────────────────────────────────────────
+    reranker = get_default_reranker()
+
+    # ── Step 5: per-query multi-search + RRF + rerank + session-MMR ──────────
+    TOP_PER_SEARCH  = 20
+    RRF_RERANK_POOL = 40   # wider pool than A5r (20) — 3 searches yield more diverse candidates
+
+    class _Mem:
+        def __init__(self, id_, title_, content_):
+            self.id = id_; self.title = title_; self.content = content_
+
+    m = RunMetrics(f"A6r: Multi-Query RRF + Reranker ({EMBED_HF_NAME})")
+    for qe in ds.queries:
+        t0 = time.monotonic()
+
+        variants = [qe.question] + rephrases.get(qe.question, [qe.question, qe.question])
+        variants = variants[:3]
+
+        # 3 independent searches → per-variant ranked lists of fact row indices
+        ranked_lists: list[list[int]] = []
+        for variant in variants:
+            qvec = np.array(st_embed_one(variant, is_query=True), dtype=np.float32)
+            sims  = fact_embs @ qvec
+            n     = min(TOP_PER_SEARCH, len(sims))
+            top   = np.argpartition(sims, -n)[-n:]
+            top   = top[np.argsort(sims[top])[::-1]]
+            ranked_lists.append(top.tolist())
+
+        # RRF merge → take top-40 as reranker input pool
+        merged   = rrf_merge(ranked_lists, k=60)
+        top_pool = [idx for idx, _ in merged[:RRF_RERANK_POOL]]
+
+        # Cross-encoder rerank: score (query, fact_content) pairs
+        pseudo_mems = [_Mem(str(idx), fact_mems[idx].title, fact_mems[idx].content)
+                       for idx in top_pool]
+        reranked = reranker.rerank(qe.question, pseudo_mems, top_n=RRF_RERANK_POOL)
+
+        # Session-diversity MMR: max 2 facts per session, collect top-10 unique sessions
+        selected_sessions: list[str] = []
+        seen_sessions:     set[str]  = set()
+        session_count: dict[str, int] = defaultdict(int)
+        for str_idx, _ in reranked:
+            if len(selected_sessions) >= 10:
+                break
+            sess = fact_session_keys[int(str_idx)]
+            if session_count[sess] < 2:
+                session_count[sess] += 1
+                if sess not in seen_sessions:
+                    selected_sessions.append(sess)
+                    seen_sessions.add(sess)
+
+        lat = (time.monotonic() - t0) * 1000
+        m.add(selected_sessions, qe.gold_keys, lat)
+
+    return m
+
 # ── Evaluate one dataset across all approaches ────────────────────────────────
 def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, RunMetrics]:
     results: dict[str, RunMetrics] = {}
@@ -1281,13 +1557,34 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
     elif not ANTHROPIC_API_KEY and not facts_cached:
         print("  [A5/A5r] Extracted Facts skipped (no API key + no cache)")
 
+    # A6: Multi-Query RRF — runs whenever A5 can run (reuses fact cache, only adds rephrases)
+    rephrase_cached = (CACHE / f"mqr_rephrases_{ds.name.replace(' ', '_')}.json").exists()
+    if not args.skip_a5 and (ANTHROPIC_API_KEY or (facts_cached and rephrase_cached)):
+        print(f"\n  [A6] Multi-Query RRF (3 searches/query + RRF merge)...")
+        r6 = run_approach_6_multiqueryRRF(ds)
+        if r6 is not None:
+            results["multiqueryRRF"] = r6
+            print(f"    R@5={r6.r(5):.3f}  MRR@10={r6.mrr_mean():.3f}  p50={r6.p(0.5):.0f}ms")
+        else:
+            print("    [skip] A6 unavailable")
+
+    # A6r: Multi-Query RRF + Reranker — same gate as A6
+    if not args.skip_a5 and (ANTHROPIC_API_KEY or (facts_cached and rephrase_cached)):
+        print(f"\n  [A6r] Multi-Query RRF + Reranker (3 searches + cross-encoder)...")
+        r6r = run_approach_6r_multiqueryRRF_reranked(ds)
+        if r6r is not None:
+            results["multiqueryRRF_reranked"] = r6r
+            print(f"    R@5={r6r.r(5):.3f}  MRR@10={r6r.mrr_mean():.3f}  p50={r6r.p(0.5):.0f}ms")
+        else:
+            print("    [skip] A6r unavailable")
+
     return results
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
     print("\n" + "="*65)
     _mhyde_note = " + Multi-HyDE (2.9c)" if args.multi_hyde else ""
-    print(f"X-MemoryArch: 8-Approach × 3-Dataset Benchmark{_mhyde_note}")
+    print(f"X-MemoryArch: 10-Approach × 3-Dataset Benchmark{_mhyde_note}")
     _backend_note = f" [{EMBED_BACKEND.upper()}]" if EMBED_BACKEND != "st" else " [local]"
     print(f"Embed model: {EMBED_HF_NAME}{_backend_note}")
     print("="*65)
@@ -1328,10 +1625,12 @@ def main():
         ("multivec",            "A4mv: Multi-Vector (ColBERT max-sim)"),
         ("extracted",           "A5: Extracted Facts (GTE, no HyDE)"),
         ("extracted_reranked",  "A5r: Facts+Reranker+Session-MMR (GTE)"),
+        ("multiqueryRRF",           "A6: Multi-Query RRF (3 searches, Phase 3.1)"),
+        ("multiqueryRRF_reranked",  "A6r: Multi-Query RRF + Reranker (Phase 3.1)"),
     ]
 
     print("\n\n" + "="*90)
-    print("FINAL RESULTS — X-MemoryArch 7 Approaches × 3 Datasets")
+    print("FINAL RESULTS — X-MemoryArch 10 Approaches × 3 Datasets")
     print("="*90)
     print(f"{'Approach':<40} {'R@1':>5} {'R@3':>5} {'R@5':>5} {'R@10':>6} {'MRR@10':>7} {'NDCG@10':>8} {'p50':>6} {'p95':>6}")
     print("-"*90)
