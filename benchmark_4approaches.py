@@ -68,8 +68,16 @@ parser.add_argument("--ollama-n", type=int, default=100, help="max queries for O
 parser.add_argument("--skip-ollama", action="store_true")
 parser.add_argument("--skip-cloud", action="store_true")
 parser.add_argument("--skip-a5", action="store_true", help="skip approach 5 (extracted facts)")
-parser.add_argument("--embed-model", choices=["minilm", "bge", "gte"], default="gte",
-                    help="dense embedding model: gte=thenlper/gte-small (default), minilm=all-MiniLM-L6-v2, bge=BAAI/bge-small-en-v1.5")
+parser.add_argument("--embed-model",
+                    choices=["minilm", "bge", "gte", "bgel", "gtel", "te3l"],
+                    default="gtel",
+                    help=(
+                        "gte=thenlper/gte-small (default, local 384-dim), "
+                        "gtel=Alibaba-NLP/gte-large-en-v1.5 (local 1024-dim, best local), "
+                        "te3l=text-embedding-3-large (OpenAI cloud 3072-dim, best overall), "
+                        "bgel=BAAI/bge-large-en-v1.5 (local 1024-dim, passage-biased), "
+                        "bge=BAAI/bge-small-en-v1.5, minilm=all-MiniLM-L6-v2"
+                    ))
 parser.add_argument("--multi-hyde", action="store_true",
                     help="2.9c: use 3-hypothesis Multi-HyDE for A3, A4, and A5r (3x API calls per query)")
 parser.add_argument("--seed", type=int, default=42)
@@ -83,27 +91,48 @@ CACHE.mkdir(exist_ok=True)
 # ── Embedding model config ─────────────────────────────────────────────────────
 _EMBED_CONFIGS = {
     "minilm": {
-        "hf_name":    "all-MiniLM-L6-v2",
-        "cache_tag":  "minilm",
-        "query_prefix": "",   # no instruction prefix needed
+        "backend": "st",
+        "hf_name": "all-MiniLM-L6-v2",
+        "cache_tag": "minilm",
+        "query_prefix": "",
     },
     "bge": {
-        "hf_name":    "BAAI/bge-small-en-v1.5",
-        "cache_tag":  "bge_small",
-        # BGE retrieval models benefit from an instruction prefix on queries only
+        "backend": "st",
+        "hf_name": "BAAI/bge-small-en-v1.5",
+        "cache_tag": "bge_small",
         "query_prefix": "Represent this sentence for searching relevant passages: ",
     },
     "gte": {
-        "hf_name":    "thenlper/gte-small",
-        "cache_tag":  "gte_small",
-        # GTE uses symmetric embeddings — no special prefix for queries or documents
+        "backend": "st",
+        "hf_name": "thenlper/gte-small",
+        "cache_tag": "gte_small",
+        "query_prefix": "",
+    },
+    "bgel": {
+        "backend": "st",
+        "hf_name": "BAAI/bge-large-en-v1.5",   # 1024-dim, passage-retrieval biased
+        "cache_tag": "bge_large",
+        "query_prefix": "Represent this sentence for searching relevant passages: ",
+    },
+    "gtel": {
+        "backend": "st",
+        "hf_name": "thenlper/gte-large",  # 1024-dim, same GTE family as gte-small, no custom code
+        "cache_tag": "gte_large",
+        "query_prefix": "",  # symmetric embeddings, no prefix needed
+    },
+    "te3l": {
+        "backend": "openai",
+        "openai_name": "text-embedding-3-large",  # 3072-dim, best overall
+        "hf_name": None,
+        "cache_tag": "te3l",
         "query_prefix": "",
     },
 }
-_ECFG = _EMBED_CONFIGS[args.embed_model]
-EMBED_HF_NAME  = _ECFG["hf_name"]
-EMBED_TAG      = _ECFG["cache_tag"]        # used in cache file names
-EMBED_QPREFIX  = _ECFG["query_prefix"]    # prepended to query text only
+_ECFG         = _EMBED_CONFIGS[args.embed_model]
+EMBED_BACKEND  = _ECFG["backend"]                         # "st" | "openai"
+EMBED_HF_NAME  = _ECFG.get("hf_name") or _ECFG.get("openai_name", "unknown")
+EMBED_TAG      = _ECFG["cache_tag"]
+EMBED_QPREFIX  = _ECFG["query_prefix"]
 
 # ── Load .env ─────────────────────────────────────────────────────────────────
 _env_path = _RE / ".env"
@@ -114,6 +143,7 @@ if _env_path.exists():
             os.environ.setdefault(k.strip(), v.strip())
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+OPENAI_API_KEY    = os.environ.get("OPENAI_API_KEY", "")
 OLLAMA_URL = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
 OLLAMA_LLM = os.environ.get("OLLAMA_MODEL", "llama3.1:latest")
 OLLAMA_EMBED = "nomic-embed-text:latest"
@@ -381,6 +411,40 @@ def make_claude_llm() -> Callable[[str], str] | None:
         print(f"  [warn] Claude Haiku not available: {e}")
         return None
 
+# ── OpenAI embedding backend (te3l: text-embedding-3-large, 3072-dim) ────────
+_openai_client = None
+def _get_openai_client():
+    global _openai_client
+    if _openai_client is None:
+        if not OPENAI_API_KEY:
+            raise RuntimeError("OPENAI_API_KEY not set — required for --embed-model te3l")
+        try:
+            import openai
+            _openai_client = openai.OpenAI(api_key=OPENAI_API_KEY)
+            print(f"    OpenAI client ready ({_ECFG['openai_name']})")
+        except ImportError:
+            raise RuntimeError("openai package not installed: pip install openai")
+    return _openai_client
+
+def _openai_embed_batch(texts: list[str]) -> np.ndarray:
+    client = _get_openai_client()
+    model  = _ECFG["openai_name"]
+    all_vecs: list[np.ndarray] = []
+    for i in range(0, len(texts), 2048):   # OpenAI max batch = 2048
+        resp = client.embeddings.create(model=model, input=texts[i:i+2048])
+        ordered = sorted(resp.data, key=lambda d: d.index)
+        all_vecs.extend(np.array(d.embedding, dtype=np.float32) for d in ordered)
+    mat = np.vstack(all_vecs).astype(np.float32)
+    norms = np.linalg.norm(mat, axis=1, keepdims=True)
+    return np.where(norms > 0, mat / norms, mat)
+
+def _openai_embed_one(text: str) -> list[float]:
+    client = _get_openai_client()
+    resp = client.embeddings.create(model=_ECFG["openai_name"], input=[text])
+    vec  = np.array(resp.data[0].embedding, dtype=np.float32)
+    norm = np.linalg.norm(vec)
+    return (vec / norm if norm > 0 else vec).tolist()
+
 # ── Embedding helpers ─────────────────────────────────────────────────────────
 _st_model = None
 def get_st_model():
@@ -392,7 +456,9 @@ def get_st_model():
     return _st_model
 
 def st_embed_batch(texts: list[str], is_query: bool = False) -> np.ndarray:
-    """Embed a batch of texts. Set is_query=True to apply BGE query prefix."""
+    """Embed a batch — dispatches to OpenAI or sentence-transformers based on EMBED_BACKEND."""
+    if EMBED_BACKEND == "openai":
+        return _openai_embed_batch(texts)
     model = get_st_model()
     if is_query and EMBED_QPREFIX:
         texts = [EMBED_QPREFIX + t for t in texts]
@@ -403,7 +469,9 @@ def st_embed_batch(texts: list[str], is_query: bool = False) -> np.ndarray:
     return np.vstack(parts).astype(np.float32)
 
 def st_embed_one(text: str, is_query: bool = True) -> list[float]:
-    """Embed a single text. Defaults is_query=True — queries get the BGE prefix."""
+    """Embed a single text — dispatches to OpenAI or sentence-transformers based on EMBED_BACKEND."""
+    if EMBED_BACKEND == "openai":
+        return _openai_embed_one(text)
     if is_query and EMBED_QPREFIX:
         text = EMBED_QPREFIX + text
     return get_st_model().encode(text, convert_to_numpy=True, normalize_embeddings=True).tolist()
@@ -1118,7 +1186,8 @@ def main():
     print("\n" + "="*65)
     _mhyde_note = " + Multi-HyDE (2.9c)" if args.multi_hyde else ""
     print(f"X-MemoryArch: 7-Approach × 3-Dataset Benchmark{_mhyde_note}")
-    print(f"Embed model: {EMBED_HF_NAME}")
+    _backend_note = f" [{EMBED_BACKEND.upper()}]" if EMBED_BACKEND != "st" else " [local]"
+    print(f"Embed model: {EMBED_HF_NAME}{_backend_note}")
     print("="*65)
 
     # Load LLM
