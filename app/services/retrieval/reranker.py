@@ -1,7 +1,10 @@
 """
-Sub-phase 2.5 — Cross-encoder reranker.
+Cross-encoder reranker.
 
 Model: cross-encoder/ms-marco-MiniLM-L-6-v2 (Hugging Face via sentence-transformers)
+Benchmarked against BAAI/bge-reranker-base — ms-marco wins on aggregate R@5
+and MRR across SQuAD + LoCoMo + LongMemEval. bge gains +0.005-0.020 on LoCoMo
+but loses -0.015 on SQuAD and -0.026 MRR overall (and is 2x slower).
 
 Behaviour:
   - If sentence_transformers is not installed, or model loading fails,
