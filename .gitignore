@@ -36,3 +36,12 @@ memory.db
 # Benchmark cache — downloaded datasets, computed embeddings, LLM prefix caches
 # Large files, reproducible from source, never commit
 benchmark_cache/
+
+# Fine-tuned model weights and training checkpoints — large binaries, not for git
+# Reproduce: cd RetrievalEngine && python3 training/build_reranker_pairs.py && python3 training/finetune_reranker.py
+models/
+checkpoints/
+
+# Training data JSONL — generated from cached datasets, not for git
+training/reranker_train.jsonl
+training/reranker_val.jsonl

@@ -80,6 +80,9 @@ parser.add_argument("--embed-model",
                     ))
 parser.add_argument("--multi-hyde", action="store_true",
                     help="2.9c: use 3-hypothesis Multi-HyDE for A3, A4, and A5r (3x API calls per query)")
+parser.add_argument("--reranker-model",
+                    default="cross-encoder/ms-marco-MiniLM-L-6-v2",
+                    help="Cross-encoder reranker model name or local path (default: ms-marco-MiniLM-L-6-v2)")
 parser.add_argument("--seed", type=int, default=42)
 args = parser.parse_args()
 random.seed(args.seed)
@@ -1582,9 +1585,14 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
+    # Initialize reranker singleton with CLI model before any approach runs
+    from app.services.retrieval.reranker import get_default_reranker as _init_reranker
+    _init_reranker(args.reranker_model)
+
     print("\n" + "="*65)
     _mhyde_note = " + Multi-HyDE (2.9c)" if args.multi_hyde else ""
-    print(f"X-MemoryArch: 10-Approach × 3-Dataset Benchmark{_mhyde_note}")
+    _reranker_note = f" reranker={Path(args.reranker_model).name}" if args.reranker_model != "cross-encoder/ms-marco-MiniLM-L-6-v2" else ""
+    print(f"X-MemoryArch: 10-Approach × 3-Dataset Benchmark{_mhyde_note}{_reranker_note}")
     _backend_note = f" [{EMBED_BACKEND.upper()}]" if EMBED_BACKEND != "st" else " [local]"
     print(f"Embed model: {EMBED_HF_NAME}{_backend_note}")
     print("="*65)
