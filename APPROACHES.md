@@ -166,20 +166,43 @@ Plan targets: R@5 ≥ 0.80 · MRR@10 ≥ 0.78 · NDCG@10 ≥ 0.55
 
 ---
 
+## A3(mh) / A4(mh) / A5r(mh) — Multi-HyDE Variants (2.9c) — NEGATIVE EXPERIMENT
+
+**What it does:** Instead of 1 HyDE call per query, generates 3 hypothetical documents from different angles, embeds each, and **averages** all vectors (including the plain query) into one composite vector.
+
+**Result after full 3-dataset smoke test:**
+
+| Approach | SQuAD R@5 | LoCoMo R@5 | LME R@5 | Agg R@5 |
+|---|---|---|---|---|
+| A5r baseline (no Multi-HyDE) | **0.955** | **0.590** | **0.815** | **0.787** |
+| A5r + Multi-HyDE | 0.940 | 0.590 | 0.805 | 0.778 |
+| Delta | -0.015 | 0.000 | -0.010 | **-0.009** |
+
+Same pattern for A3 and A4 — Multi-HyDE consistently hurt or was flat across all datasets and approaches.
+
+**Why it failed:** Averaging 3 hypothetical embeddings produces a blurry centroid vector that sits between interpretations in semantic space, weakening the query signal. A single sharp query embedding outperforms a diluted average.
+
+**The right solution for ambiguous queries (Phase 3):** Multi-query retrieval — run N independent searches and merge via RRF. Preserves signal sharpness per search instead of blending it away.
+
+**Status:** Kept as `--multi-hyde` opt-in flag. Disabled by default.
+
+---
+
 ## Approach Evolution Summary
 
 ```
-A1  (BM25 keyword)                     → 0.040 aggregate R@5
-A3  (Cloud LLM + HyDE, MiniLM)        → 0.710
-A4  (Full hybrid + HyDE, no reranker) → 0.715
-A4r (Full hybrid + reranker, no HyDE) → 0.728   ← reranker adds +0.013
-A5  (Fact decomposition, GTE)          → 0.768   ← representation >> algorithm
-A5r (Facts + reranker + session-MMR)   → 0.787   ← reranker on facts adds +0.019
-                                                     LongMemEval 0.815 ✓ beats Zep (71.2%)
+A1   (BM25 keyword)                          → 0.040 aggregate R@5
+A3   (Cloud LLM + HyDE, MiniLM)             → 0.710
+A4   (Full hybrid + HyDE, no reranker)       → 0.715
+A4r  (Full hybrid + reranker, no HyDE)       → 0.728   ← reranker adds +0.013
+A5   (Fact decomposition, GTE)               → 0.768   ← representation >> algorithm
+A5r  (Facts + reranker + session-MMR)        → 0.787   ← reranker on facts adds +0.019
+                                                          LongMemEval 0.815 ✓ beats Zep (71.2%)
+A5r+mh (Facts + reranker + Multi-HyDE)      → 0.778   ← -0.009 vs A5r, Multi-HyDE fails
 ```
 
 Plan target R@5 ≥ 0.80 hit on SQuAD (0.955) and LongMemEval (0.815).
-LoCoMo (0.590) still below target — requires conversation-tuned reranker (Phase 3).
+LoCoMo (0.590) still below target — requires Phase 3 (conversation-tuned reranker + multi-query retrieval).
 
 **The key architectural insight:** Representation quality (what you store) matters more than retrieval algorithm (how you search). A5 outperforms A4 by +5.3% aggregate simply by decomposing sessions into atomic facts — no new algorithm, no cloud calls at retrieval time.
 
@@ -193,6 +216,9 @@ python3 -u benchmark_4approaches.py --skip-ollama --skip-cloud
 
 # Full smoke test — all approaches including A3/A4 with HyDE (~$2-3)
 python3 -u benchmark_4approaches.py --skip-ollama
+
+# With Multi-HyDE enabled (experimental, ~$8-10, ~3h runtime)
+python3 -u benchmark_4approaches.py --skip-ollama --multi-hyde
 
 # Different embedding model
 python3 -u benchmark_4approaches.py --embed-model bge   # BGE-small
@@ -209,6 +235,6 @@ python3 -u benchmark_4approaches.py --skip-ollama --n 10000
 | Competitor | Dataset | Their Score | Our Status |
 |---|---|---|---|
 | Letta | LoCoMo | 74.0% | A5r targets this |
-| Zep CE | LongMemEval | 71.2% | Already beaten by A5 (77.0%) |
+| Zep CE | LongMemEval | 71.2% | Already beaten by A5r (81.5%) |
 | Mem0 | LoCoMo | 92.5% | Phase 3 target |
 | Mem0 | LongMemEval | 94.4% | Phase 3 target |

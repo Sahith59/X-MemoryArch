@@ -70,6 +70,8 @@ parser.add_argument("--skip-cloud", action="store_true")
 parser.add_argument("--skip-a5", action="store_true", help="skip approach 5 (extracted facts)")
 parser.add_argument("--embed-model", choices=["minilm", "bge", "gte"], default="gte",
                     help="dense embedding model: gte=thenlper/gte-small (default), minilm=all-MiniLM-L6-v2, bge=BAAI/bge-small-en-v1.5")
+parser.add_argument("--multi-hyde", action="store_true",
+                    help="2.9c: use 3-hypothesis Multi-HyDE for A3, A4, and A5r (3x API calls per query)")
 parser.add_argument("--seed", type=int, default=42)
 args = parser.parse_args()
 random.seed(args.seed)
@@ -525,9 +527,9 @@ def build_corpus(
     db.commit()
     return project_id, gid_to_dbid
 
-# ── HyDE helper ───────────────────────────────────────────────────────────────
+# ── HyDE helpers ─────────────────────────────────────────────────────────────
 def hyde_augment(query: str, llm_fn: Callable, embed_fn: Callable) -> list[float]:
-    """Generate HyDE-augmented query vector. Falls back to plain query vector."""
+    """Single-HyDE: generate 1 hypothetical document, average with query vector."""
     q_vec = np.array(embed_fn(query), dtype=np.float32)
     n = np.linalg.norm(q_vec)
     if n > 0:
@@ -544,6 +546,55 @@ def hyde_augment(query: str, llm_fn: Callable, embed_fn: Callable) -> list[float
         return (combined / cn).tolist() if cn > 0 else q_vec.tolist()
     except Exception:
         return q_vec.tolist()
+
+# Three prompts generate hypothetical documents from different angles —
+# factual, personal/experiential, and completion-style — for richer coverage.
+_MULTI_HYDE_SESSION_PROMPTS = [
+    "Write a memory entry that directly answers this question: {q}",
+    "Write a personal memory about an experience or preference relevant to: {q}",
+    "Write a brief note containing the information needed to answer: {q}",
+]
+_MULTI_HYDE_FACT_PROMPTS = [
+    "Write one short, self-contained fact that answers: {q}",
+    "Write a specific memory fact about a person that answers: {q}",
+    "State in one sentence what a memory would say to answer: {q}",
+]
+
+def multi_hyde_augment(query: str, llm_fn: Callable, embed_fn: Callable) -> list[float]:
+    """Multi-HyDE (2.9c): 3 hypothetical session docs averaged with query vector."""
+    q_vec = np.array(embed_fn(query, is_query=True), dtype=np.float32)
+    qn = np.linalg.norm(q_vec)
+    if qn > 0: q_vec /= qn
+    vecs = [q_vec]
+    for tmpl in _MULTI_HYDE_SESSION_PROMPTS:
+        try:
+            text = llm_fn(tmpl.format(q=query)).strip()
+            h = np.array(embed_fn(text, is_query=False), dtype=np.float32)
+            hn = np.linalg.norm(h)
+            if hn > 0: vecs.append(h / hn)
+        except Exception:
+            pass
+    avg = np.mean(vecs, axis=0)
+    n = np.linalg.norm(avg)
+    return (avg / n).tolist() if n > 0 else q_vec.tolist()
+
+def multi_hyde_fact_augment(query: str, llm_fn: Callable) -> list[float]:
+    """Multi-HyDE for fact corpus (2.9c): 3 hypothetical facts averaged with query vector."""
+    q_vec = np.array(st_embed_one(query, is_query=True), dtype=np.float32)
+    qn = np.linalg.norm(q_vec)
+    if qn > 0: q_vec /= qn
+    vecs = [q_vec]
+    for tmpl in _MULTI_HYDE_FACT_PROMPTS:
+        try:
+            fact = llm_fn(tmpl.format(q=query)).strip()[:200]
+            h = np.array(st_embed_one(fact, is_query=False), dtype=np.float32)
+            hn = np.linalg.norm(h)
+            if hn > 0: vecs.append(h / hn)
+        except Exception:
+            pass
+    avg = np.mean(vecs, axis=0)
+    n = np.linalg.norm(avg)
+    return (avg / n).tolist() if n > 0 else q_vec.tolist()
 
 # ── Approach runners ──────────────────────────────────────────────────────────
 def run_approach_1_rulebased(ds: BenchDataset) -> RunMetrics:
@@ -662,12 +713,14 @@ def run_approach_3_cloud(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
     allowed, _ = __import__('app.services.retrieval.candidate_generators', fromlist=['apply_hard_filters']).apply_hard_filters(
         db=db, project_id=project_id, max_clearance="internal", include_superseded=False)
 
-    m = RunMetrics(f"Cloud LLM ({EMBED_HF_NAME} + Claude Haiku contextual+HyDE)")
+    _hyde_tag = "Multi-HyDE" if args.multi_hyde else "HyDE"
+    m = RunMetrics(f"Cloud LLM ({EMBED_HF_NAME} + Claude Haiku contextual+{_hyde_tag})")
+    _augment_fn = multi_hyde_augment if args.multi_hyde else hyde_augment
     with mock.patch("app.services.semantic_classifier.embed_text",
                     side_effect=lambda t: st_embed_batch([t], is_query=False)[0].tobytes()):
         for qe in ds.queries:
             t0 = time.monotonic()
-            qvec = hyde_augment(qe.question, llm_fn, st_embed_one)
+            qvec = _augment_fn(qe.question, llm_fn, st_embed_one)
             results = vb.search(qvec, 10, project_id, allowed)
             lat = (time.monotonic() - t0) * 1000
             retrieved = [mid for mid, _ in results]
@@ -711,16 +764,15 @@ def run_approach_4_hybrid(ds: BenchDataset, llm_fn: Callable) -> RunMetrics:
         enable_entity_boost=True, enable_graph_expansion=True, enable_2hop=False,
     )
 
-    m = RunMetrics(f"Hybrid Full (BM25+Dense+RRF+Graph+Reranker+MMR + {EMBED_HF_NAME} + Cloud LLM)")
+    _hyde_tag = "Multi-HyDE" if args.multi_hyde else "HyDE"
+    _augment_fn = multi_hyde_augment if args.multi_hyde else hyde_augment
+    m = RunMetrics(f"Hybrid Full (BM25+Dense+RRF+Graph+Reranker+MMR + {EMBED_HF_NAME} + {_hyde_tag})")
     with mock.patch("app.services.semantic_classifier.embed_text",
                     side_effect=lambda t: st_embed_batch([t], is_query=False)[0].tobytes()):
         retrieve(db=db, project_id=project_id, query="warm", vector_backend=vb, config=cfg)  # warm-up
         for qe in ds.queries:
             t0 = time.monotonic()
-            # HyDE-augmented query vector
-            qvec = hyde_augment(qe.question, llm_fn, st_embed_one)
-            # Override embed_query to use our HyDE vector
-            # We patch the embed_text to return our pre-computed vector
+            qvec = _augment_fn(qe.question, llm_fn, st_embed_one)
             hyde_bytes = np.array(qvec, dtype=np.float32).tobytes()
             with mock.patch("app.services.semantic_classifier.embed_text",
                             return_value=hyde_bytes):
@@ -865,10 +917,10 @@ def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
     db.close()
     return m
 
-def run_approach_5r_reranked(ds: BenchDataset) -> RunMetrics:
-    """A5r: Extracted facts + cross-encoder reranker + session-diversity MMR. $0 local.
-    Dense retrieval fetches top-20 candidate facts; cross-encoder re-scores each
-    (query, fact) pair; session-MMR caps 2 facts per session to maximise coverage.
+def run_approach_5r_reranked(ds: BenchDataset, llm_fn: Callable | None = None) -> RunMetrics:
+    """A5r: Extracted facts + cross-encoder reranker + session-diversity MMR.
+    With --multi-hyde: query is augmented via 3 hypothetical facts before retrieval.
+    Without: plain GTE cosine query ($0).
     """
     from app.services.vector_backends.sqlite_exact import SQLiteExactBackend
     from app.services.retrieval.reranker import get_default_reranker
@@ -948,13 +1000,18 @@ def run_approach_5r_reranked(ds: BenchDataset) -> RunMetrics:
     reranker = get_default_reranker()
 
     # ── Step 6: per-query retrieval + rerank + session-MMR ───────────────────
-    m = RunMetrics(f"A5r: Extracted Facts + Reranker + Session-MMR ({EMBED_HF_NAME})")
+    _use_mhyde = args.multi_hyde and llm_fn is not None
+    _hyde_tag = "+Multi-HyDE" if _use_mhyde else ""
+    m = RunMetrics(f"A5r: Facts+Reranker+Session-MMR{_hyde_tag} ({EMBED_HF_NAME})")
 
     for qe in ds.queries:
         t0 = time.monotonic()
 
-        # Dense retrieval: top-20 candidate facts by cosine
-        qvec = st_embed_one(qe.question, is_query=True)
+        # Dense retrieval: top-20 candidate facts (multi-HyDE or plain GTE)
+        if _use_mhyde:
+            qvec = multi_hyde_fact_augment(qe.question, llm_fn)
+        else:
+            qvec = st_embed_one(qe.question, is_query=True)
         top20 = vb.search(qvec, 20, project_id, allowed)
         candidate_ids = [mid for mid, _ in top20]
 
@@ -1041,8 +1098,9 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
         else:
             print("    [skip] A5 unavailable")
 
-        print(f"\n  [A5r] Extracted Facts + Reranker + Session-MMR...")
-        results["extracted_reranked"] = run_approach_5r_reranked(ds)
+        _a5r_tag = " + Multi-HyDE" if args.multi_hyde else ""
+        print(f"\n  [A5r] Extracted Facts + Reranker + Session-MMR{_a5r_tag}...")
+        results["extracted_reranked"] = run_approach_5r_reranked(ds, llm_fn=llm_fn)
         r5r = results["extracted_reranked"]
         if r5r.mrr:
             print(f"    R@5={r5r.r(5):.3f}  MRR@10={r5r.mrr_mean():.3f}  p50={r5r.p(0.5):.0f}ms")
@@ -1058,7 +1116,8 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
 # ── Main ─────────────────────────────────────────────────────────────────────
 def main():
     print("\n" + "="*65)
-    print("X-MemoryArch: 7-Approach × 3-Dataset Benchmark")
+    _mhyde_note = " + Multi-HyDE (2.9c)" if args.multi_hyde else ""
+    print(f"X-MemoryArch: 7-Approach × 3-Dataset Benchmark{_mhyde_note}")
     print(f"Embed model: {EMBED_HF_NAME}")
     print("="*65)
 
