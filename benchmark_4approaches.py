@@ -430,8 +430,22 @@ def _openai_embed_batch(texts: list[str]) -> np.ndarray:
     client = _get_openai_client()
     model  = _ECFG["openai_name"]
     all_vecs: list[np.ndarray] = []
-    for i in range(0, len(texts), 2048):   # OpenAI max batch = 2048
-        resp = client.embeddings.create(model=model, input=texts[i:i+2048])
+    # OpenAI limits: 2048 inputs OR 300K tokens per request.
+    # Use dynamic batching: estimate tokens as chars/4, cap at 240K (80% buffer).
+    TOKEN_LIMIT = 240_000
+    CHARS_PER_TOK = 4
+    idx = 0
+    while idx < len(texts):
+        batch: list[str] = []
+        tok_est = 0
+        while idx < len(texts) and len(batch) < 2048:
+            t = max(1, len(texts[idx]) // CHARS_PER_TOK)
+            if batch and tok_est + t > TOKEN_LIMIT:
+                break
+            batch.append(texts[idx])
+            tok_est += t
+            idx += 1
+        resp = client.embeddings.create(model=model, input=batch)
         ordered = sorted(resp.data, key=lambda d: d.index)
         all_vecs.extend(np.array(d.embedding, dtype=np.float32) for d in ordered)
     mat = np.vstack(all_vecs).astype(np.float32)

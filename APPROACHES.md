@@ -188,6 +188,30 @@ Same pattern for A3 and A4 — Multi-HyDE consistently hurt or was flat across a
 
 ---
 
+## A5(te3l) / A5r(te3l) — OpenAI text-embedding-3-large (2.9d Cloud Path)
+
+**What it does:** Replaces local GTE embeddings with OpenAI `text-embedding-3-large` (3072-dim) for the cloud path. Same A5/A5r pipeline — only the embedding function changes.
+
+**Cost:** ~$0.01–0.05 per 200-query run (embedding API calls per query). Fact extraction remains cached ($0 after first run).
+
+**Key finding: A5 beats A5r when using te3l.** The ms-marco reranker hurts at high embedding quality — 3072-dim OpenAI embeddings already rank correctly; passage-biased reranking introduces noise for 12-17 word atomic facts.
+
+**Results (te3l vs gtel comparison):**
+| Dataset | A4r gtel | A4r te3l | A5 gtel | A5 te3l | A5r gtel | A5r te3l |
+|---|---|---|---|---|---|---|
+| SQuAD | 0.940 | 0.930 | 0.920 | **0.950** | 0.955 | 0.950 |
+| LoCoMo | 0.580 | 0.590 | 0.615 | **0.620** | 0.595 | 0.590 |
+| LongMemEval | 0.725 | 0.750 | 0.770 | **0.800** | 0.825 | 0.810 |
+| **Aggregate R@5** | 0.748 | 0.757 | 0.768 | **0.790** | **0.792** | 0.783 |
+| **Aggregate MRR@10** | 0.649 | 0.651 | 0.656 | 0.686 | 0.692 | **0.694** |
+| **p50 latency** | 43ms | 243ms | 30ms | 216ms | 47ms | 281ms |
+
+**Recommended production paths:**
+- **Local/privacy**: `gtel` + A5r → 0.792 R@5, ~47ms p50 (no API cost)
+- **Cloud quality**: `te3l` + A5 → 0.790 R@5, ~216ms p50 (skip reranker)
+
+---
+
 ## Approach Evolution Summary
 
 ```
@@ -195,33 +219,41 @@ A1   (BM25 keyword)                          → 0.040 aggregate R@5
 A3   (Cloud LLM + HyDE, MiniLM)             → 0.710
 A4   (Full hybrid + HyDE, no reranker)       → 0.715
 A4r  (Full hybrid + reranker, no HyDE)       → 0.728   ← reranker adds +0.013
-A5   (Fact decomposition, GTE)               → 0.768   ← representation >> algorithm
-A5r  (Facts + reranker + session-MMR)        → 0.787   ← reranker on facts adds +0.019
-                                                          LongMemEval 0.815 ✓ beats Zep (71.2%)
-A5r+mh (Facts + reranker + Multi-HyDE)      → 0.778   ← -0.009 vs A5r, Multi-HyDE fails
+A5   (Fact decomposition, GTE-small)         → 0.768   ← representation >> algorithm
+A5r  (Facts + reranker + session-MMR, gtel)  → 0.792   ← reranker on facts adds +0.024
+                                                          LongMemEval 0.825 ✓ beats Zep (71.2%)
+A5r+mh (Facts + reranker + Multi-HyDE)      → 0.778   ← -0.014 vs A5r(gtel), Multi-HyDE fails
+A5   (te3l cloud path, OpenAI 3072-dim)      → 0.790   ← best cloud path; reranker hurts here
 ```
 
-Plan target R@5 ≥ 0.80 hit on SQuAD (0.955) and LongMemEval (0.815).
-LoCoMo (0.590) still below target — requires Phase 3 (conversation-tuned reranker + multi-query retrieval).
+Plan target R@5 ≥ 0.80 hit on SQuAD (0.955), LongMemEval (0.825).
+LoCoMo (0.590-0.620) still below target — requires Phase 3 (conversation-tuned reranker + multi-query retrieval).
 
-**The key architectural insight:** Representation quality (what you store) matters more than retrieval algorithm (how you search). A5 outperforms A4 by +5.3% aggregate simply by decomposing sessions into atomic facts — no new algorithm, no cloud calls at retrieval time.
+**The key architectural insights:**
+1. Representation quality (what you store) matters more than retrieval algorithm. A5 outperforms A4 by +5.3% simply by decomposing sessions into atomic facts.
+2. Reranker benefit depends on embedding quality. With weak embeddings (GTE-small), the ms-marco reranker rescues precision. With strong embeddings (te3l 3072-dim), it introduces noise — skip the reranker in the cloud path.
 
 ---
 
 ## Running the Benchmark
 
 ```bash
-# $0 diagnostic — A1, A4r, A5, A5r (facts already cached)
+# $0 diagnostic — A1, A4r, A5, A5r with gtel (local, facts already cached)
 python3 -u benchmark_4approaches.py --skip-ollama --skip-cloud
+
+# Cloud path — te3l (requires OPENAI_API_KEY, ~$0.05 per 200-query run)
+python3 -u benchmark_4approaches.py --skip-ollama --skip-cloud --embed-model te3l
 
 # Full smoke test — all approaches including A3/A4 with HyDE (~$2-3)
 python3 -u benchmark_4approaches.py --skip-ollama
 
-# With Multi-HyDE enabled (experimental, ~$8-10, ~3h runtime)
+# With Multi-HyDE enabled (experimental, negative result, ~$8-10, ~3h runtime)
 python3 -u benchmark_4approaches.py --skip-ollama --multi-hyde
 
-# Different embedding model
-python3 -u benchmark_4approaches.py --embed-model bge   # BGE-small
+# Specific embedding models
+python3 -u benchmark_4approaches.py --embed-model gtel   # GTE-large (local, recommended)
+python3 -u benchmark_4approaches.py --embed-model te3l   # OpenAI 3072-dim (cloud best)
+python3 -u benchmark_4approaches.py --embed-model bge    # BGE-small
 python3 -u benchmark_4approaches.py --embed-model minilm # original MiniLM
 
 # Full dataset publishable run (~$12)
