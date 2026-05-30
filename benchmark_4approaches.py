@@ -678,6 +678,24 @@ def multi_hyde_fact_augment(query: str, llm_fn: Callable) -> list[float]:
     n = np.linalg.norm(avg)
     return (avg / n).tolist() if n > 0 else q_vec.tolist()
 
+# ── Chunking helper (A4mv) ───────────────────────────────────────────────────
+def chunk_session(content: str, min_chars: int = 50) -> list[str]:
+    """Split a session into paragraph-level chunks.
+    Splits on double-newline boundaries; merges orphaned tiny fragments (< min_chars)
+    into the preceding chunk. Sessions that don't split produce a single chunk,
+    making A4mv identical to plain dense retrieval for short sessions.
+    """
+    raw = [c.strip() for c in content.split('\n\n') if c.strip()]
+    if not raw:
+        return [content.strip() or content]
+    merged: list[str] = []
+    for chunk in raw:
+        if merged and len(merged[-1]) < min_chars:
+            merged[-1] = merged[-1] + " " + chunk
+        else:
+            merged.append(chunk)
+    return merged if merged else [content]
+
 # ── Approach runners ──────────────────────────────────────────────────────────
 def run_approach_1_rulebased(ds: BenchDataset) -> RunMetrics:
     """BM25 FTS5 + entity matching. Zero ML."""
@@ -914,6 +932,70 @@ def run_approach_4r_dense_reranked(ds: BenchDataset) -> RunMetrics:
             m.add(res.selected_memory_ids, gold_db, lat)
 
     db.close()
+    return m
+
+def run_approach_4mv_multivec(ds: BenchDataset) -> RunMetrics:
+    """A4mv: ColBERT-style multi-vector retrieval (2.9d).
+    Each session is split into paragraph chunks; each chunk is embedded independently.
+    Retrieval scores every chunk against the query, then max-pools per session (late
+    interaction). No reranker, no HyDE — $0 diagnostic.
+
+    Unlike A5 (LLM-extracted facts), chunks are purely structural — no inference cost.
+    This is the cheapest path to sub-session granularity.
+    """
+    chunk_emb_cache = CACHE / f"embed_chunks_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+
+    # ── Step 1: build chunk list ──────────────────────────────────────────────
+    all_chunks: list[str] = []
+    all_session_keys: list[str] = []  # parallel: which session each chunk belongs to
+
+    for mem in ds.memories:
+        chunks = chunk_session(mem.content)
+        all_chunks.extend(chunks)
+        all_session_keys.extend([mem.gold_key] * len(chunks))
+
+    n_chunks = len(all_chunks)
+    avg_per_session = n_chunks / len(ds.memories) if ds.memories else 0
+    print(f"    {n_chunks:,} chunks from {len(ds.memories):,} sessions "
+          f"(avg {avg_per_session:.1f} chunks/session)")
+
+    # ── Step 2: embed chunks (cached, separate from plain-session cache) ──────
+    if chunk_emb_cache.exists():
+        chunk_matrix = np.load(str(chunk_emb_cache))
+        print(f"    Loaded chunk embeddings from cache ({chunk_matrix.shape})")
+    else:
+        print(f"    Embedding {n_chunks:,} chunks ({EMBED_HF_NAME})...")
+        chunk_matrix = st_embed_batch(all_chunks, is_query=False)
+        np.save(str(chunk_emb_cache), chunk_matrix)
+
+    # ── Step 3: build session → chunk indices mapping ─────────────────────────
+    # Preserve insertion order so results are deterministic
+    unique_sessions: list[str] = list(dict.fromkeys(all_session_keys))
+    session_to_idxs: dict[str, list[int]] = {}
+    for idx, sk in enumerate(all_session_keys):
+        session_to_idxs.setdefault(sk, []).append(idx)
+
+    # ── Step 4: per-query max-similarity retrieval ────────────────────────────
+    m = RunMetrics(f"A4mv: Multi-Vector ({EMBED_HF_NAME}, max-sim)")
+    for qe in ds.queries:
+        t0 = time.monotonic()
+        qvec = np.array(st_embed_one(qe.question, is_query=True), dtype=np.float32)
+
+        # Score every chunk in one matmul
+        sims = chunk_matrix @ qvec  # shape: (N_chunks,)
+
+        # Max-pool per session: each session's score = highest chunk score
+        session_scores: list[tuple[float, str]] = [
+            (float(sims[idxs].max()), sk)
+            for sk, idxs in session_to_idxs.items()
+        ]
+        session_scores.sort(key=lambda x: x[0], reverse=True)
+        retrieved = [sk for _, sk in session_scores[:10]]
+
+        lat = (time.monotonic() - t0) * 1000
+        # gold_keys and retrieved are both in gold_key namespace — no DB mapping needed
+        m.add(retrieved, qe.gold_keys, lat)
+
     return m
 
 def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
@@ -1153,6 +1235,12 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
     r4r = results["hybrid_reranked"]
     print(f"    R@5={r4r.r(5):.3f}  MRR@10={r4r.mrr_mean():.3f}  p50={r4r.p(0.5):.0f}ms")
 
+    # A4mv: ColBERT-style multi-vector, paragraph chunks, max-sim — $0
+    print(f"\n  [A4mv] Multi-Vector chunks (ColBERT-style max-sim, no HyDE)...")
+    results["multivec"] = run_approach_4mv_multivec(ds)
+    r4mv = results["multivec"]
+    print(f"    R@5={r4mv.r(5):.3f}  MRR@10={r4mv.mrr_mean():.3f}  p50={r4mv.p(0.5):.0f}ms")
+
     if not args.skip_cloud and llm_fn is not None:
         print(f"\n  [A3] Cloud LLM (Claude Haiku contextual+HyDE)...")
         results["cloud"] = run_approach_3_cloud(ds, llm_fn)
@@ -1199,7 +1287,7 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
 def main():
     print("\n" + "="*65)
     _mhyde_note = " + Multi-HyDE (2.9c)" if args.multi_hyde else ""
-    print(f"X-MemoryArch: 7-Approach × 3-Dataset Benchmark{_mhyde_note}")
+    print(f"X-MemoryArch: 8-Approach × 3-Dataset Benchmark{_mhyde_note}")
     _backend_note = f" [{EMBED_BACKEND.upper()}]" if EMBED_BACKEND != "st" else " [local]"
     print(f"Embed model: {EMBED_HF_NAME}{_backend_note}")
     print("="*65)
@@ -1237,6 +1325,7 @@ def main():
         ("cloud",               "A3: Cloud LLM  (Claude Haiku ctx+HyDE)"),
         ("hybrid",              "A4: Hybrid Full (BM25+Dense+Reranker+LLM)"),
         ("hybrid_reranked",     "A4r: Hybrid+Reranker (GTE, no HyDE)"),
+        ("multivec",            "A4mv: Multi-Vector (ColBERT max-sim)"),
         ("extracted",           "A5: Extracted Facts (GTE, no HyDE)"),
         ("extracted_reranked",  "A5r: Facts+Reranker+Session-MMR (GTE)"),
     ]

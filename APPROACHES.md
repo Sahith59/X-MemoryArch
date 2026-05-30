@@ -188,6 +188,43 @@ Same pattern for A3 and A4 — Multi-HyDE consistently hurt or was flat across a
 
 ---
 
+## A4mv — ColBERT-Style Multi-Vector Retrieval (2.9d)
+
+**What it does:** Splits each session into paragraph-level chunks (split on `\n\n`). Each chunk is embedded independently. At retrieval time, all chunks are scored against the query via cosine similarity, then max-pooled per parent session. No reranker, no LLM — purely structural decomposition.
+
+**Pipeline:**
+1. Split session content on `\n\n` boundaries → N chunks (min 50 chars; tiny fragments merged)
+2. Embed all chunks with GTE-large (cached per model)
+3. Query → GTE-large embedding → matmul vs chunk matrix → per-chunk cosine scores
+4. Max-pool per session: `score(session) = max(chunk_scores)`
+5. Rank sessions by max score, return top-10
+
+**Cost:** $0. Latency: ~16ms p50 (3x faster than A4r — no reranker, no BM25, just one matmul).
+
+**Why it works:** For multi-turn sessions (LongMemEval avg 7.7 chunks/session), the relevant answer is often buried in one specific turn. A single session embedding averages the whole session — the signal from the relevant turn is diluted. Max-sim finds it directly.
+
+**Chunks per session by dataset:**
+- SQuAD: 1.0 chunks/session (single paragraphs → identical to A4r)
+- LoCoMo: ~1.0 chunks/session (short conversational turns)
+- LongMemEval: 7.7 chunks/session (multi-turn, multi-paragraph sessions)
+
+**Results (vs A4r):**
+| Dataset | A4r R@5 | A4mv R@5 | Delta | A4r p50 | A4mv p50 |
+|---|---|---|---|---|---|
+| SQuAD | 0.940 | 0.935 | -0.005 | 46ms | 16ms |
+| LoCoMo | 0.580 | **0.625** | +0.045 | 36ms | 14ms |
+| LongMemEval | 0.725 | **0.770** | +0.045 | 41ms | 17ms |
+| **Aggregate R@5** | 0.748 | **0.777** | **+0.029** | | |
+| **Aggregate MRR@10** | **0.650** | 0.617 | -0.033 | | |
+
+**MRR regression explained:** Max-pooling identifies the right session but doesn't guarantee top-1 rank. A4r's cross-encoder reranker explicitly scores (query, session) pairs — sharper precision at rank 1. Fix for Phase 3: A4mv + reranker (late interaction + cross-encoder pass).
+
+**vs A5 (LLM facts):** A4mv R@5=0.777 > A5 R@5=0.767, at $0 extraction cost. But A5 MRR=0.654 > A4mv MRR=0.617 — facts are semantically sharper than structural chunks.
+
+**Position:** Best no-LLM, no-reranker approach. Beats A4r on R@5 at 3x lower latency.
+
+---
+
 ## A5(te3l) / A5r(te3l) — OpenAI text-embedding-3-large (2.9d Cloud Path)
 
 **What it does:** Replaces local GTE embeddings with OpenAI `text-embedding-3-large` (3072-dim) for the cloud path. Same A5/A5r pipeline — only the embedding function changes.
@@ -218,9 +255,10 @@ Same pattern for A3 and A4 — Multi-HyDE consistently hurt or was flat across a
 A1   (BM25 keyword)                          → 0.040 aggregate R@5
 A3   (Cloud LLM + HyDE, MiniLM)             → 0.710
 A4   (Full hybrid + HyDE, no reranker)       → 0.715
-A4r  (Full hybrid + reranker, no HyDE)       → 0.728   ← reranker adds +0.013
+A4r  (Full hybrid + reranker, no HyDE)       → 0.748   ← gtel upgrade adds +0.020
+A4mv (Multi-vector chunks + max-sim)         → 0.777   ← +0.029 vs A4r, $0, 3x faster
 A5   (Fact decomposition, GTE-small)         → 0.768   ← representation >> algorithm
-A5r  (Facts + reranker + session-MMR, gtel)  → 0.792   ← reranker on facts adds +0.024
+A5r  (Facts + reranker + session-MMR, gtel)  → 0.792   ← reranker on facts adds +0.015
                                                           LongMemEval 0.825 ✓ beats Zep (71.2%)
 A5r+mh (Facts + reranker + Multi-HyDE)      → 0.778   ← -0.014 vs A5r(gtel), Multi-HyDE fails
 A5   (te3l cloud path, OpenAI 3072-dim)      → 0.790   ← best cloud path; reranker hurts here
