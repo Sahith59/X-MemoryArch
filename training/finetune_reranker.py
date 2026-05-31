@@ -27,7 +27,8 @@ from pathlib import Path
 parser = argparse.ArgumentParser()
 parser.add_argument("--base-model",  default="cross-encoder/ms-marco-MiniLM-L-6-v2")
 parser.add_argument("--epochs",      type=int,   default=5)
-parser.add_argument("--batch-size",  type=int,   default=16)
+parser.add_argument("--batch-size",  type=int,   default=8,   help="reduce if MPS/GPU OOM on long passages")
+parser.add_argument("--max-length",  type=int,   default=256, help="max token sequence length per example")
 parser.add_argument("--lr",          type=float, default=2e-5)
 parser.add_argument("--warmup-frac", type=float, default=0.1,  help="fraction of steps for LR warmup")
 parser.add_argument("--output",      default=None,             help="output path (default: models/xma-reranker-v1)")
@@ -104,12 +105,12 @@ def main():
     warmup_steps     = int(total_steps * args.warmup_frac)
 
     print(f"\nBase model : {args.base_model}")
-    print(f"Epochs     : {args.epochs}  |  Batch: {args.batch_size}  |  LR: {args.lr}")
+    print(f"Epochs     : {args.epochs}  |  Batch: {args.batch_size}  |  LR: {args.lr}  |  max_length: {args.max_length}")
     print(f"Steps      : {total_steps:,} total  |  {steps_per_epoch:,}/epoch  |  warmup: {warmup_steps:,}")
     print(f"Output     : {OUTPUT_DIR}\n")
 
     # ── Load model ────────────────────────────────────────────────────────────
-    model = CrossEncoder(args.base_model, num_labels=1, device=device)
+    model = CrossEncoder(args.base_model, num_labels=1, device=device, max_length=args.max_length)
 
     # ── Validation evaluator (ranking MRR on query→facts) ─────────────────────
     from sentence_transformers.cross_encoder.evaluation import CrossEncoderRerankingEvaluator

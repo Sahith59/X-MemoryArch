@@ -1062,6 +1062,75 @@ def run_approach_4mv_multivec(ds: BenchDataset) -> RunMetrics:
 
     return m
 
+def run_approach_4mvr_multivec_reranked(ds: BenchDataset) -> RunMetrics:
+    """A4mvr: Multi-Vector max-sim + Cross-Encoder Reranker (Phase 3.3).
+
+    A4mv finds the right session via chunk max-sim but loses rank-1 precision
+    (MRR 0.617 vs A4r 0.650). Adding the cross-encoder on top-40 max-sim candidates
+    fixes precision without any LLM extraction cost.
+
+    Pipeline:
+      1. max-sim over all chunks → ranked session list (same as A4mv)
+      2. top-40 sessions → cross-encoder scores (query, full session content)
+      3. return top-10 by reranker score
+    """
+    chunk_emb_cache = CACHE / f"embed_chunks_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+
+    # ── Build chunk list (same as A4mv) ──────────────────────────────────────
+    all_chunks: list[str] = []
+    all_session_keys: list[str] = []
+    for mem in ds.memories:
+        chunks = chunk_session(mem.content)
+        all_chunks.extend(chunks)
+        all_session_keys.extend([mem.gold_key] * len(chunks))
+
+    n_chunks = len(all_chunks)
+    avg_per_session = n_chunks / len(ds.memories) if ds.memories else 0
+    print(f"    {n_chunks:,} chunks from {len(ds.memories):,} sessions "
+          f"(avg {avg_per_session:.1f} chunks/session)")
+
+    if chunk_emb_cache.exists():
+        chunk_matrix = np.load(str(chunk_emb_cache))
+        print(f"    Loaded chunk embeddings from cache ({chunk_matrix.shape})")
+    else:
+        print(f"    Embedding {n_chunks:,} chunks ({EMBED_HF_NAME})...")
+        chunk_matrix = st_embed_batch(all_chunks, is_query=False)
+        np.save(str(chunk_emb_cache), chunk_matrix)
+
+    session_to_idxs: dict[str, list[int]] = {}
+    for idx, sk in enumerate(all_session_keys):
+        session_to_idxs.setdefault(sk, []).append(idx)
+
+    session_content: dict[str, str] = {mem.gold_key: mem.content for mem in ds.memories}
+
+    from app.services.retrieval.reranker import get_default_reranker
+    reranker = get_default_reranker()
+
+    m = RunMetrics(f"A4mvr: Multi-Vector+Reranker ({EMBED_HF_NAME})")
+    for qe in ds.queries:
+        t0 = time.monotonic()
+        qvec = np.array(st_embed_one(qe.question, is_query=True), dtype=np.float32)
+
+        # Step 1: max-sim → top-40 candidate sessions
+        sims = chunk_matrix @ qvec
+        session_scores: list[tuple[float, str]] = [
+            (float(sims[idxs].max()), sk)
+            for sk, idxs in session_to_idxs.items()
+        ]
+        session_scores.sort(key=lambda x: x[0], reverse=True)
+        top40 = [sk for _, sk in session_scores[:40]]
+
+        # Step 2: cross-encoder reranks (query, full session content)
+        pairs = [(qe.question, session_content[sk]) for sk in top40]
+        scores = reranker._model.predict(pairs)
+        reranked = [sk for _, sk in sorted(zip(scores, top40), reverse=True)]
+
+        lat = (time.monotonic() - t0) * 1000
+        m.add(reranked[:10], qe.gold_keys, lat)
+
+    return m
+
+
 def run_approach_5_extracted_facts(ds: BenchDataset) -> RunMetrics:
     """A5: Dense cosine over LLM-extracted atomic facts. No HyDE — diagnostic baseline."""
     from app.services.vector_backends.sqlite_exact import SQLiteExactBackend
@@ -1520,6 +1589,12 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
     r4mv = results["multivec"]
     print(f"    R@5={r4mv.r(5):.3f}  MRR@10={r4mv.mrr_mean():.3f}  p50={r4mv.p(0.5):.0f}ms")
 
+    # A4mvr: multi-vector max-sim + cross-encoder reranker (Phase 3.3)
+    print(f"\n  [A4mvr] Multi-Vector + Reranker (max-sim → cross-encoder, Phase 3.3)...")
+    results["multivec_reranked"] = run_approach_4mvr_multivec_reranked(ds)
+    r4mvr = results["multivec_reranked"]
+    print(f"    R@5={r4mvr.r(5):.3f}  MRR@10={r4mvr.mrr_mean():.3f}  p50={r4mvr.p(0.5):.0f}ms")
+
     if not args.skip_cloud and llm_fn is not None:
         print(f"\n  [A3] Cloud LLM (Claude Haiku contextual+HyDE)...")
         results["cloud"] = run_approach_3_cloud(ds, llm_fn)
@@ -1592,7 +1667,7 @@ def main():
     print("\n" + "="*65)
     _mhyde_note = " + Multi-HyDE (2.9c)" if args.multi_hyde else ""
     _reranker_note = f" reranker={Path(args.reranker_model).name}" if args.reranker_model != "cross-encoder/ms-marco-MiniLM-L-6-v2" else ""
-    print(f"X-MemoryArch: 10-Approach × 3-Dataset Benchmark{_mhyde_note}{_reranker_note}")
+    print(f"X-MemoryArch: 11-Approach × 3-Dataset Benchmark{_mhyde_note}{_reranker_note}")
     _backend_note = f" [{EMBED_BACKEND.upper()}]" if EMBED_BACKEND != "st" else " [local]"
     print(f"Embed model: {EMBED_HF_NAME}{_backend_note}")
     print("="*65)
@@ -1631,6 +1706,7 @@ def main():
         ("hybrid",              "A4: Hybrid Full (BM25+Dense+Reranker+LLM)"),
         ("hybrid_reranked",     "A4r: Hybrid+Reranker (GTE, no HyDE)"),
         ("multivec",            "A4mv: Multi-Vector (ColBERT max-sim)"),
+        ("multivec_reranked",   "A4mvr: Multi-Vector+Reranker (Phase 3.3)"),
         ("extracted",           "A5: Extracted Facts (GTE, no HyDE)"),
         ("extracted_reranked",  "A5r: Facts+Reranker+Session-MMR (GTE)"),
         ("multiqueryRRF",           "A6: Multi-Query RRF (3 searches, Phase 3.1)"),
