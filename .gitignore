@@ -45,6 +45,8 @@ checkpoints/
 # Training data JSONL — generated from cached datasets, not for git
 training/reranker_train.jsonl
 training/reranker_val.jsonl
+training/triplets_train.jsonl
+training/triplets_val.jsonl
 
 # Phase 3 running notes — internal dev log, not for public repo
 PHASE3_NOTES.md

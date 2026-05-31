@@ -69,11 +69,12 @@ parser.add_argument("--skip-ollama", action="store_true")
 parser.add_argument("--skip-cloud", action="store_true")
 parser.add_argument("--skip-a5", action="store_true", help="skip approach 5 (extracted facts)")
 parser.add_argument("--embed-model",
-                    choices=["minilm", "bge", "gte", "bgel", "gtel", "te3l"],
+                    choices=["minilm", "bge", "gte", "bgel", "gtel", "te3l", "xma_gte_v1"],
                     default="gtel",
                     help=(
                         "gte=thenlper/gte-small (default, local 384-dim), "
-                        "gtel=Alibaba-NLP/gte-large-en-v1.5 (local 1024-dim, best local), "
+                        "gtel=thenlper/gte-large (local 1024-dim, best local), "
+                        "xma_gte_v1=models/gte-large-xma-v1 (Phase 3.4 fine-tuned GTE-large), "
                         "te3l=text-embedding-3-large (OpenAI cloud 3072-dim, best overall), "
                         "bgel=BAAI/bge-large-en-v1.5 (local 1024-dim, passage-biased), "
                         "bge=BAAI/bge-small-en-v1.5, minilm=all-MiniLM-L6-v2"
@@ -122,6 +123,12 @@ _EMBED_CONFIGS = {
         "hf_name": "thenlper/gte-large",  # 1024-dim, same GTE family as gte-small, no custom code
         "cache_tag": "gte_large",
         "query_prefix": "",  # symmetric embeddings, no prefix needed
+    },
+    "xma_gte_v1": {
+        "backend": "st",
+        "hf_name": "models/gte-large-xma-v1",  # Phase 3.4: fine-tuned on LoCoMo+LME conversational facts
+        "cache_tag": "xma_gte_v1",
+        "query_prefix": "",
     },
     "te3l": {
         "backend": "openai",
@@ -1558,6 +1565,145 @@ def run_approach_6r_multiqueryRRF_reranked(ds: BenchDataset) -> RunMetrics | Non
     return m
 
 # ── Evaluate one dataset across all approaches ────────────────────────────────
+def run_approach_7r_bm25_dense_reranked(ds: BenchDataset) -> RunMetrics | None:
+    """A7r: BM25+Dense weighted RRF + cross-encoder reranker (Phase 3.5).
+
+    Weight learning: grid search α ∈ {0.0, 0.1, ..., 1.0} on 80% of eval queries.
+    α=1.0 → pure BM25, α=0.0 → pure Dense, α=0.5 → equal blend.
+    Full evaluation runs with optimal α + cross-encoder reranker.
+
+    Uses same Claude-extracted fact corpus as A5r (must be cached).
+    Bypasses SQLite; uses numpy for fast retrieval.
+    """
+    try:
+        from rank_bm25 import BM25Okapi
+    except ImportError:
+        print("    [skip] rank_bm25 not installed. Run: pip install rank-bm25")
+        return None
+
+    from collections import defaultdict
+    from app.services.retrieval.reranker import get_default_reranker
+
+    facts_cache = CACHE / f"facts_claude_{ds.name.replace(' ', '_')}.json"
+    emb_cache   = CACHE / f"embed_facts_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+
+    if not facts_cache.exists():
+        return RunMetrics("A7r: BM25+Dense+Reranker (no fact cache — run A5 first)")
+    if not emb_cache.exists():
+        return RunMetrics("A7r: BM25+Dense+Reranker (no embed cache — run A5 first)")
+
+    # ── Load fact corpus ───────────────────────────────────────────────────────
+    session_facts = json.loads(facts_cache.read_text())
+
+    fact_texts:    list[str] = []
+    fact_sessions: list[str] = []
+    session_to_fact_idxs: dict[str, list[int]] = defaultdict(list)
+
+    for mem in ds.memories:
+        sid   = mem.gold_key
+        facts = session_facts.get(sid) or [mem.content[:200]]
+        for fact in facts:
+            idx = len(fact_texts)
+            fact_texts.append(fact)
+            fact_sessions.append(sid)
+            session_to_fact_idxs[sid].append(idx)
+
+    fact_embs = np.load(str(emb_cache)).astype(np.float32)  # [N, D]
+    print(f"    {len(fact_texts):,} facts · embeddings {fact_embs.shape}")
+
+    # ── Build BM25 index ───────────────────────────────────────────────────────
+    bm25 = BM25Okapi([t.lower().split() for t in fact_texts])
+
+    reranker = get_default_reranker()
+
+    # ── Pre-compute BM25 top-40 and dense top-40 for all eval queries ─────────
+    # (avoids redundant embedding calls during grid search)
+    all_bm25_top40:  list[np.ndarray] = []
+    all_dense_top40: list[np.ndarray] = []
+
+    print(f"    Pre-computing BM25 + dense scores for {len(ds.queries)} queries...", flush=True)
+    all_qvecs = np.array(
+        [st_embed_one(qe.question, is_query=True) for qe in ds.queries],
+        dtype=np.float32,
+    )  # [Q, D]
+    dense_all = all_qvecs @ fact_embs.T  # [Q, N]
+
+    for qi, qe in enumerate(ds.queries):
+        bm25_scores = np.array(bm25.get_scores(qe.question.lower().split()), dtype=np.float32)
+        all_bm25_top40.append(np.argsort(bm25_scores)[::-1][:40])
+        all_dense_top40.append(np.argsort(dense_all[qi])[::-1][:40])
+
+    # ── Weighted RRF helper ────────────────────────────────────────────────────
+    def weighted_rrf_top40(qi: int, alpha: float) -> list[int]:
+        k = 60
+        rrf: dict[int, float] = {}
+        for rank, idx in enumerate(all_bm25_top40[qi]):
+            rrf[int(idx)] = rrf.get(int(idx), 0.0) + alpha / (k + rank)
+        for rank, idx in enumerate(all_dense_top40[qi]):
+            rrf[int(idx)] = rrf.get(int(idx), 0.0) + (1.0 - alpha) / (k + rank)
+        return sorted(rrf.keys(), key=lambda i: rrf[i], reverse=True)[:40]
+
+    def top_sessions(ranked_idxs: list[int], n: int = 5) -> list[str]:
+        sessions: list[str] = []
+        seen: set[str] = set()
+        for idx in ranked_idxs:
+            s = fact_sessions[idx]
+            if s not in seen:
+                sessions.append(s)
+                seen.add(s)
+            if len(sessions) >= n:
+                break
+        return sessions
+
+    # ── Grid search: find best α on 80% of queries (no reranker for speed) ────
+    n_train = max(1, int(len(ds.queries) * 0.8))
+    print(f"    Grid search α on {n_train} train queries:", end="", flush=True)
+
+    best_alpha, best_r5 = 0.5, -1.0
+    for alpha_10 in range(11):
+        alpha = alpha_10 / 10.0
+        hits  = 0
+        for qi, qe in enumerate(ds.queries[:n_train]):
+            top5 = top_sessions(weighted_rrf_top40(qi, alpha), n=5)
+            if any(s in set(qe.gold_keys) for s in top5):
+                hits += 1
+        r5 = hits / n_train
+        print(f" {alpha:.1f}→{r5:.3f}", end="", flush=True)
+        if r5 > best_r5:
+            best_r5, best_alpha = r5, alpha
+    print(f"\n    Learned α={best_alpha:.1f}  (train R@5={best_r5:.3f})", flush=True)
+
+    # ── Full evaluation: best α + cross-encoder reranker + session MMR ────────
+    m = RunMetrics(f"A7r: BM25+Dense α={best_alpha:.1f}+Reranker (Phase 3.5)")
+
+    for qi, qe in enumerate(ds.queries):
+        t0 = time.monotonic()
+
+        top40_idxs = weighted_rrf_top40(qi, best_alpha)
+
+        # Cross-encoder reranker on (query, fact) pairs
+        pairs  = [(qe.question, fact_texts[i]) for i in top40_idxs]
+        scores = reranker._model.predict(pairs)
+        reranked = [idx for _, idx in sorted(zip(scores, top40_idxs), reverse=True)]
+
+        # Session-diversity MMR: max 2 facts/session → top-10 unique sessions
+        selected: list[str] = []
+        sess_count: dict[str, int] = defaultdict(int)
+        for idx in reranked:
+            s = fact_sessions[idx]
+            if sess_count[s] < 2:
+                if s not in selected:
+                    selected.append(s)
+                sess_count[s] += 1
+            if len(selected) >= 10:
+                break
+
+        lat = (time.monotonic() - t0) * 1000
+        m.add(selected, qe.gold_keys, lat)
+
+    return m
+
+
 def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, RunMetrics]:
     results: dict[str, RunMetrics] = {}
 
@@ -1656,6 +1802,18 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
         else:
             print("    [skip] A6r unavailable")
 
+    # A7r: BM25+Dense weighted RRF + reranker (Phase 3.5) — requires fact cache
+    if facts_cached:
+        print(f"\n  [A7r] BM25+Dense RRF (learned weight) + Reranker (Phase 3.5)...")
+        r7r = run_approach_7r_bm25_dense_reranked(ds)
+        if r7r is not None:
+            results["bm25_dense_reranked"] = r7r
+            print(f"    R@5={r7r.r(5):.3f}  MRR@10={r7r.mrr_mean():.3f}  p50={r7r.p(0.5):.0f}ms")
+        else:
+            print("    [skip] A7r unavailable (install rank-bm25)")
+    else:
+        print("  [A7r] BM25+Dense+Reranker skipped (no fact cache — run A5 first)")
+
     return results
 
 # ── Main ─────────────────────────────────────────────────────────────────────
@@ -1711,6 +1869,7 @@ def main():
         ("extracted_reranked",  "A5r: Facts+Reranker+Session-MMR (GTE)"),
         ("multiqueryRRF",           "A6: Multi-Query RRF (3 searches, Phase 3.1)"),
         ("multiqueryRRF_reranked",  "A6r: Multi-Query RRF + Reranker (Phase 3.1)"),
+        ("bm25_dense_reranked",     "A7r: BM25+Dense RRF+Reranker (Phase 3.5)"),
     ]
 
     print("\n\n" + "="*90)
