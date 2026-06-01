@@ -1565,6 +1565,132 @@ def run_approach_6r_multiqueryRRF_reranked(ds: BenchDataset) -> RunMetrics | Non
     return m
 
 # ── Evaluate one dataset across all approaches ────────────────────────────────
+def run_approach_8r_graph_augmented(ds: BenchDataset) -> RunMetrics | None:
+    """A8r: Entity knowledge graph walk + A4mvr max-sim + cross-encoder reranker (Phase 3.7).
+
+    Pipeline:
+      1. Build in-memory entity graph from corpus (one-time per dataset, O(N×E²))
+      2. For each query:
+         a. A4mvr: embed query → chunk max-sim per session → top-40 sessions (same as A4mvr)
+         b. Graph walk: extract query entities → 2-hop BFS → candidate session IDs
+         c. RRF merge: combine A4mvr scores + graph scores (k=60)
+         d. Cross-encoder reranker on top-40 merged candidates
+         e. Session-diversity cap → top-10
+
+    The graph adds complementary candidates for entity-chain queries that chunk
+    similarity alone misses (e.g. "what job does she have?" when job info is in
+    a different session than the person's name).
+
+    $0 cost: no API calls. Pure local NER + numpy + cross-encoder.
+    """
+    from collections import defaultdict
+    from app.services.retrieval.reranker import get_default_reranker
+    from app.services.knowledge_graph.entity_ner import extract_entities
+
+    chunk_emb_cache = CACHE / f"embed_chunks_{EMBED_TAG}_{ds.name.replace(' ', '_')}.npy"
+
+    # ── Build chunk index (same as A4mvr) ────────────────────────────────────
+    all_chunks:      list[str] = []
+    all_session_keys: list[str] = []
+    for mem in ds.memories:
+        chunks = chunk_session(mem.content)
+        all_chunks.extend(chunks)
+        all_session_keys.extend([mem.gold_key] * len(chunks))
+
+    if chunk_emb_cache.exists():
+        chunk_matrix = np.load(str(chunk_emb_cache))
+    else:
+        print(f"    Embedding {len(all_chunks):,} chunks ({EMBED_HF_NAME})...")
+        chunk_matrix = st_embed_batch(all_chunks, is_query=False)
+        np.save(str(chunk_emb_cache), chunk_matrix)
+
+    session_to_chunk_idxs: dict[str, list[int]] = defaultdict(list)
+    for idx, sk in enumerate(all_session_keys):
+        session_to_chunk_idxs[sk].append(idx)
+
+    session_content = {mem.gold_key: mem.content for mem in ds.memories}
+
+    # ── Build entity graph (in-memory, built once per dataset call) ───────────
+    print(f"    Building entity graph for {len(ds.memories):,} sessions...", end="", flush=True)
+    # entity_to_sessions: normalized entity label → set of session gold_keys
+    entity_to_sessions: dict[str, set[str]] = defaultdict(set)
+    # session_to_entities: gold_key → set of normalized entity labels
+    session_to_entities: dict[str, set[str]] = defaultdict(set)
+
+    for mem in ds.memories:
+        text = mem.content or mem.search_text or ""
+        entities = extract_entities(text)
+        for ent in entities:
+            entity_to_sessions[ent.normalized].add(mem.gold_key)
+            session_to_entities[mem.gold_key].add(ent.normalized)
+
+    total_entity_links = sum(len(v) for v in entity_to_sessions.values())
+    print(f" {len(entity_to_sessions):,} entities · {total_entity_links:,} links")
+
+    reranker = get_default_reranker()
+    m = RunMetrics(f"A8r: Graph+MultiVec+Reranker ({EMBED_HF_NAME})")
+
+    K_RRF  = 60
+    TOP_N  = 40   # candidates fed to cross-encoder
+
+    for qe in ds.queries:
+        t0 = time.monotonic()
+
+        # ── A4mvr leg: chunk max-sim per session ──────────────────────────────
+        qvec = np.array(st_embed_one(qe.question, is_query=True), dtype=np.float32)
+        sims  = chunk_matrix @ qvec
+        session_maxsim: dict[str, float] = {}
+        for sk, idxs in session_to_chunk_idxs.items():
+            session_maxsim[sk] = float(sims[idxs].max())
+        sorted_a4mvr = sorted(session_maxsim.items(), key=lambda x: x[1], reverse=True)
+
+        # RRF score from A4mvr (dense)
+        rrf_scores: dict[str, float] = {}
+        for rank, (sk, _) in enumerate(sorted_a4mvr[:TOP_N]):
+            rrf_scores[sk] = rrf_scores.get(sk, 0.0) + 1.0 / (K_RRF + rank)
+
+        # ── Graph walk leg: entity-chain candidates ───────────────────────────
+        query_entities = extract_entities(qe.question)
+        graph_sessions: dict[str, float] = {}  # session_id → graph relevance score
+
+        for ent in query_entities:
+            norm = ent.normalized
+
+            # Hop 0: sessions directly containing this entity
+            direct_sessions = entity_to_sessions.get(norm, set())
+            for sk in direct_sessions:
+                graph_sessions[sk] = max(graph_sessions.get(sk, 0.0), 1.0)
+
+            # Hop 1: sessions that share entities with hop-0 sessions
+            for h0_sk in list(direct_sessions):
+                for co_ent in session_to_entities.get(h0_sk, set()):
+                    if co_ent == norm:
+                        continue
+                    for h1_sk in entity_to_sessions.get(co_ent, set()):
+                        if h1_sk not in direct_sessions:
+                            existing = graph_sessions.get(h1_sk, 0.0)
+                            graph_sessions[h1_sk] = max(existing, 0.5)
+
+        # Add graph-walk RRF scores
+        sorted_graph = sorted(graph_sessions.items(), key=lambda x: x[1], reverse=True)
+        for rank, (sk, _) in enumerate(sorted_graph[:TOP_N]):
+            rrf_scores[sk] = rrf_scores.get(sk, 0.0) + 0.5 / (K_RRF + rank)
+            # Weight graph leg at 0.5× dense to avoid over-relying on entity chains
+
+        # ── Merge + cross-encoder reranker ────────────────────────────────────
+        top_sessions = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)[:TOP_N]
+        top_sks = [sk for sk, _ in top_sessions]
+
+        pairs  = [(qe.question, session_content[sk]) for sk in top_sks]
+        scores = reranker._model.predict(pairs)
+        reranked = [sk for _, sk in sorted(zip(scores, top_sks), reverse=True)]
+
+        lat = (time.monotonic() - t0) * 1000
+        m.add(reranked[:10], qe.gold_keys, lat)
+
+    return m
+
+
 def run_approach_7r_bm25_dense_reranked(ds: BenchDataset) -> RunMetrics | None:
     """A7r: BM25+Dense weighted RRF + cross-encoder reranker (Phase 3.5).
 
@@ -1814,6 +1940,15 @@ def evaluate_dataset(ds: BenchDataset, llm_fn: Callable | None) -> dict[str, Run
     else:
         print("  [A7r] BM25+Dense+Reranker skipped (no fact cache — run A5 first)")
 
+    # A8r: Graph-Augmented Multi-Vector + Reranker (Phase 3.7) — always runs ($0)
+    print(f"\n  [A8r] Graph-Augmented A4mvr (entity graph walk + reranker, Phase 3.7)...")
+    r8r = run_approach_8r_graph_augmented(ds)
+    if r8r is not None:
+        results["graph_augmented"] = r8r
+        print(f"    R@5={r8r.r(5):.3f}  MRR@10={r8r.mrr_mean():.3f}  p50={r8r.p(0.5):.0f}ms")
+    else:
+        print("    [skip] A8r unavailable")
+
     return results
 
 # ── Main ─────────────────────────────────────────────────────────────────────
@@ -1870,6 +2005,7 @@ def main():
         ("multiqueryRRF",           "A6: Multi-Query RRF (3 searches, Phase 3.1)"),
         ("multiqueryRRF_reranked",  "A6r: Multi-Query RRF + Reranker (Phase 3.1)"),
         ("bm25_dense_reranked",     "A7r: BM25+Dense RRF+Reranker (Phase 3.5)"),
+        ("graph_augmented",         "A8r: Graph+MultiVec+Reranker (Phase 3.7)"),
     ]
 
     print("\n\n" + "="*90)
