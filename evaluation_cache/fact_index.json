@@ -1,0 +1,4952 @@
+[
+  {
+    "fact": "FlowDesk is a B2B SaaS product targeting 5-20 person law firms as of 2026-02-24.",
+    "session_id": "flowdesk_founder_01",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 01: Early product discovery for solo lawyers",
+    "date_range": [
+      "2026-01-13",
+      "2026-05-10"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya is concerned that FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_01",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 01: Early product discovery for solo lawyers",
+    "date_range": [
+      "2026-01-13",
+      "2026-05-10"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi reports that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_01",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 01: Early product discovery for solo lawyers",
+    "date_range": [
+      "2026-01-13",
+      "2026-05-10"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final UI scope decision by Friday 2026-02-28 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_01",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 01: Early product discovery for solo lawyers",
+    "date_range": [
+      "2026-01-13",
+      "2026-05-10"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The original target customer segment was solo lawyers but the team shifted to 5-20 person firms to reduce sales friction and engineering complexity.",
+    "session_id": "flowdesk_founder_01",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 01: Early product discovery for solo lawyers",
+    "date_range": [
+      "2026-01-13",
+      "2026-05-10"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Key decision rule: document all FlowDesk target market changes with dates and reasons to prevent the team from reopening the same debate without new data.",
+    "session_id": "flowdesk_founder_01",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 01: Early product discovery for solo lawyers",
+    "date_range": [
+      "2026-01-13",
+      "2026-05-10"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Postgres chosen as the database for FlowDesk.",
+    "session_id": "flowdesk_founder_02",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 02: Database debate: Postgres vs MongoDB",
+    "date_range": [
+      "2026-01-18",
+      "2026-05-15"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concerns that too many workflows are being built.",
+    "session_id": "flowdesk_founder_02",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 02: Database debate: Postgres vs MongoDB",
+    "date_range": [
+      "2026-01-18",
+      "2026-05-15"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects do not understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_02",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 02: Database debate: Postgres vs MongoDB",
+    "date_range": [
+      "2026-01-18",
+      "2026-05-15"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya is waiting on final UI scope before completing dashboard screens.",
+    "session_id": "flowdesk_founder_02",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 02: Database debate: Postgres vs MongoDB",
+    "date_range": [
+      "2026-01-18",
+      "2026-05-15"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya requested a final database decision by Friday 2026-03-01 to avoid wasting the frontend sprint.",
+    "session_id": "flowdesk_founder_02",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 02: Database debate: Postgres vs MongoDB",
+    "date_range": [
+      "2026-01-18",
+      "2026-05-15"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The team should document the Postgres vs MongoDB decision with trade-offs and reversal conditions to prevent reopening the debate without new data.",
+    "session_id": "flowdesk_founder_02",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 02: Database debate: Postgres vs MongoDB",
+    "date_range": [
+      "2026-01-18",
+      "2026-05-15"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting Clerk for MVP authentication instead of Auth0 or rolling custom auth.",
+    "session_id": "flowdesk_founder_03",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 03: Auth debate: Clerk vs Auth0 vs custom auth",
+    "date_range": [
+      "2026-01-23",
+      "2026-05-20"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final authentication decision by Friday 2026-03-06 to complete dashboard UI screens.",
+    "session_id": "flowdesk_founder_03",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 03: Auth debate: Clerk vs Auth0 vs custom auth",
+    "date_range": [
+      "2026-01-23",
+      "2026-05-20"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya has flagged that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_03",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 03: Auth debate: Clerk vs Auth0 vs custom auth",
+    "date_range": [
+      "2026-01-23",
+      "2026-05-20"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi reports that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_03",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 03: Auth debate: Clerk vs Auth0 vs custom auth",
+    "date_range": [
+      "2026-01-23",
+      "2026-05-20"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is selling to small law firms as the target B2B SaaS customer segment.",
+    "session_id": "flowdesk_founder_03",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 03: Auth debate: Clerk vs Auth0 vs custom auth",
+    "date_range": [
+      "2026-01-23",
+      "2026-05-20"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The authentication decision should not be reopened without new data to prevent wasting the frontend sprint.",
+    "session_id": "flowdesk_founder_03",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 03: Auth debate: Clerk vs Auth0 vs custom auth",
+    "date_range": [
+      "2026-01-23",
+      "2026-05-20"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's pricing model decision is hybrid seat-based with usage add-ons.",
+    "session_id": "flowdesk_founder_04",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 04: Pricing model debate",
+    "date_range": [
+      "2026-01-28",
+      "2026-05-25"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concerns that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_04",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 04: Pricing model debate",
+    "date_range": [
+      "2026-01-28",
+      "2026-05-25"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi indicated that prospects don't understand the value proposition.",
+    "session_id": "flowdesk_founder_04",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 04: Pricing model debate",
+    "date_range": [
+      "2026-01-28",
+      "2026-05-25"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needed final UI scope clarification before Friday to complete dashboard screens.",
+    "session_id": "flowdesk_founder_04",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 04: Pricing model debate",
+    "date_range": [
+      "2026-01-28",
+      "2026-05-25"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The team should document pricing decisions with dated reasons to prevent reopening debates without new data.",
+    "session_id": "flowdesk_founder_04",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 04: Pricing model debate",
+    "date_range": [
+      "2026-01-28",
+      "2026-05-25"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk targets small law firms as the customer segment.",
+    "session_id": "flowdesk_founder_04",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 04: Pricing model debate",
+    "date_range": [
+      "2026-01-28",
+      "2026-05-25"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting poor discovery calls as the core problem to solve.",
+    "session_id": "flowdesk_founder_05",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 05: Ravi\u2019s first sales process struggles",
+    "date_range": [
+      "2026-02-02",
+      "2026-05-30"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya says the team is building too many workflows.",
+    "session_id": "flowdesk_founder_05",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 05: Ravi\u2019s first sales process struggles",
+    "date_range": [
+      "2026-02-02",
+      "2026-05-30"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi reports that prospects don't understand the product's value.",
+    "session_id": "flowdesk_founder_05",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 05: Ravi\u2019s first sales process struggles",
+    "date_range": [
+      "2026-02-02",
+      "2026-05-30"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final UI scope before Friday to complete dashboard screens.",
+    "session_id": "flowdesk_founder_05",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 05: Ravi\u2019s first sales process struggles",
+    "date_range": [
+      "2026-02-02",
+      "2026-05-30"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The decided direction is to implement a structured discovery script.",
+    "session_id": "flowdesk_founder_05",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 05: Ravi\u2019s first sales process struggles",
+    "date_range": [
+      "2026-02-02",
+      "2026-05-30"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's customer segment is small law firms using B2B SaaS.",
+    "session_id": "flowdesk_founder_05",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 05: Ravi\u2019s first sales process struggles",
+    "date_range": [
+      "2026-02-02",
+      "2026-05-30"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's current decision is to freeze new features and hire a backend contractor later.",
+    "session_id": "flowdesk_founder_06",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 06: Maya overloaded and co-founder strain",
+    "date_range": [
+      "2026-02-07",
+      "2026-06-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs a final answer on UI scope before Friday 2026-03-21 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_06",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 06: Maya overloaded and co-founder strain",
+    "date_range": [
+      "2026-02-07",
+      "2026-06-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya says FlowDesk is building too many workflows, Ravi says prospects don't understand the value, and Priya is waiting on final UI scope.",
+    "session_id": "flowdesk_founder_06",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 06: Maya overloaded and co-founder strain",
+    "date_range": [
+      "2026-02-07",
+      "2026-06-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk has $180K runway remaining and FirstCheck committed $250K in funding.",
+    "session_id": "flowdesk_founder_06",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 06: Maya overloaded and co-founder strain",
+    "date_range": [
+      "2026-02-07",
+      "2026-06-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The key people are Maya (engineering load), Ravi (sales learning), and Priya (frontend clarity).",
+    "session_id": "flowdesk_founder_06",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 06: Maya overloaded and co-founder strain",
+    "date_range": [
+      "2026-02-07",
+      "2026-06-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The decision to freeze new features and hire backend contractor later should not drift without a dated reason documented.",
+    "session_id": "flowdesk_founder_06",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 06: Maya overloaded and co-founder strain",
+    "date_range": [
+      "2026-02-07",
+      "2026-06-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's target ICP is firms with 5-20 people, not solo lawyers.",
+    "session_id": "flowdesk_founder_07",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 07: Pivot after Daniel Chen call",
+    "date_range": [
+      "2026-02-12",
+      "2026-06-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Daniel Chen advised that the buyer is the managing partner or firm admin, not the solo attorney.",
+    "session_id": "flowdesk_founder_07",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 07: Pivot after Daniel Chen call",
+    "date_range": [
+      "2026-02-12",
+      "2026-06-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya is concerned that FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_07",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 07: Pivot after Daniel Chen call",
+    "date_range": [
+      "2026-02-12",
+      "2026-06-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi reports that prospects don't understand the value proposition.",
+    "session_id": "flowdesk_founder_07",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 07: Pivot after Daniel Chen call",
+    "date_range": [
+      "2026-02-12",
+      "2026-06-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final UI scope clarification before Friday to complete the dashboard screens.",
+    "session_id": "flowdesk_founder_07",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 07: Pivot after Daniel Chen call",
+    "date_range": [
+      "2026-02-12",
+      "2026-06-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The team should not reopen the ICP decision without new data to support a change.",
+    "session_id": "flowdesk_founder_07",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 07: Pivot after Daniel Chen call",
+    "date_range": [
+      "2026-02-12",
+      "2026-06-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting $250K committed funding from FirstCheck Ventures.",
+    "session_id": "flowdesk_founder_08",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 08: Runway and seed round planning",
+    "date_range": [
+      "2026-02-17",
+      "2026-06-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya identified that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_08",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 08: Runway and seed round planning",
+    "date_range": [
+      "2026-02-17",
+      "2026-06-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand the product's value proposition.",
+    "session_id": "flowdesk_founder_08",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 08: Runway and seed round planning",
+    "date_range": [
+      "2026-02-17",
+      "2026-06-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final UI scope clarification before Friday 2026-03-31 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_08",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 08: Runway and seed round planning",
+    "date_range": [
+      "2026-02-17",
+      "2026-06-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's customer segment is small law firms in the B2B SaaS space.",
+    "session_id": "flowdesk_founder_08",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 08: Runway and seed round planning",
+    "date_range": [
+      "2026-02-17",
+      "2026-06-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The team has $180K runway remaining as of 2026-02-17.",
+    "session_id": "flowdesk_founder_08",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 08: Runway and seed round planning",
+    "date_range": [
+      "2026-02-17",
+      "2026-06-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's matter timeline prototype was due April 5, 2026.",
+    "session_id": "flowdesk_founder_09",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 09: Priya frontend scope and deadlines",
+    "date_range": [
+      "2026-02-22",
+      "2026-06-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya required final dashboard UI scope decisions before Friday, April 5, 2026 to complete the frontend sprint.",
+    "session_id": "flowdesk_founder_09",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 09: Priya frontend scope and deadlines",
+    "date_range": [
+      "2026-02-22",
+      "2026-06-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya flagged that the team was building too many workflows for FlowDesk.",
+    "session_id": "flowdesk_founder_09",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 09: Priya frontend scope and deadlines",
+    "date_range": [
+      "2026-02-22",
+      "2026-06-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects do not understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_09",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 09: Priya frontend scope and deadlines",
+    "date_range": [
+      "2026-02-22",
+      "2026-06-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk targets small law firms as its customer segment.",
+    "session_id": "flowdesk_founder_09",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 09: Priya frontend scope and deadlines",
+    "date_range": [
+      "2026-02-22",
+      "2026-06-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The core unresolved tension on February 22, 2026 was dashboard UX clarity and specificity.",
+    "session_id": "flowdesk_founder_09",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 09: Priya frontend scope and deadlines",
+    "date_range": [
+      "2026-02-22",
+      "2026-06-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's core MVP features are intake, matter timeline, reminders, and document checklist.",
+    "session_id": "flowdesk_founder_10",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 10: MVP scope cut",
+    "date_range": [
+      "2026-02-27",
+      "2026-06-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya is concerned that FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_10",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 10: MVP scope cut",
+    "date_range": [
+      "2026-02-27",
+      "2026-06-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi reports that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_10",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 10: MVP scope cut",
+    "date_range": [
+      "2026-02-27",
+      "2026-06-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needed final UI scope confirmation by Friday 2026-04-10 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_10",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 10: MVP scope cut",
+    "date_range": [
+      "2026-02-27",
+      "2026-06-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The core tension in FlowDesk's scope is balancing feature count against sales clarity and engineering complexity.",
+    "session_id": "flowdesk_founder_10",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 10: MVP scope cut",
+    "date_range": [
+      "2026-02-27",
+      "2026-06-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Key stakeholders for FlowDesk decisions are Maya (engineering load), Ravi (sales learning), and Priya (frontend implementation).",
+    "session_id": "flowdesk_founder_10",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 10: MVP scope cut",
+    "date_range": [
+      "2026-02-27",
+      "2026-06-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's onboarding approach is guided import plus 30 minute concierge onboarding.",
+    "session_id": "flowdesk_founder_11",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 11: Customer onboarding workflow",
+    "date_range": [
+      "2026-03-04",
+      "2026-06-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya is concerned that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_11",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 11: Customer onboarding workflow",
+    "date_range": [
+      "2026-03-04",
+      "2026-06-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi reports that prospects don't understand the value proposition.",
+    "session_id": "flowdesk_founder_11",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 11: Customer onboarding workflow",
+    "date_range": [
+      "2026-03-04",
+      "2026-06-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needed final UI scope confirmation before Friday 2026-04-19 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_11",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 11: Customer onboarding workflow",
+    "date_range": [
+      "2026-03-04",
+      "2026-06-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The decision to document is whether guided import plus concierge onboarding is reversible or irreversible without new data.",
+    "session_id": "flowdesk_founder_11",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 11: Customer onboarding workflow",
+    "date_range": [
+      "2026-03-04",
+      "2026-06-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Do not reopen the onboarding flow decision without a dated reason and new evidence.",
+    "session_id": "flowdesk_founder_11",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 11: Customer onboarding workflow",
+    "date_range": [
+      "2026-03-04",
+      "2026-06-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting SOC2 compliance as a core positioning concern.",
+    "session_id": "flowdesk_founder_12",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 12: Security posture for law firms",
+    "date_range": [
+      "2026-03-09",
+      "2026-07-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The decided direction is to build a security page, encryption feature, and audit log roadmap.",
+    "session_id": "flowdesk_founder_12",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 12: Security posture for law firms",
+    "date_range": [
+      "2026-03-09",
+      "2026-07-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needed final UI scope confirmation by Friday 2026-04-20 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_12",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 12: Security posture for law firms",
+    "date_range": [
+      "2026-03-09",
+      "2026-07-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya is concerned about building too many workflows and Ravi reports prospects don't understand the value proposition.",
+    "session_id": "flowdesk_founder_12",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 12: Security posture for law firms",
+    "date_range": [
+      "2026-03-09",
+      "2026-07-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The team should document decisions with dated reasons and mark old versions as superseded rather than deleting them.",
+    "session_id": "flowdesk_founder_12",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 12: Security posture for law firms",
+    "date_range": [
+      "2026-03-09",
+      "2026-07-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk had $180K runway remaining and received a $250K commitment from FirstCheck during an active seed raise.",
+    "session_id": "flowdesk_founder_12",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 12: Security posture for law firms",
+    "date_range": [
+      "2026-03-09",
+      "2026-07-04"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting small law firms as the customer segment.",
+    "session_id": "flowdesk_founder_13",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 13: Seed deck and sales story",
+    "date_range": [
+      "2026-03-14",
+      "2026-07-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The core pitch decision is to focus on recovering billable time and reducing missed deadlines.",
+    "session_id": "flowdesk_founder_13",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 13: Seed deck and sales story",
+    "date_range": [
+      "2026-03-14",
+      "2026-07-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concerns that FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_13",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 13: Seed deck and sales story",
+    "date_range": [
+      "2026-03-14",
+      "2026-07-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand the value proposition.",
+    "session_id": "flowdesk_founder_13",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 13: Seed deck and sales story",
+    "date_range": [
+      "2026-03-14",
+      "2026-07-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needed final UI scope confirmed before Friday 2026-04-25 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_13",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 13: Seed deck and sales story",
+    "date_range": [
+      "2026-03-14",
+      "2026-07-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FirstCheck committed $250K in funding for FlowDesk.",
+    "session_id": "flowdesk_founder_13",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 13: Seed deck and sales story",
+    "date_range": [
+      "2026-03-14",
+      "2026-07-09"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting 8 pilot firms by May 20, 2026.",
+    "session_id": "flowdesk_founder_14",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 14: Beta launch planning",
+    "date_range": [
+      "2026-03-19",
+      "2026-07-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concern that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_14",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 14: Beta launch planning",
+    "date_range": [
+      "2026-03-19",
+      "2026-07-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_14",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 14: Beta launch planning",
+    "date_range": [
+      "2026-03-19",
+      "2026-07-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needed final UI scope decision by Friday 2026-05-03 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_14",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 14: Beta launch planning",
+    "date_range": [
+      "2026-03-19",
+      "2026-07-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The customer segment (small law firms) and data model are irreversible decisions for FlowDesk.",
+    "session_id": "flowdesk_founder_14",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 14: Beta launch planning",
+    "date_range": [
+      "2026-03-19",
+      "2026-07-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Key stakeholders are Maya (engineering), Ravi (sales), and Priya (frontend/design).",
+    "session_id": "flowdesk_founder_14",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 14: Beta launch planning",
+    "date_range": [
+      "2026-03-19",
+      "2026-07-14"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting users not returning as the core problem to solve.",
+    "session_id": "flowdesk_founder_15",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 15: Churn and activation",
+    "date_range": [
+      "2026-03-24",
+      "2026-07-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya believes FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_15",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 15: Churn and activation",
+    "date_range": [
+      "2026-03-24",
+      "2026-07-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi says prospects don't understand the value proposition.",
+    "session_id": "flowdesk_founder_15",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 15: Churn and activation",
+    "date_range": [
+      "2026-03-24",
+      "2026-07-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final UI scope decided before Friday 2026-05-05 to finish dashboard screens.",
+    "session_id": "flowdesk_founder_15",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 15: Churn and activation",
+    "date_range": [
+      "2026-03-24",
+      "2026-07-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The working decision for FlowDesk is to build daily reminder workflow and first matter checklist.",
+    "session_id": "flowdesk_founder_15",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 15: Churn and activation",
+    "date_range": [
+      "2026-03-24",
+      "2026-07-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk had $180K runway remaining and received a $250K commitment from FirstCheck.",
+    "session_id": "flowdesk_founder_15",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 15: Churn and activation",
+    "date_range": [
+      "2026-03-24",
+      "2026-07-19"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting co-founder tension as the core problem to solve.",
+    "session_id": "flowdesk_founder_16",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 16: Repairing Maya relationship",
+    "date_range": [
+      "2026-03-29",
+      "2026-07-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya believes FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_16",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 16: Repairing Maya relationship",
+    "date_range": [
+      "2026-03-29",
+      "2026-07-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi reports that prospects don't understand the product's value.",
+    "session_id": "flowdesk_founder_16",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 16: Repairing Maya relationship",
+    "date_range": [
+      "2026-03-29",
+      "2026-07-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya requested a final answer by Friday 2026-05-10 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_16",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 16: Repairing Maya relationship",
+    "date_range": [
+      "2026-03-29",
+      "2026-07-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The decided direction is to implement weekly founder reset and establish clearer hiring budget.",
+    "session_id": "flowdesk_founder_16",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 16: Repairing Maya relationship",
+    "date_range": [
+      "2026-03-29",
+      "2026-07-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk has $180K runway remaining and a committed $250K investment from FirstCheck.",
+    "session_id": "flowdesk_founder_16",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 16: Repairing Maya relationship",
+    "date_range": [
+      "2026-03-29",
+      "2026-07-24"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's pricing decision is $49/user/month with a minimum of 5 seats.",
+    "session_id": "flowdesk_founder_17",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 17: Pricing revision after pilots",
+    "date_range": [
+      "2026-04-03",
+      "2026-07-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya has flagged that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_17",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 17: Pricing revision after pilots",
+    "date_range": [
+      "2026-04-03",
+      "2026-07-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand the product value proposition.",
+    "session_id": "flowdesk_founder_17",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 17: Pricing revision after pilots",
+    "date_range": [
+      "2026-04-03",
+      "2026-07-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final UI scope confirmation before Friday 2026-05-15 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_17",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 17: Pricing revision after pilots",
+    "date_range": [
+      "2026-04-03",
+      "2026-07-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The core problem to solve first is usage pricing confusion, not workflow breadth.",
+    "session_id": "flowdesk_founder_17",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 17: Pricing revision after pilots",
+    "date_range": [
+      "2026-04-03",
+      "2026-07-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk has $180K runway remaining with FirstCheck committed at $250K and an active seed raise.",
+    "session_id": "flowdesk_founder_17",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 17: Pricing revision after pilots",
+    "date_range": [
+      "2026-04-03",
+      "2026-07-29"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting a seed raise with unclear specifics as of April 8, 2026.",
+    "session_id": "flowdesk_founder_18",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 18: Investor update drafting",
+    "date_range": [
+      "2026-04-08",
+      "2026-08-03"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concerns that FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_18",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 18: Investor update drafting",
+    "date_range": [
+      "2026-04-08",
+      "2026-08-03"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_18",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 18: Investor update drafting",
+    "date_range": [
+      "2026-04-08",
+      "2026-08-03"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya requested a final UI scope decision by Friday, May 22, 2026 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_18",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 18: Investor update drafting",
+    "date_range": [
+      "2026-04-08",
+      "2026-08-03"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The working strategic direction for FlowDesk is pipeline, pilots, and revenue milestones.",
+    "session_id": "flowdesk_founder_18",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 18: Investor update drafting",
+    "date_range": [
+      "2026-04-08",
+      "2026-08-03"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk has $180K runway remaining and FirstCheck committed $250K in funding.",
+    "session_id": "flowdesk_founder_18",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 18: Investor update drafting",
+    "date_range": [
+      "2026-04-08",
+      "2026-08-03"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting a fast MVP while accumulating technical debt.",
+    "session_id": "flowdesk_founder_19",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 19: Technical debt review",
+    "date_range": [
+      "2026-04-13",
+      "2026-08-08"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concerns that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_19",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 19: Technical debt review",
+    "date_range": [
+      "2026-04-13",
+      "2026-08-08"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_19",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 19: Technical debt review",
+    "date_range": [
+      "2026-04-13",
+      "2026-08-08"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya is waiting on final UI scope to complete dashboard screens before Friday (2026-05-25).",
+    "session_id": "flowdesk_founder_19",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 19: Technical debt review",
+    "date_range": [
+      "2026-04-13",
+      "2026-08-08"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The team decided on a two-week stabilization sprint as the working direction.",
+    "session_id": "flowdesk_founder_19",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 19: Technical debt review",
+    "date_range": [
+      "2026-04-13",
+      "2026-08-08"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's target customer segment is small law firms in the B2B SaaS space.",
+    "session_id": "flowdesk_founder_19",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 19: Technical debt review",
+    "date_range": [
+      "2026-04-13",
+      "2026-08-08"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting a Postgres relational model with JSONB metadata for the data model.",
+    "session_id": "flowdesk_founder_20",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 20: Matter/task/document data model",
+    "date_range": [
+      "2026-04-18",
+      "2026-08-13"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concern that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_20",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 20: Matter/task/document data model",
+    "date_range": [
+      "2026-04-18",
+      "2026-08-13"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_20",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 20: Matter/task/document data model",
+    "date_range": [
+      "2026-04-18",
+      "2026-08-13"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needed final UI scope decision by Friday 2026-05-30 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_20",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 20: Matter/task/document data model",
+    "date_range": [
+      "2026-04-18",
+      "2026-08-13"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The core tension for FlowDesk is schema tension and whether the current approach is specific enough.",
+    "session_id": "flowdesk_founder_20",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 20: Matter/task/document data model",
+    "date_range": [
+      "2026-04-18",
+      "2026-08-13"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FirstCheck committed $250K in funding for FlowDesk.",
+    "session_id": "flowdesk_founder_20",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 20: Matter/task/document data model",
+    "date_range": [
+      "2026-04-18",
+      "2026-08-13"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final UI scope clarity before Friday 2026-06-04 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_21",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 21: Ravi coaching and quota expectations",
+    "date_range": [
+      "2026-04-23",
+      "2026-08-18"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting low close rate as a metric but lacks sufficient specificity for the team.",
+    "session_id": "flowdesk_founder_21",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 21: Ravi coaching and quota expectations",
+    "date_range": [
+      "2026-04-23",
+      "2026-08-18"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya believes FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_21",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 21: Ravi coaching and quota expectations",
+    "date_range": [
+      "2026-04-23",
+      "2026-08-18"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_21",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 21: Ravi coaching and quota expectations",
+    "date_range": [
+      "2026-04-23",
+      "2026-08-18"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The working decision for FlowDesk is to prioritize quality pipeline metrics before quota.",
+    "session_id": "flowdesk_founder_21",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 21: Ravi coaching and quota expectations",
+    "date_range": [
+      "2026-04-23",
+      "2026-08-18"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk has $180K runway remaining with FirstCheck committed to $250K and a seed raise still active.",
+    "session_id": "flowdesk_founder_21",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 21: Ravi coaching and quota expectations",
+    "date_range": [
+      "2026-04-23",
+      "2026-08-18"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's contract end date is the current decision checkpoint as of 2026-04-28.",
+    "session_id": "flowdesk_founder_22",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 22: Priya handoff and frontend ownership",
+    "date_range": [
+      "2026-04-28",
+      "2026-08-23"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concern that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_22",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 22: Priya handoff and frontend ownership",
+    "date_range": [
+      "2026-04-28",
+      "2026-08-23"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_22",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 22: Priya handoff and frontend ownership",
+    "date_range": [
+      "2026-04-28",
+      "2026-08-23"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya is waiting on final UI scope and needs a decision before Friday 2026-06-09 to finish dashboard screens.",
+    "session_id": "flowdesk_founder_22",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 22: Priya handoff and frontend ownership",
+    "date_range": [
+      "2026-04-28",
+      "2026-08-23"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The recommended decision is to proceed with handoff docs and component map.",
+    "session_id": "flowdesk_founder_22",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 22: Priya handoff and frontend ownership",
+    "date_range": [
+      "2026-04-28",
+      "2026-08-23"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Key people roles: Maya owns engineering load, Ravi owns sales learning, and Priya owns frontend clarity.",
+    "session_id": "flowdesk_founder_22",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 22: Priya handoff and frontend ownership",
+    "date_range": [
+      "2026-04-28",
+      "2026-08-23"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting a $1.2M seed raise with a close deadline of August 15.",
+    "session_id": "flowdesk_founder_23",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 23: Seed process and runway stress",
+    "date_range": [
+      "2026-05-03",
+      "2026-08-28"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya has raised concerns that FlowDesk is building too many workflows.",
+    "session_id": "flowdesk_founder_23",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 23: Seed process and runway stress",
+    "date_range": [
+      "2026-05-03",
+      "2026-08-28"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi has identified that prospects do not understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_23",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 23: Seed process and runway stress",
+    "date_range": [
+      "2026-05-03",
+      "2026-08-28"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya requires final UI scope confirmation by Friday (2026-06-14) to complete dashboard screens.",
+    "session_id": "flowdesk_founder_23",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 23: Seed process and runway stress",
+    "date_range": [
+      "2026-05-03",
+      "2026-08-28"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk had $180K runway remaining as of early May 2026.",
+    "session_id": "flowdesk_founder_23",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 23: Seed process and runway stress",
+    "date_range": [
+      "2026-05-03",
+      "2026-08-28"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FirstCheck committed $250K to FlowDesk's funding round.",
+    "session_id": "flowdesk_founder_23",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 23: Seed process and runway stress",
+    "date_range": [
+      "2026-05-03",
+      "2026-08-28"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk's target customer segment is firm admins and managing partners, not solo lawyers.",
+    "session_id": "flowdesk_founder_24",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 24: Pilot feedback synthesis",
+    "date_range": [
+      "2026-05-08",
+      "2026-09-02"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya raised concern that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_24",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 24: Pilot feedback synthesis",
+    "date_range": [
+      "2026-05-08",
+      "2026-09-02"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_24",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 24: Pilot feedback synthesis",
+    "date_range": [
+      "2026-05-08",
+      "2026-09-02"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needed final UI scope decision by Friday 2026-06-19 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_24",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 24: Pilot feedback synthesis",
+    "date_range": [
+      "2026-05-08",
+      "2026-09-02"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The solo lawyer feedback was determined to be too noisy to serve as a reliable signal for product direction.",
+    "session_id": "flowdesk_founder_24",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 24: Pilot feedback synthesis",
+    "date_range": [
+      "2026-05-08",
+      "2026-09-02"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Customer segment and data model decisions are treated as irreversible, while most other product choices are reversible.",
+    "session_id": "flowdesk_founder_24",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 24: Pilot feedback synthesis",
+    "date_range": [
+      "2026-05-08",
+      "2026-09-02"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "FlowDesk is targeting messy decisions as the core problem but needs greater specificity around the target market.",
+    "session_id": "flowdesk_founder_25",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 25: End-of-phase strategic synthesis",
+    "date_range": [
+      "2026-05-13",
+      "2026-09-07"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Maya has raised concerns that the team is building too many workflows.",
+    "session_id": "flowdesk_founder_25",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 25: End-of-phase strategic synthesis",
+    "date_range": [
+      "2026-05-13",
+      "2026-09-07"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Ravi has identified that prospects don't understand FlowDesk's value proposition.",
+    "session_id": "flowdesk_founder_25",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 25: End-of-phase strategic synthesis",
+    "date_range": [
+      "2026-05-13",
+      "2026-09-07"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "Priya needs final UI scope decision by Friday 2026-06-24 to complete dashboard screens.",
+    "session_id": "flowdesk_founder_25",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 25: End-of-phase strategic synthesis",
+    "date_range": [
+      "2026-05-13",
+      "2026-09-07"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The key irreversible decisions for FlowDesk are customer segment and data model.",
+    "session_id": "flowdesk_founder_25",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 25: End-of-phase strategic synthesis",
+    "date_range": [
+      "2026-05-13",
+      "2026-09-07"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "The working strategic direction is: clear ICP, pricing, MVP, hiring, and fundraising plan.",
+    "session_id": "flowdesk_founder_25",
+    "scenario": "software_startup_founder",
+    "title": "Conversation 25: End-of-phase strategic synthesis",
+    "date_range": [
+      "2026-05-13",
+      "2026-09-07"
+    ],
+    "project": "FlowDesk"
+  },
+  {
+    "fact": "User's PhD project at Cornell focuses on GNNs for protein-protein interactions in cancer cells.",
+    "session_id": "cornell_compbio_phd_01",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 01: Framing the GNN protein-protein interaction project",
+    "date_range": [
+      "2026-07-07",
+      "2026-12-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor but is almost never available, requiring concise decision memos.",
+    "session_id": "cornell_compbio_phd_01",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 01: Framing the GNN protein-protein interaction project",
+    "date_range": [
+      "2026-07-07",
+      "2026-12-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The working research decision is to define the task around cancer-specific PPI edge prediction.",
+    "session_id": "cornell_compbio_phd_01",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 01: Framing the GNN protein-protein interaction project",
+    "date_range": [
+      "2026-07-07",
+      "2026-12-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User has a qualifying exam in February and NeurIPS deadline in November.",
+    "session_id": "cornell_compbio_phd_01",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 01: Framing the GNN protein-protein interaction project",
+    "date_range": [
+      "2026-07-07",
+      "2026-12-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Lab dynamics include Jonas working on adjacent ideas and Wei controlling GPU access.",
+    "session_id": "cornell_compbio_phd_01",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 01: Framing the GNN protein-protein interaction project",
+    "date_range": [
+      "2026-07-07",
+      "2026-12-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's personal constraints include moving to Seattle, visa renewal stress, and a $28K/year stipend.",
+    "session_id": "cornell_compbio_phd_01",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 01: Framing the GNN protein-protein interaction project",
+    "date_range": [
+      "2026-07-07",
+      "2026-12-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells at Cornell.",
+    "session_id": "cornell_compbio_phd_02",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 02: Baseline model choices",
+    "date_range": [
+      "2026-07-13",
+      "2027-01-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The working technical approach is GraphSAGE + MLP edge decoder with GAT as an ablation study.",
+    "session_id": "cornell_compbio_phd_02",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 02: Baseline model choices",
+    "date_range": [
+      "2026-07-13",
+      "2027-01-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor and is rarely available, so decisions should be documented in concise memos.",
+    "session_id": "cornell_compbio_phd_02",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 02: Baseline model choices",
+    "date_range": [
+      "2026-07-13",
+      "2027-01-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam is scheduled for February 2027.",
+    "session_id": "cornell_compbio_phd_02",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 02: Baseline model choices",
+    "date_range": [
+      "2026-07-13",
+      "2027-01-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS deadline is in November 2027.",
+    "session_id": "cornell_compbio_phd_02",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 02: Baseline model choices",
+    "date_range": [
+      "2026-07-13",
+      "2027-01-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Lab constraints include Jonas working on adjacent ideas and Wei controlling GPU access.",
+    "session_id": "cornell_compbio_phd_02",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 02: Baseline model choices",
+    "date_range": [
+      "2026-07-13",
+      "2027-01-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor for a PhD project on STRING DB v12 edges, confidence scores, and cancer gene filtering at Cornell.",
+    "session_id": "cornell_compbio_phd_03",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 03: STRING DB v12 preprocessing",
+    "date_range": [
+      "2026-07-19",
+      "2027-01-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The research topic involves GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_03",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 03: STRING DB v12 preprocessing",
+    "date_range": [
+      "2026-07-19",
+      "2027-01-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "A reproducible preprocessing pipeline with provenance is the working decision for the PhD project.",
+    "session_id": "cornell_compbio_phd_03",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 03: STRING DB v12 preprocessing",
+    "date_range": [
+      "2026-07-19",
+      "2027-01-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_03",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 03: STRING DB v12 preprocessing",
+    "date_range": [
+      "2026-07-19",
+      "2027-01-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "A qualifying exam is scheduled for February.",
+    "session_id": "cornell_compbio_phd_03",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 03: STRING DB v12 preprocessing",
+    "date_range": [
+      "2026-07-19",
+      "2027-01-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The NeurIPS deadline is in November.",
+    "session_id": "cornell_compbio_phd_03",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 03: STRING DB v12 preprocessing",
+    "date_range": [
+      "2026-07-19",
+      "2027-01-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available, so decision memos should be concise.",
+    "session_id": "cornell_compbio_phd_04",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 04: GPU access conflict with Wei",
+    "date_range": [
+      "2026-07-25",
+      "2027-01-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls A100 GPU access and prioritizes postdoc experiments over PhD projects.",
+    "session_id": "cornell_compbio_phd_04",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 04: GPU access conflict with Wei",
+    "date_range": [
+      "2026-07-25",
+      "2027-01-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_04",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 04: GPU access conflict with Wei",
+    "date_range": [
+      "2026-07-25",
+      "2027-01-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The working decision is to request scheduled GPU blocks and keep CPU-friendly baselines running in parallel.",
+    "session_id": "cornell_compbio_phd_04",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 04: GPU access conflict with Wei",
+    "date_range": [
+      "2026-07-25",
+      "2027-01-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam deadline is in February 2027.",
+    "session_id": "cornell_compbio_phd_04",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 04: GPU access conflict with Wei",
+    "date_range": [
+      "2026-07-25",
+      "2027-01-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The annual stipend is $28,000 per year with visa renewal stress and a planned move to Seattle.",
+    "session_id": "cornell_compbio_phd_04",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 04: GPU access conflict with Wei",
+    "date_range": [
+      "2026-07-25",
+      "2027-01-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma at Cornell is the advisor but is almost never available, requiring concise decision memos instead of frequent meetings.",
+    "session_id": "cornell_compbio_phd_05",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 05: Qualifying exam planning",
+    "date_range": [
+      "2026-07-31",
+      "2027-01-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_05",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 05: Qualifying exam planning",
+    "date_range": [
+      "2026-07-31",
+      "2027-01-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The February qualifying exam and NeurIPS submission deadline (November) are competing priorities creating research pressure.",
+    "session_id": "cornell_compbio_phd_05",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 05: Qualifying exam planning",
+    "date_range": [
+      "2026-07-31",
+      "2027-01-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Weekly reading blocks should be reserved starting immediately as the working decision to manage the dual deadline pressure.",
+    "session_id": "cornell_compbio_phd_05",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 05: Qualifying exam planning",
+    "date_range": [
+      "2026-07-31",
+      "2027-01-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab and Jonas works on adjacent research ideas.",
+    "session_id": "cornell_compbio_phd_05",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 05: Qualifying exam planning",
+    "date_range": [
+      "2026-07-31",
+      "2027-01-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Personal constraints include relocation to Seattle, visa renewal stress, a $28K/year stipend, and a February qualifying exam deadline.",
+    "session_id": "cornell_compbio_phd_05",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 05: Qualifying exam planning",
+    "date_range": [
+      "2026-07-31",
+      "2027-01-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available for meetings.",
+    "session_id": "cornell_compbio_phd_06",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 06: Jonas scooping adjacent ideas",
+    "date_range": [
+      "2026-08-06",
+      "2027-01-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_06",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 06: Jonas scooping adjacent ideas",
+    "date_range": [
+      "2026-08-06",
+      "2027-01-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas repeatedly presents similar cancer-network ideas that overlap with the PhD project.",
+    "session_id": "cornell_compbio_phd_06",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 06: Jonas scooping adjacent ideas",
+    "date_range": [
+      "2026-08-06",
+      "2027-01-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam is scheduled for February.",
+    "session_id": "cornell_compbio_phd_06",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 06: Jonas scooping adjacent ideas",
+    "date_range": [
+      "2026-08-06",
+      "2027-01-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_06",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 06: Jonas scooping adjacent ideas",
+    "date_range": [
+      "2026-08-06",
+      "2027-01-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS submission deadline is in November.",
+    "session_id": "cornell_compbio_phd_06",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 06: Jonas scooping adjacent ideas",
+    "date_range": [
+      "2026-08-06",
+      "2027-01-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor for the Cornell PhD project but is almost never available.",
+    "session_id": "cornell_compbio_phd_07",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 07: NeurIPS submission strategy",
+    "date_range": [
+      "2026-08-12",
+      "2027-02-04"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The research topic is robust cancer-specific protein-protein interaction (PPI) prediction using graph neural networks.",
+    "session_id": "cornell_compbio_phd_07",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 07: NeurIPS submission strategy",
+    "date_range": [
+      "2026-08-12",
+      "2027-02-04"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The target deadline is November NeurIPS for submitting a paper.",
+    "session_id": "cornell_compbio_phd_07",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 07: NeurIPS submission strategy",
+    "date_range": [
+      "2026-08-12",
+      "2027-02-04"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_07",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 07: NeurIPS submission strategy",
+    "date_range": [
+      "2026-08-12",
+      "2027-02-04"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam is scheduled for February 2027.",
+    "session_id": "cornell_compbio_phd_07",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 07: NeurIPS submission strategy",
+    "date_range": [
+      "2026-08-12",
+      "2027-02-04"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The annual stipend is $28,000 per year.",
+    "session_id": "cornell_compbio_phd_07",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 07: NeurIPS submission strategy",
+    "date_range": [
+      "2026-08-12",
+      "2027-02-04"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's PhD research topic is GNNs for protein-protein interaction prediction in cancer cells at Cornell.",
+    "session_id": "cornell_compbio_phd_08",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 08: Long-distance relationship stress",
+    "date_range": [
+      "2026-08-18",
+      "2027-02-10"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor and is rarely available, requiring concise decision memos for communication.",
+    "session_id": "cornell_compbio_phd_08",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 08: Long-distance relationship stress",
+    "date_range": [
+      "2026-08-18",
+      "2027-02-10"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Alex is moving to Seattle in four months from the initial conversation date of 2026-08-18.",
+    "session_id": "cornell_compbio_phd_08",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 08: Long-distance relationship stress",
+    "date_range": [
+      "2026-08-18",
+      "2027-02-10"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's qualifying exam is scheduled for February 2027.",
+    "session_id": "cornell_compbio_phd_08",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 08: Long-distance relationship stress",
+    "date_range": [
+      "2026-08-18",
+      "2027-02-10"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS submission deadline is in November.",
+    "session_id": "cornell_compbio_phd_08",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 08: Long-distance relationship stress",
+    "date_range": [
+      "2026-08-18",
+      "2027-02-10"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User has a $28K/year stipend and is managing visa renewal stress as personal constraints.",
+    "session_id": "cornell_compbio_phd_08",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 08: Long-distance relationship stress",
+    "date_range": [
+      "2026-08-18",
+      "2027-02-10"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's PhD project at Cornell focuses on STRING DB v12 leakage and noisy high-confidence edges in protein-protein interaction prediction.",
+    "session_id": "cornell_compbio_phd_09",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 09: STRING DB v12 quality issue discovered",
+    "date_range": [
+      "2026-08-24",
+      "2027-02-16"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor but is rarely available, requiring concise decision memos for communication.",
+    "session_id": "cornell_compbio_phd_09",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 09: STRING DB v12 quality issue discovered",
+    "date_range": [
+      "2026-08-24",
+      "2027-02-16"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Two months of work were invalidated due to discovered leakage where high-confidence edges overlap with evaluation labels.",
+    "session_id": "cornell_compbio_phd_09",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 09: STRING DB v12 quality issue discovered",
+    "date_range": [
+      "2026-08-24",
+      "2027-02-16"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User is deciding whether to write two stronger papers or aim for a third thesis paper.",
+    "session_id": "cornell_compbio_phd_09",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 09: STRING DB v12 quality issue discovered",
+    "date_range": [
+      "2026-08-24",
+      "2027-02-16"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User has a qualifying exam in February and is facing visa renewal stress with a $28K/year stipend.",
+    "session_id": "cornell_compbio_phd_09",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 09: STRING DB v12 quality issue discovered",
+    "date_range": [
+      "2026-08-24",
+      "2027-02-16"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS in November is an upcoming deadline relevant to the research timeline.",
+    "session_id": "cornell_compbio_phd_09",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 09: STRING DB v12 quality issue discovered",
+    "date_range": [
+      "2026-08-24",
+      "2027-02-16"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the user's PhD advisor at Cornell and is rarely available, requiring concise decision memos.",
+    "session_id": "cornell_compbio_phd_10",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 10: Recovering after invalidated work",
+    "date_range": [
+      "2026-08-30",
+      "2027-02-22"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Two months of experiments were invalidated in the user's PhD project on GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_10",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 10: Recovering after invalidated work",
+    "date_range": [
+      "2026-08-30",
+      "2027-02-22"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user's qualifying exam is in February.",
+    "session_id": "cornell_compbio_phd_10",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 10: Recovering after invalidated work",
+    "date_range": [
+      "2026-08-30",
+      "2027-02-22"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas has adjacent research ideas and Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_10",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 10: Recovering after invalidated work",
+    "date_range": [
+      "2026-08-30",
+      "2027-02-22"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user has a $28K/year stipend and is experiencing visa renewal stress while planning to move to Seattle.",
+    "session_id": "cornell_compbio_phd_10",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 10: Recovering after invalidated work",
+    "date_range": [
+      "2026-08-30",
+      "2027-02-22"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS has a November deadline that applies to the user's research timeline.",
+    "session_id": "cornell_compbio_phd_10",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 10: Recovering after invalidated work",
+    "date_range": [
+      "2026-08-30",
+      "2027-02-22"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available.",
+    "session_id": "cornell_compbio_phd_11",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 11: Prof. Sharma unavailable",
+    "date_range": [
+      "2026-09-05",
+      "2027-02-28"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_11",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 11: Prof. Sharma unavailable",
+    "date_range": [
+      "2026-09-05",
+      "2027-02-28"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The working communication strategy is to send concise weekly decision memos requiring yes/no approval from the advisor.",
+    "session_id": "cornell_compbio_phd_11",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 11: Prof. Sharma unavailable",
+    "date_range": [
+      "2026-09-05",
+      "2027-02-28"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas in the lab overlaps adjacent research ideas and Wei controls GPU access.",
+    "session_id": "cornell_compbio_phd_11",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 11: Prof. Sharma unavailable",
+    "date_range": [
+      "2026-09-05",
+      "2027-02-28"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam is scheduled for February.",
+    "session_id": "cornell_compbio_phd_11",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 11: Prof. Sharma unavailable",
+    "date_range": [
+      "2026-09-05",
+      "2027-02-28"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS deadline is in November.",
+    "session_id": "cornell_compbio_phd_11",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 11: Prof. Sharma unavailable",
+    "date_range": [
+      "2026-09-05",
+      "2027-02-28"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's PhD project at Cornell focuses on visa paperwork delays and travel uncertainty.",
+    "session_id": "cornell_compbio_phd_12",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 12: Visa renewal issue",
+    "date_range": [
+      "2026-09-11",
+      "2027-03-06"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor but is rarely available, requiring concise decision memos.",
+    "session_id": "cornell_compbio_phd_12",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 12: Visa renewal issue",
+    "date_range": [
+      "2026-09-11",
+      "2027-03-06"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's research topic shifted to GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_12",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 12: Visa renewal issue",
+    "date_range": [
+      "2026-09-11",
+      "2027-03-06"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User has a qualifying exam deadline in February.",
+    "session_id": "cornell_compbio_phd_12",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 12: Visa renewal issue",
+    "date_range": [
+      "2026-09-11",
+      "2027-03-06"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_12",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 12: Visa renewal issue",
+    "date_range": [
+      "2026-09-11",
+      "2027-03-06"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's annual stipend is $28,000 and is experiencing visa renewal stress while considering a move to Seattle.",
+    "session_id": "cornell_compbio_phd_12",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 12: Visa renewal issue",
+    "date_range": [
+      "2026-09-11",
+      "2027-03-06"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's PhD project at Cornell focuses on negative sampling leakage and confounded labels in GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_13",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 13: Methods redesign after dataset issue",
+    "date_range": [
+      "2026-09-17",
+      "2027-03-12"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The working research decision is to use time-split / evidence-heldout validation and stronger negatives.",
+    "session_id": "cornell_compbio_phd_13",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 13: Methods redesign after dataset issue",
+    "date_range": [
+      "2026-09-17",
+      "2027-03-12"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor but is rarely available, so the user should communicate via concise decision memos.",
+    "session_id": "cornell_compbio_phd_13",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 13: Methods redesign after dataset issue",
+    "date_range": [
+      "2026-09-17",
+      "2027-03-12"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab and Jonas works on adjacent research ideas.",
+    "session_id": "cornell_compbio_phd_13",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 13: Methods redesign after dataset issue",
+    "date_range": [
+      "2026-09-17",
+      "2027-03-12"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User has a qualifying exam in February 2027 and NeurIPS deadline in November 2027.",
+    "session_id": "cornell_compbio_phd_13",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 13: Methods redesign after dataset issue",
+    "date_range": [
+      "2026-09-17",
+      "2027-03-12"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User receives a $28K/year stipend, is managing visa renewal stress, and is relocating to Seattle.",
+    "session_id": "cornell_compbio_phd_13",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 13: Methods redesign after dataset issue",
+    "date_range": [
+      "2026-09-17",
+      "2027-03-12"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor for the PhD project at Cornell and is rarely available, so decision memos should be concise.",
+    "session_id": "cornell_compbio_phd_14",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 14: Paper scope reduction",
+    "date_range": [
+      "2026-09-23",
+      "2027-03-18"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_14",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 14: Paper scope reduction",
+    "date_range": [
+      "2026-09-23",
+      "2027-03-18"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The working decision is to drop the broad cancer generalization claim and focus on reliability instead.",
+    "session_id": "cornell_compbio_phd_14",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 14: Paper scope reduction",
+    "date_range": [
+      "2026-09-23",
+      "2027-03-18"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_14",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 14: Paper scope reduction",
+    "date_range": [
+      "2026-09-23",
+      "2027-03-18"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam is in February.",
+    "session_id": "cornell_compbio_phd_14",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 14: Paper scope reduction",
+    "date_range": [
+      "2026-09-23",
+      "2027-03-18"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS deadline is in November.",
+    "session_id": "cornell_compbio_phd_14",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 14: Paper scope reduction",
+    "date_range": [
+      "2026-09-23",
+      "2027-03-18"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's PhD research topic is GNNs for protein-protein interaction prediction in cancer cells at Cornell.",
+    "session_id": "cornell_compbio_phd_15",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 15: TA position and stipend pressure",
+    "date_range": [
+      "2026-09-29",
+      "2027-03-24"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's stipend is $28K/year and money stress is a current concern.",
+    "session_id": "cornell_compbio_phd_15",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 15: TA position and stipend pressure",
+    "date_range": [
+      "2026-09-29",
+      "2027-03-24"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor and is rarely available, so user should communicate via concise decision memos.",
+    "session_id": "cornell_compbio_phd_15",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 15: TA position and stipend pressure",
+    "date_range": [
+      "2026-09-29",
+      "2027-03-24"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User should consider taking a TA position only if it does not derail the November submission deadline.",
+    "session_id": "cornell_compbio_phd_15",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 15: TA position and stipend pressure",
+    "date_range": [
+      "2026-09-29",
+      "2027-03-24"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas and Wei are lab members where Jonas overlaps adjacent research ideas and Wei controls GPU access.",
+    "session_id": "cornell_compbio_phd_15",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 15: TA position and stipend pressure",
+    "date_range": [
+      "2026-09-29",
+      "2027-03-24"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User has a qualifying exam in February 2027 and is managing visa renewal stress while planning a move to Seattle.",
+    "session_id": "cornell_compbio_phd_15",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 15: TA position and stipend pressure",
+    "date_range": [
+      "2026-09-29",
+      "2027-03-24"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the user's PhD advisor at Cornell and is rarely available.",
+    "session_id": "cornell_compbio_phd_16",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 16: DeepMind internship vs academia",
+    "date_range": [
+      "2026-10-05",
+      "2027-03-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user's PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_16",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 16: DeepMind internship vs academia",
+    "date_range": [
+      "2026-10-05",
+      "2027-03-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user's qualifying exam is in February.",
+    "session_id": "cornell_compbio_phd_16",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 16: DeepMind internship vs academia",
+    "date_range": [
+      "2026-10-05",
+      "2027-03-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS deadline is in November.",
+    "session_id": "cornell_compbio_phd_16",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 16: DeepMind internship vs academia",
+    "date_range": [
+      "2026-10-05",
+      "2027-03-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user's annual stipend is $28,000 per year.",
+    "session_id": "cornell_compbio_phd_16",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 16: DeepMind internship vs academia",
+    "date_range": [
+      "2026-10-05",
+      "2027-03-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user's working decision is to apply selectively to DeepMind internships without letting it hijack thesis progress.",
+    "session_id": "cornell_compbio_phd_16",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 16: DeepMind internship vs academia",
+    "date_range": [
+      "2026-10-05",
+      "2027-03-30"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user's PhD research topic at Cornell is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_17",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 17: NeurIPS submission crunch",
+    "date_range": [
+      "2026-10-11",
+      "2027-04-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the user's advisor and is rarely available, so the user should communicate via concise decision memos.",
+    "session_id": "cornell_compbio_phd_17",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 17: NeurIPS submission crunch",
+    "date_range": [
+      "2026-10-11",
+      "2027-04-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user has a November deadline for incomplete ablations and must submit only if evaluation is honest without overclaiming.",
+    "session_id": "cornell_compbio_phd_17",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 17: NeurIPS submission crunch",
+    "date_range": [
+      "2026-10-11",
+      "2027-04-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas and Wei are lab members where Jonas overlaps adjacent ideas and Wei controls GPU access.",
+    "session_id": "cornell_compbio_phd_17",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 17: NeurIPS submission crunch",
+    "date_range": [
+      "2026-10-11",
+      "2027-04-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user has a qualifying exam in February and receives a $28K/year stipend.",
+    "session_id": "cornell_compbio_phd_17",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 17: NeurIPS submission crunch",
+    "date_range": [
+      "2026-10-11",
+      "2027-04-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user is moving to Seattle and managing visa renewal stress while considering DeepMind internship applications.",
+    "session_id": "cornell_compbio_phd_17",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 17: NeurIPS submission crunch",
+    "date_range": [
+      "2026-10-11",
+      "2027-04-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor for this Cornell PhD project and is rarely available, requiring concise decision memos.",
+    "session_id": "cornell_compbio_phd_18",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 18: Reviewer risk and limitations",
+    "date_range": [
+      "2026-10-17",
+      "2027-04-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The PhD research topic is using GNNs for protein-protein interaction prediction in cancer cells, with a core concern that reviewers may attack STRING DB quality.",
+    "session_id": "cornell_compbio_phd_18",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 18: Reviewer risk and limitations",
+    "date_range": [
+      "2026-10-17",
+      "2027-04-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The working research decision is to make dataset quality a core contribution rather than treat it as a weakness.",
+    "session_id": "cornell_compbio_phd_18",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 18: Reviewer risk and limitations",
+    "date_range": [
+      "2026-10-17",
+      "2027-04-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab and Jonas works on adjacent research ideas.",
+    "session_id": "cornell_compbio_phd_18",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 18: Reviewer risk and limitations",
+    "date_range": [
+      "2026-10-17",
+      "2027-04-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam is scheduled for February and NeurIPS submission deadline is in November.",
+    "session_id": "cornell_compbio_phd_18",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 18: Reviewer risk and limitations",
+    "date_range": [
+      "2026-10-17",
+      "2027-04-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user has a $28K/year stipend, is moving to Seattle, and is managing visa renewal stress.",
+    "session_id": "cornell_compbio_phd_18",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 18: Reviewer risk and limitations",
+    "date_range": [
+      "2026-10-17",
+      "2027-04-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's PhD project at Cornell focuses on relationship logistics and emotional distraction.",
+    "session_id": "cornell_compbio_phd_19",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 19: Alex moves to Seattle",
+    "date_range": [
+      "2026-10-23",
+      "2027-04-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor but is rarely available, requiring concise decision memos.",
+    "session_id": "cornell_compbio_phd_19",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 19: Alex moves to Seattle",
+    "date_range": [
+      "2026-10-23",
+      "2027-04-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The research plan includes protecting two fixed weekly calls and one December visit plan.",
+    "session_id": "cornell_compbio_phd_19",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 19: Alex moves to Seattle",
+    "date_range": [
+      "2026-10-23",
+      "2027-04-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User should create a dated experiment log entry with hypothesis, dataset version, split strategy, GPU requirement, and expected failure mode.",
+    "session_id": "cornell_compbio_phd_19",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 19: Alex moves to Seattle",
+    "date_range": [
+      "2026-10-23",
+      "2027-04-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's qualifying exam is in February.",
+    "session_id": "cornell_compbio_phd_19",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 19: Alex moves to Seattle",
+    "date_range": [
+      "2026-10-23",
+      "2027-04-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS deadline is in November.",
+    "session_id": "cornell_compbio_phd_19",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 19: Alex moves to Seattle",
+    "date_range": [
+      "2026-10-23",
+      "2027-04-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's PhD program is at Cornell with advisor Prof. Anita Sharma.",
+    "session_id": "cornell_compbio_phd_20",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 20: Third paper vs finish early",
+    "date_range": [
+      "2026-10-29",
+      "2027-04-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_20",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 20: Third paper vs finish early",
+    "date_range": [
+      "2026-10-29",
+      "2027-04-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's working decision is to finish early unless a third paper clearly derisks the job market.",
+    "session_id": "cornell_compbio_phd_20",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 20: Third paper vs finish early",
+    "date_range": [
+      "2026-10-29",
+      "2027-04-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's annual stipend is $28K and includes visa renewal stress and a planned move to Seattle.",
+    "session_id": "cornell_compbio_phd_20",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 20: Third paper vs finish early",
+    "date_range": [
+      "2026-10-29",
+      "2027-04-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's qualifying exam deadline is February and NeurIPS submission deadline is November.",
+    "session_id": "cornell_compbio_phd_20",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 20: Third paper vs finish early",
+    "date_range": [
+      "2026-10-29",
+      "2027-04-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is rarely available, so user should communicate via concise decision memos.",
+    "session_id": "cornell_compbio_phd_20",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 20: Third paper vs finish early",
+    "date_range": [
+      "2026-10-29",
+      "2027-04-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user's PhD research at Cornell focuses on GNN explainability and cancer pathway plausibility.",
+    "session_id": "cornell_compbio_phd_21",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 21: Ablations and model interpretation",
+    "date_range": [
+      "2026-11-04",
+      "2027-04-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the advisor but is rarely available, requiring concise decision memos instead of frequent meetings.",
+    "session_id": "cornell_compbio_phd_21",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 21: Ablations and model interpretation",
+    "date_range": [
+      "2026-11-04",
+      "2027-04-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The research plan should include pathway-level sanity checks and ablations as a working decision.",
+    "session_id": "cornell_compbio_phd_21",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 21: Ablations and model interpretation",
+    "date_range": [
+      "2026-11-04",
+      "2027-04-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The user should maintain a dated experiment log with hypothesis, dataset version, split strategy, GPU requirement, and expected failure mode.",
+    "session_id": "cornell_compbio_phd_21",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 21: Ablations and model interpretation",
+    "date_range": [
+      "2026-11-04",
+      "2027-04-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas and Wei are lab members with overlapping research ideas and GPU access control respectively.",
+    "session_id": "cornell_compbio_phd_21",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 21: Ablations and model interpretation",
+    "date_range": [
+      "2026-11-04",
+      "2027-04-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS in November is a relevant deadline for the PhD project.",
+    "session_id": "cornell_compbio_phd_21",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 21: Ablations and model interpretation",
+    "date_range": [
+      "2026-11-04",
+      "2027-04-29"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available, requiring concise decision memos.",
+    "session_id": "cornell_compbio_phd_22",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 22: Lab politics with Jonas and Wei",
+    "date_range": [
+      "2026-11-10",
+      "2027-05-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_22",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 22: Lab politics with Jonas and Wei",
+    "date_range": [
+      "2026-11-10",
+      "2027-05-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas creates overlapping research ideas and Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_22",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 22: Lab politics with Jonas and Wei",
+    "date_range": [
+      "2026-11-10",
+      "2027-05-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Alex is moving to Seattle while managing visa renewal stress and a $28K/year stipend.",
+    "session_id": "cornell_compbio_phd_22",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 22: Lab politics with Jonas and Wei",
+    "date_range": [
+      "2026-11-10",
+      "2027-05-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam is scheduled for February.",
+    "session_id": "cornell_compbio_phd_22",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 22: Lab politics with Jonas and Wei",
+    "date_range": [
+      "2026-11-10",
+      "2027-05-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS deadline is in November.",
+    "session_id": "cornell_compbio_phd_22",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 22: Lab politics with Jonas and Wei",
+    "date_range": [
+      "2026-11-10",
+      "2027-05-05"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma at Cornell is rarely available, so decision memos should be concise and written.",
+    "session_id": "cornell_compbio_phd_23",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 23: Post-submission/rebuttal planning",
+    "date_range": [
+      "2026-11-16",
+      "2027-05-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_23",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 23: Post-submission/rebuttal planning",
+    "date_range": [
+      "2026-11-16",
+      "2027-05-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The working decision is to prepare rebuttal artifacts and backup journal plan for uncertain NeurIPS outcome.",
+    "session_id": "cornell_compbio_phd_23",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 23: Post-submission/rebuttal planning",
+    "date_range": [
+      "2026-11-16",
+      "2027-05-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas overlaps adjacent research ideas and Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_23",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 23: Post-submission/rebuttal planning",
+    "date_range": [
+      "2026-11-16",
+      "2027-05-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Qualifying exam is scheduled for February.",
+    "session_id": "cornell_compbio_phd_23",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 23: Post-submission/rebuttal planning",
+    "date_range": [
+      "2026-11-16",
+      "2027-05-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS deadline is in November.",
+    "session_id": "cornell_compbio_phd_23",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 23: Post-submission/rebuttal planning",
+    "date_range": [
+      "2026-11-16",
+      "2027-05-11"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_24",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 24: Qualifying exam final preparation",
+    "date_range": [
+      "2026-11-22",
+      "2027-05-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User's February qualifying exam is approaching and requires structured exam prep without abandoning experiments.",
+    "session_id": "cornell_compbio_phd_24",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 24: Qualifying exam final preparation",
+    "date_range": [
+      "2026-11-22",
+      "2027-05-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is user's advisor at Cornell but is almost never available, so user should communicate via concise decision memos.",
+    "session_id": "cornell_compbio_phd_24",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 24: Qualifying exam final preparation",
+    "date_range": [
+      "2026-11-22",
+      "2027-05-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Wei controls GPU access in the lab and Jonas works on adjacent research ideas.",
+    "session_id": "cornell_compbio_phd_24",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 24: Qualifying exam final preparation",
+    "date_range": [
+      "2026-11-22",
+      "2027-05-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User has a $28K/year stipend, is relocating to Seattle, and faces visa renewal stress.",
+    "session_id": "cornell_compbio_phd_24",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 24: Qualifying exam final preparation",
+    "date_range": [
+      "2026-11-22",
+      "2027-05-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS deadline in November is a key milestone for user's research publication.",
+    "session_id": "cornell_compbio_phd_24",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 24: Qualifying exam final preparation",
+    "date_range": [
+      "2026-11-22",
+      "2027-05-17"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available, requiring concise decision memos.",
+    "session_id": "cornell_compbio_phd_25",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 25: Six-month research synthesis",
+    "date_range": [
+      "2026-11-28",
+      "2027-05-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "session_id": "cornell_compbio_phd_25",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 25: Six-month research synthesis",
+    "date_range": [
+      "2026-11-28",
+      "2027-05-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Jonas overlaps adjacent research ideas and Wei controls GPU access in the lab.",
+    "session_id": "cornell_compbio_phd_25",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 25: Six-month research synthesis",
+    "date_range": [
+      "2026-11-28",
+      "2027-05-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "The qualifying exam is scheduled for February.",
+    "session_id": "cornell_compbio_phd_25",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 25: Six-month research synthesis",
+    "date_range": [
+      "2026-11-28",
+      "2027-05-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "NeurIPS submission deadline is in November.",
+    "session_id": "cornell_compbio_phd_25",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 25: Six-month research synthesis",
+    "date_range": [
+      "2026-11-28",
+      "2027-05-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "Personal constraints include moving to Seattle, visa renewal stress, and a $28K/year stipend.",
+    "session_id": "cornell_compbio_phd_25",
+    "scenario": "phd_student_researcher",
+    "title": "Conversation 25: Six-month research synthesis",
+    "date_range": [
+      "2026-11-28",
+      "2027-05-23"
+    ],
+    "project": "GNN-based protein-protein interaction prediction in cancer cells"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_01",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 01: Instant business account opening kickoff",
+    "date_range": [
+      "2026-08-07",
+      "2026-10-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted, Marcus from compliance blocks progress with KYC concerns, and Tom says the timeline is unrealistic.",
+    "session_id": "meridian_pay_pm_01",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 01: Instant business account opening kickoff",
+    "date_range": [
+      "2026-08-07",
+      "2026-10-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The original timeline promise was 8 weeks.",
+    "session_id": "meridian_pay_pm_01",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 01: Instant business account opening kickoff",
+    "date_range": [
+      "2026-08-07",
+      "2026-10-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated 14 weeks for the full project.",
+    "session_id": "meridian_pay_pm_01",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 01: Instant business account opening kickoff",
+    "date_range": [
+      "2026-08-07",
+      "2026-10-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners revealed document upload friction, confusion about acceptable proof types and file formats, and uncertainty about whether users could return later to complete verification.",
+    "session_id": "meridian_pay_pm_01",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 01: Instant business account opening kickoff",
+    "date_range": [
+      "2026-08-07",
+      "2026-10-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document verification decision involves choosing between building in-house or using Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "session_id": "meridian_pay_pm_01",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 01: Instant business account opening kickoff",
+    "date_range": [
+      "2026-08-07",
+      "2026-10-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "PM promised leadership 8-week timeline for Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_02",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 02: 8-week promise vs 14-week engineering estimate",
+    "date_range": [
+      "2026-08-11",
+      "2026-11-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Engineering estimated 14 weeks for the same feature, assuming no compliance surprises.",
+    "session_id": "meridian_pay_pm_02",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 02: 8-week promise vs 14-week engineering estimate",
+    "date_range": [
+      "2026-08-11",
+      "2026-11-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance is blocking progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_02",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 02: 8-week promise vs 14-week engineering estimate",
+    "date_range": [
+      "2026-08-11",
+      "2026-11-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload friction as the biggest surprise, including confusion about proof requirements, file formats, and whether users could return later.",
+    "session_id": "meridian_pay_pm_02",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 02: 8-week promise vs 14-week engineering estimate",
+    "date_range": [
+      "2026-08-11",
+      "2026-11-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The team debated building document verification in-house versus using Persona at $4 per transaction.",
+    "session_id": "meridian_pay_pm_02",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 02: 8-week promise vs 14-week engineering estimate",
+    "date_range": [
+      "2026-08-11",
+      "2026-11-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive of the project but is overcommitted on other work.",
+    "session_id": "meridian_pay_pm_02",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 02: 8-week promise vs 14-week engineering estimate",
+    "date_range": [
+      "2026-08-11",
+      "2026-11-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The PM is leading the instant business account opening feature for Meridian Pay.",
+    "session_id": "meridian_pay_pm_03",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 03: Stakeholder map and org politics",
+    "date_range": [
+      "2026-08-15",
+      "2026-11-05"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted on the project.",
+    "session_id": "meridian_pay_pm_03",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 03: Stakeholder map and org politics",
+    "date_range": [
+      "2026-08-15",
+      "2026-11-05"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_03",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 03: Stakeholder map and org politics",
+    "date_range": [
+      "2026-08-15",
+      "2026-11-05"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom believes the timeline is unrealistic.",
+    "session_id": "meridian_pay_pm_03",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 03: Stakeholder map and org politics",
+    "date_range": [
+      "2026-08-15",
+      "2026-11-05"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners found document upload confusion as a major friction point.",
+    "session_id": "meridian_pay_pm_03",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 03: Stakeholder map and org politics",
+    "date_range": [
+      "2026-08-15",
+      "2026-11-05"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The team is deciding between building document verification in-house or using Persona at $4 per verification.",
+    "session_id": "meridian_pay_pm_03",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 03: Stakeholder map and org politics",
+    "date_range": [
+      "2026-08-15",
+      "2026-11-05"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is the PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_04",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 04: Compliance pushback from Marcus",
+    "date_range": [
+      "2026-08-19",
+      "2026-11-09"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks features citing KYC and fraud risk concerns.",
+    "session_id": "meridian_pay_pm_04",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 04: Compliance pushback from Marcus",
+    "date_range": [
+      "2026-08-19",
+      "2026-11-09"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted on the project.",
+    "session_id": "meridian_pay_pm_04",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 04: Compliance pushback from Marcus",
+    "date_range": [
+      "2026-08-19",
+      "2026-11-09"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom says the timeline is unrealistic and estimated 14 weeks for delivery.",
+    "session_id": "meridian_pay_pm_04",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 04: Compliance pushback from Marcus",
+    "date_range": [
+      "2026-08-19",
+      "2026-11-09"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners revealed document upload confusion as the biggest friction point in the MVP.",
+    "session_id": "meridian_pay_pm_04",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 04: Compliance pushback from Marcus",
+    "date_range": [
+      "2026-08-19",
+      "2026-11-09"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The team debated document verification between building in-house versus using Persona at $4 per verification.",
+    "session_id": "meridian_pay_pm_04",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 04: Compliance pushback from Marcus",
+    "date_range": [
+      "2026-08-19",
+      "2026-11-09"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_05",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 05: Persona vendor vs in-house verification",
+    "date_range": [
+      "2026-08-23",
+      "2026-11-13"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Decision: use Persona at $4 per verification for MVP, revisit in-house build after volume data.",
+    "session_id": "meridian_pay_pm_05",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 05: Persona vendor vs in-house verification",
+    "date_range": [
+      "2026-08-23",
+      "2026-11-13"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted; Marcus from compliance blocks with KYC concerns; Tom says timeline is unrealistic.",
+    "session_id": "meridian_pay_pm_05",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 05: Persona vendor vs in-house verification",
+    "date_range": [
+      "2026-08-23",
+      "2026-11-13"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners found document upload friction\u2014confusion about acceptable proof types, file formats, and ability to return later.",
+    "session_id": "meridian_pay_pm_05",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 05: Persona vendor vs in-house verification",
+    "date_range": [
+      "2026-08-23",
+      "2026-11-13"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated 14 weeks for build; leadership heard 8 weeks.",
+    "session_id": "meridian_pay_pm_05",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 05: Persona vendor vs in-house verification",
+    "date_range": [
+      "2026-08-23",
+      "2026-11-13"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Original timeline promise was 8 weeks; later reset to phased approach due to scope and stakeholder conflict.",
+    "session_id": "meridian_pay_pm_05",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 05: Persona vendor vs in-house verification",
+    "date_range": [
+      "2026-08-23",
+      "2026-11-13"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The PM is responsible for the instant business account opening feature at Meridian Pay with an 8-week timeline.",
+    "session_id": "meridian_pay_pm_06",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 06: Engineering scope cut discussion",
+    "date_range": [
+      "2026-08-27",
+      "2026-11-17"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted, Marcus from compliance blocks features due to KYC concerns, and Tom says the timeline is unrealistic.",
+    "session_id": "meridian_pay_pm_06",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 06: Engineering scope cut discussion",
+    "date_range": [
+      "2026-08-27",
+      "2026-11-17"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The decision is to cut the non-critical admin dashboard and manual review polish to fit the 8-week scope.",
+    "session_id": "meridian_pay_pm_06",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 06: Engineering scope cut discussion",
+    "date_range": [
+      "2026-08-27",
+      "2026-11-17"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload friction as the biggest surprise, with confusion about acceptable proof types, file formats, and whether users could return later.",
+    "session_id": "meridian_pay_pm_06",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 06: Engineering scope cut discussion",
+    "date_range": [
+      "2026-08-27",
+      "2026-11-17"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The team is debating whether to build document verification in-house or use Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "session_id": "meridian_pay_pm_06",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 06: Engineering scope cut discussion",
+    "date_range": [
+      "2026-08-27",
+      "2026-11-17"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated the realistic timeline at 14 weeks, while leadership committed to 8 weeks, creating a gap that must be resolved through scope reduction, phased rollout, or accepted risk.",
+    "session_id": "meridian_pay_pm_06",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 06: Engineering scope cut discussion",
+    "date_range": [
+      "2026-08-27",
+      "2026-11-17"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_07",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 07: User research with six small business owners",
+    "date_range": [
+      "2026-08-31",
+      "2026-11-21"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document upload friction in the current flow is worse than expected, with users confused about proof requirements, file formats, and save-and-resume capability.",
+    "session_id": "meridian_pay_pm_07",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 07: User research with six small business owners",
+    "date_range": [
+      "2026-08-31",
+      "2026-11-21"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners revealed document upload friction as the biggest surprise (conducted 2026-11-21).",
+    "session_id": "meridian_pay_pm_07",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 07: User research with six small business owners",
+    "date_range": [
+      "2026-08-31",
+      "2026-11-21"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated the timeline at 14 weeks while leadership was told 8 weeks.",
+    "session_id": "meridian_pay_pm_07",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 07: User research with six small business owners",
+    "date_range": [
+      "2026-08-31",
+      "2026-11-21"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_07",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 07: User research with six small business owners",
+    "date_range": [
+      "2026-08-31",
+      "2026-11-21"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The recommended MVP changes are to redesign the upload flow and add save-and-resume functionality.",
+    "session_id": "meridian_pay_pm_07",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 07: User research with six small business owners",
+    "date_range": [
+      "2026-08-31",
+      "2026-11-21"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is the PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_08",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 08: NovaCash competitor launch pressure",
+    "date_range": [
+      "2026-09-04",
+      "2026-11-25"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "NovaCash launched a similar feature and received press coverage.",
+    "session_id": "meridian_pay_pm_08",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 08: NovaCash competitor launch pressure",
+    "date_range": [
+      "2026-09-04",
+      "2026-11-25"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_08",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 08: NovaCash competitor launch pressure",
+    "date_range": [
+      "2026-09-04",
+      "2026-11-25"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimates the timeline is 14 weeks, but leadership was told 8 weeks.",
+    "session_id": "meridian_pay_pm_08",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 08: NovaCash competitor launch pressure",
+    "date_range": [
+      "2026-09-04",
+      "2026-11-25"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload confusion as the biggest friction point in the MVP.",
+    "session_id": "meridian_pay_pm_08",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 08: NovaCash competitor launch pressure",
+    "date_range": [
+      "2026-09-04",
+      "2026-11-25"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Persona charges $4 per verification for document verification services, with Tom opposing vendor dependency while Marcus trusts vendor audit trails.",
+    "session_id": "meridian_pay_pm_08",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 08: NovaCash competitor launch pressure",
+    "date_range": [
+      "2026-09-04",
+      "2026-11-25"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature with activation target of 60% (current 34%) and time-to-first-transaction target of 2 days (current 6.2 days).",
+    "session_id": "meridian_pay_pm_09",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 09: Activation and time-to-first-transaction metrics",
+    "date_range": [
+      "2026-09-08",
+      "2026-11-29"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted on the Meridian Pay project.",
+    "session_id": "meridian_pay_pm_09",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 09: Activation and time-to-first-transaction metrics",
+    "date_range": [
+      "2026-09-08",
+      "2026-11-29"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_09",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 09: Activation and time-to-first-transaction metrics",
+    "date_range": [
+      "2026-09-08",
+      "2026-11-29"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimates the timeline as unrealistic and originally estimated 14 weeks while leadership heard 8 weeks.",
+    "session_id": "meridian_pay_pm_09",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 09: Activation and time-to-first-transaction metrics",
+    "date_range": [
+      "2026-09-08",
+      "2026-11-29"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners revealed document upload friction as the biggest issue, including confusion about what counts as proof, file formats, and whether users could return later.",
+    "session_id": "meridian_pay_pm_09",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 09: Activation and time-to-first-transaction metrics",
+    "date_range": [
+      "2026-09-08",
+      "2026-11-29"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document verification decision: build in-house versus use Persona vendor at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor approach.",
+    "session_id": "meridian_pay_pm_09",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 09: Activation and time-to-first-transaction metrics",
+    "date_range": [
+      "2026-09-08",
+      "2026-11-29"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The PM is responsible for the instant business account opening feature at Meridian Pay.",
+    "session_id": "meridian_pay_pm_10",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 10: Preparing Sarah update",
+    "date_range": [
+      "2026-09-12",
+      "2026-12-03"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but unavailable and overcommitted.",
+    "session_id": "meridian_pay_pm_10",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 10: Preparing Sarah update",
+    "date_range": [
+      "2026-09-12",
+      "2026-12-03"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_10",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 10: Preparing Sarah update",
+    "date_range": [
+      "2026-09-12",
+      "2026-12-03"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimates the timeline is unrealistic and originally estimated 14 weeks.",
+    "session_id": "meridian_pay_pm_10",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 10: Preparing Sarah update",
+    "date_range": [
+      "2026-09-12",
+      "2026-12-03"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document verification options are building in-house versus using Persona at $4 per verification.",
+    "session_id": "meridian_pay_pm_10",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 10: Preparing Sarah update",
+    "date_range": [
+      "2026-09-12",
+      "2026-12-03"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners revealed confusion about document upload requirements, file formats, and whether users could return to complete verification later.",
+    "session_id": "meridian_pay_pm_10",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 10: Preparing Sarah update",
+    "date_range": [
+      "2026-09-12",
+      "2026-12-03"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "You are the PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_11",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 11: Difficult conversation with Tom",
+    "date_range": [
+      "2026-09-16",
+      "2026-12-07"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom pushes back on the timeline and estimated 14 weeks for delivery.",
+    "session_id": "meridian_pay_pm_11",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 11: Difficult conversation with Tom",
+    "date_range": [
+      "2026-09-16",
+      "2026-12-07"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Leadership was told an 8-week delivery promise that Tom considers unrealistic.",
+    "session_id": "meridian_pay_pm_11",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 11: Difficult conversation with Tom",
+    "date_range": [
+      "2026-09-16",
+      "2026-12-07"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_11",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 11: Difficult conversation with Tom",
+    "date_range": [
+      "2026-09-16",
+      "2026-12-07"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive of the project but is overcommitted.",
+    "session_id": "meridian_pay_pm_11",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 11: Difficult conversation with Tom",
+    "date_range": [
+      "2026-09-16",
+      "2026-12-07"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document upload confusion in user research with 6 small business owners showed people were unclear about accepted proof types, file formats, and whether they could return later to complete verification.",
+    "session_id": "meridian_pay_pm_11",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 11: Difficult conversation with Tom",
+    "date_range": [
+      "2026-09-16",
+      "2026-12-07"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_12",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 12: Feature scope lock",
+    "date_range": [
+      "2026-09-20",
+      "2026-12-11"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "MVP scope is locked to: KYC intake, Persona verification, bank account creation, and first transaction nudge.",
+    "session_id": "meridian_pay_pm_12",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 12: Feature scope lock",
+    "date_range": [
+      "2026-09-20",
+      "2026-12-11"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_12",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 12: Feature scope lock",
+    "date_range": [
+      "2026-09-20",
+      "2026-12-11"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research on 2026-12-11 with 6 small business owners revealed document upload friction and confusion around proof requirements, file formats, and resubmission options.",
+    "session_id": "meridian_pay_pm_12",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 12: Feature scope lock",
+    "date_range": [
+      "2026-09-20",
+      "2026-12-11"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document verification decision: build in-house versus use Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "session_id": "meridian_pay_pm_12",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 12: Feature scope lock",
+    "date_range": [
+      "2026-09-20",
+      "2026-12-11"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Original timeline promise was 8 weeks; Tom estimated 14 weeks.",
+    "session_id": "meridian_pay_pm_12",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 12: Feature scope lock",
+    "date_range": [
+      "2026-09-20",
+      "2026-12-11"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Meridian Pay is building an instant business account opening feature with the user as PM.",
+    "session_id": "meridian_pay_pm_13",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 13: Leadership timeline reset",
+    "date_range": [
+      "2026-09-24",
+      "2026-12-15"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The original 8-week delivery promise is no longer credible.",
+    "session_id": "meridian_pay_pm_13",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 13: Leadership timeline reset",
+    "date_range": [
+      "2026-09-24",
+      "2026-12-15"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The revised timeline plan is 8-week beta launch followed by 14-week general availability.",
+    "session_id": "meridian_pay_pm_13",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 13: Leadership timeline reset",
+    "date_range": [
+      "2026-09-24",
+      "2026-12-15"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted; Marcus (compliance) blocks progress with KYC concerns; Tom says the timeline is unrealistic.",
+    "session_id": "meridian_pay_pm_13",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 13: Leadership timeline reset",
+    "date_range": [
+      "2026-09-24",
+      "2026-12-15"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners revealed document upload friction as the biggest surprise, including confusion about proof types, file formats, and whether users could resume later.",
+    "session_id": "meridian_pay_pm_13",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 13: Leadership timeline reset",
+    "date_range": [
+      "2026-09-24",
+      "2026-12-15"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The document verification decision is between building in-house or using Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trail.",
+    "session_id": "meridian_pay_pm_13",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 13: Leadership timeline reset",
+    "date_range": [
+      "2026-09-24",
+      "2026-12-15"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is the PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_14",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 14: KYC exception debate",
+    "date_range": [
+      "2026-09-28",
+      "2026-12-19"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_14",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 14: KYC exception debate",
+    "date_range": [
+      "2026-09-28",
+      "2026-12-19"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated the timeline at 14 weeks while leadership heard 8 weeks.",
+    "session_id": "meridian_pay_pm_14",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 14: KYC exception debate",
+    "date_range": [
+      "2026-09-28",
+      "2026-12-19"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The decision is to define a low-risk cohort for instant approval.",
+    "session_id": "meridian_pay_pm_14",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 14: KYC exception debate",
+    "date_range": [
+      "2026-09-28",
+      "2026-12-19"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document upload friction was identified as the biggest surprise in user research with 6 small business owners.",
+    "session_id": "meridian_pay_pm_14",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 14: KYC exception debate",
+    "date_range": [
+      "2026-09-28",
+      "2026-12-19"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Persona charges $4 per verification for document verification services.",
+    "session_id": "meridian_pay_pm_14",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 14: KYC exception debate",
+    "date_range": [
+      "2026-09-28",
+      "2026-12-19"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_15",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 15: Promotion review anxiety",
+    "date_range": [
+      "2026-10-02",
+      "2026-12-23"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted; Marcus from compliance blocks with KYC concerns; Tom says the timeline is unrealistic.",
+    "session_id": "meridian_pay_pm_15",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 15: Promotion review anxiety",
+    "date_range": [
+      "2026-10-02",
+      "2026-12-23"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Q4 promotion depends on project evidence and cross-functional leadership.",
+    "session_id": "meridian_pay_pm_15",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 15: Promotion review anxiety",
+    "date_range": [
+      "2026-10-02",
+      "2026-12-23"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document verification decision: build in-house vs. use Persona at $4 per verification, with Tom opposing vendor dependency.",
+    "session_id": "meridian_pay_pm_15",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 15: Promotion review anxiety",
+    "date_range": [
+      "2026-10-02",
+      "2026-12-23"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload friction as the biggest issue, with confusion about acceptable proof formats and resubmission ability.",
+    "session_id": "meridian_pay_pm_15",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 15: Promotion review anxiety",
+    "date_range": [
+      "2026-10-02",
+      "2026-12-23"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated 14 weeks for the project while leadership heard an 8-week promise.",
+    "session_id": "meridian_pay_pm_15",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 15: Promotion review anxiety",
+    "date_range": [
+      "2026-10-02",
+      "2026-12-23"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_16",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 16: Persona cost concern",
+    "date_range": [
+      "2026-10-06",
+      "2026-12-27"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The $4 per verification cost impacts margin and requires cost-benefit modeling against activation lift and fraud risk reduction.",
+    "session_id": "meridian_pay_pm_16",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 16: Persona cost concern",
+    "date_range": [
+      "2026-10-06",
+      "2026-12-27"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_16",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 16: Persona cost concern",
+    "date_range": [
+      "2026-10-06",
+      "2026-12-27"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimates the timeline is unrealistic and originally estimated 14 weeks.",
+    "session_id": "meridian_pay_pm_16",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 16: Persona cost concern",
+    "date_range": [
+      "2026-10-06",
+      "2026-12-27"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Leadership expects an 8-week delivery promise.",
+    "session_id": "meridian_pay_pm_16",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 16: Persona cost concern",
+    "date_range": [
+      "2026-10-06",
+      "2026-12-27"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners revealed document upload friction, including confusion about acceptable proof types, file formats, and whether users could return to complete verification later.",
+    "session_id": "meridian_pay_pm_16",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 16: Persona cost concern",
+    "date_range": [
+      "2026-10-06",
+      "2026-12-27"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is the PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_17",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 17: Beta post-mortem thinking",
+    "date_range": [
+      "2026-10-10",
+      "2026-12-31"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Beta missed original timeline but clarified risk as of 2026-10-10.",
+    "session_id": "meridian_pay_pm_17",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 17: Beta post-mortem thinking",
+    "date_range": [
+      "2026-10-10",
+      "2026-12-31"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_17",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 17: Beta post-mortem thinking",
+    "date_range": [
+      "2026-10-10",
+      "2026-12-31"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimates the timeline is unrealistic and quoted 14 weeks.",
+    "session_id": "meridian_pay_pm_17",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 17: Beta post-mortem thinking",
+    "date_range": [
+      "2026-10-10",
+      "2026-12-31"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners (2026-12-31) identified document upload confusion as the biggest friction point in the MVP.",
+    "session_id": "meridian_pay_pm_17",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 17: Beta post-mortem thinking",
+    "date_range": [
+      "2026-10-10",
+      "2026-12-31"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document verification decision is between building in-house or using Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "session_id": "meridian_pay_pm_17",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 17: Beta post-mortem thinking",
+    "date_range": [
+      "2026-10-10",
+      "2026-12-31"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The PM is leading the instant business account opening feature for Meridian Pay.",
+    "session_id": "meridian_pay_pm_18",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 18: Document upload redesign",
+    "date_range": [
+      "2026-10-14",
+      "2027-01-04"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload as the biggest friction point, with confusion about acceptable proof types, file formats, and session resumption.",
+    "session_id": "meridian_pay_pm_18",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 18: Document upload redesign",
+    "date_range": [
+      "2026-10-14",
+      "2027-01-04"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_18",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 18: Document upload redesign",
+    "date_range": [
+      "2026-10-14",
+      "2027-01-04"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated a 14-week timeline while leadership committed to 8 weeks.",
+    "session_id": "meridian_pay_pm_18",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 18: Document upload redesign",
+    "date_range": [
+      "2026-10-14",
+      "2027-01-04"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The team is debating whether to build document verification in-house or use Persona at $4 per verification.",
+    "session_id": "meridian_pay_pm_18",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 18: Document upload redesign",
+    "date_range": [
+      "2026-10-14",
+      "2027-01-04"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The recommended MVP approach is to prioritize mobile upload, examples, and progress state.",
+    "session_id": "meridian_pay_pm_18",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 18: Document upload redesign",
+    "date_range": [
+      "2026-10-14",
+      "2027-01-04"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_19",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 19: Repairing relationship with Marcus",
+    "date_range": [
+      "2026-10-18",
+      "2027-01-08"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns and needs earlier involvement with clearly bounded decision rights.",
+    "session_id": "meridian_pay_pm_19",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 19: Repairing relationship with Marcus",
+    "date_range": [
+      "2026-10-18",
+      "2027-01-08"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated the timeline at 14 weeks but leadership heard a promise of 8 weeks.",
+    "session_id": "meridian_pay_pm_19",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 19: Repairing relationship with Marcus",
+    "date_range": [
+      "2026-10-18",
+      "2027-01-08"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload friction as the biggest surprise, including confusion about accepted proof types, file formats, and ability to return later.",
+    "session_id": "meridian_pay_pm_19",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 19: Repairing relationship with Marcus",
+    "date_range": [
+      "2026-10-18",
+      "2027-01-08"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The document verification decision involves a choice between building in-house or using Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "session_id": "meridian_pay_pm_19",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 19: Repairing relationship with Marcus",
+    "date_range": [
+      "2026-10-18",
+      "2027-01-08"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted, and prioritizes speed in the document verification decision.",
+    "session_id": "meridian_pay_pm_19",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 19: Repairing relationship with Marcus",
+    "date_range": [
+      "2026-10-18",
+      "2027-01-08"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is the PM for Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_20",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 20: GA readiness decision",
+    "date_range": [
+      "2026-10-22",
+      "2027-01-12"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted on the project.",
+    "session_id": "meridian_pay_pm_20",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 20: GA readiness decision",
+    "date_range": [
+      "2026-10-22",
+      "2027-01-12"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_20",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 20: GA readiness decision",
+    "date_range": [
+      "2026-10-22",
+      "2027-01-12"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimates the timeline is unrealistic (14 weeks estimated vs 8 weeks promised).",
+    "session_id": "meridian_pay_pm_20",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 20: GA readiness decision",
+    "date_range": [
+      "2026-10-22",
+      "2027-01-12"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload confusion as the biggest friction point in the MVP.",
+    "session_id": "meridian_pay_pm_20",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 20: GA readiness decision",
+    "date_range": [
+      "2026-10-22",
+      "2027-01-12"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The working decision is to ship staged GA to low-risk businesses rather than full launch.",
+    "session_id": "meridian_pay_pm_20",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 20: GA readiness decision",
+    "date_range": [
+      "2026-10-22",
+      "2027-01-12"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_21",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 21: Metric review and learning",
+    "date_range": [
+      "2026-10-26",
+      "2027-01-16"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Current problem: activation improved but time-to-first-transaction (TTF) transaction still lagging.",
+    "session_id": "meridian_pay_pm_21",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 21: Metric review and learning",
+    "date_range": [
+      "2026-10-26",
+      "2027-01-16"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_21",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 21: Metric review and learning",
+    "date_range": [
+      "2026-10-26",
+      "2027-01-16"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document verification decision: build in-house or use Persona at $4 per verification.",
+    "session_id": "meridian_pay_pm_21",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 21: Metric review and learning",
+    "date_range": [
+      "2026-10-26",
+      "2027-01-16"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners revealed document upload friction as biggest surprise.",
+    "session_id": "meridian_pay_pm_21",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 21: Metric review and learning",
+    "date_range": [
+      "2026-10-26",
+      "2027-01-16"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Original timeline commitment was 8 weeks; Tom estimated 14 weeks.",
+    "session_id": "meridian_pay_pm_21",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 21: Metric review and learning",
+    "date_range": [
+      "2026-10-26",
+      "2027-01-16"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_22",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 22: Executive narrative for promotion",
+    "date_range": [
+      "2026-10-30",
+      "2027-01-20"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted, Marcus from compliance blocks with KYC concerns, and Tom says the timeline is unrealistic.",
+    "session_id": "meridian_pay_pm_22",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 22: Executive narrative for promotion",
+    "date_range": [
+      "2026-10-30",
+      "2027-01-20"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The team is debating document verification: build in-house or use Persona at $4 per verification.",
+    "session_id": "meridian_pay_pm_22",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 22: Executive narrative for promotion",
+    "date_range": [
+      "2026-10-30",
+      "2027-01-20"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated 14 weeks but leadership heard 8 weeks as the timeline promise.",
+    "session_id": "meridian_pay_pm_22",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 22: Executive narrative for promotion",
+    "date_range": [
+      "2026-10-30",
+      "2027-01-20"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners found that document upload friction was the biggest surprise, with confusion about what counts as proof, file formats, and whether users could return later.",
+    "session_id": "meridian_pay_pm_22",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 22: Executive narrative for promotion",
+    "date_range": [
+      "2026-10-30",
+      "2027-01-20"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "For promotion evidence, evaluation criteria are: ambiguous problem, stakeholder conflict, measurable baseline, decision quality, scope discipline, and impact against activation and time-to-first-transaction.",
+    "session_id": "meridian_pay_pm_22",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 22: Executive narrative for promotion",
+    "date_range": [
+      "2026-10-30",
+      "2027-01-20"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is the PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_23",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 23: Revisiting in-house verification",
+    "date_range": [
+      "2026-11-03",
+      "2027-01-24"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Persona works for document verification but cost may scale poorly at $4 per verification.",
+    "session_id": "meridian_pay_pm_23",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 23: Revisiting in-house verification",
+    "date_range": [
+      "2026-11-03",
+      "2027-01-24"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_23",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 23: Revisiting in-house verification",
+    "date_range": [
+      "2026-11-03",
+      "2027-01-24"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated the timeline at 14 weeks but leadership heard 8 weeks.",
+    "session_id": "meridian_pay_pm_23",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 23: Revisiting in-house verification",
+    "date_range": [
+      "2026-11-03",
+      "2027-01-24"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload friction as the biggest problem, with confusion over proof types, file formats, and whether users could return later.",
+    "session_id": "meridian_pay_pm_23",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 23: Revisiting in-house verification",
+    "date_range": [
+      "2026-11-03",
+      "2027-01-24"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The decision is to keep Persona through GA and start in-house discovery later.",
+    "session_id": "meridian_pay_pm_23",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 23: Revisiting in-house verification",
+    "date_range": [
+      "2026-11-03",
+      "2027-01-24"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM on Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_24",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 24: Post-mortem and next-quarter plan",
+    "date_range": [
+      "2026-11-07",
+      "2027-01-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Marcus from compliance blocks progress with KYC concerns.",
+    "session_id": "meridian_pay_pm_24",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 24: Post-mortem and next-quarter plan",
+    "date_range": [
+      "2026-11-07",
+      "2027-01-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimates the timeline as 14 weeks and says the original 8-week promise is unrealistic.",
+    "session_id": "meridian_pay_pm_24",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 24: Post-mortem and next-quarter plan",
+    "date_range": [
+      "2026-11-07",
+      "2027-01-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Persona charges $4 per document verification, and Tom opposes adding vendor dependency while Marcus trusts vendor audit trails.",
+    "session_id": "meridian_pay_pm_24",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 24: Post-mortem and next-quarter plan",
+    "date_range": [
+      "2026-11-07",
+      "2027-01-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload confusion as the biggest friction point, specifically around what qualifies as proof, file formats, and whether applicants can return later.",
+    "session_id": "meridian_pay_pm_24",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 24: Post-mortem and next-quarter plan",
+    "date_range": [
+      "2026-11-07",
+      "2027-01-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive of the project but is overcommitted.",
+    "session_id": "meridian_pay_pm_24",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 24: Post-mortem and next-quarter plan",
+    "date_range": [
+      "2026-11-07",
+      "2027-01-28"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User is PM for Meridian Pay's instant business account opening feature.",
+    "session_id": "meridian_pay_pm_25",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 25: Three-month synthesis",
+    "date_range": [
+      "2026-11-11",
+      "2027-02-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Sarah is supportive but overcommitted; Marcus from compliance blocks progress with KYC concerns; Tom says the timeline is unrealistic.",
+    "session_id": "meridian_pay_pm_25",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 25: Three-month synthesis",
+    "date_range": [
+      "2026-11-11",
+      "2027-02-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "User research with 6 small business owners identified document upload friction as the biggest surprise, with confusion about acceptable proof types, file formats, and whether users could return later.",
+    "session_id": "meridian_pay_pm_25",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 25: Three-month synthesis",
+    "date_range": [
+      "2026-11-11",
+      "2027-02-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "The original timeline promise was 8 weeks.",
+    "session_id": "meridian_pay_pm_25",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 25: Three-month synthesis",
+    "date_range": [
+      "2026-11-11",
+      "2027-02-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Tom estimated 14 weeks for the project.",
+    "session_id": "meridian_pay_pm_25",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 25: Three-month synthesis",
+    "date_range": [
+      "2026-11-11",
+      "2027-02-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  },
+  {
+    "fact": "Document verification decision: build in-house versus use Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "session_id": "meridian_pay_pm_25",
+    "scenario": "product_manager_org_politics",
+    "title": "Conversation 25: Three-month synthesis",
+    "date_range": [
+      "2026-11-11",
+      "2027-02-01"
+    ],
+    "project": "Instant business account opening at Meridian Pay"
+  }
+]

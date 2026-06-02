@@ -1,0 +1,54 @@
+# Environment / secrets — NEVER commit
+.env
+*.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# DB files
+*.db
+*.sqlite
+*.sqlite3
+
+# Alembic generated (keep migrations, not the db)
+memory.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Benchmark cache — downloaded datasets, computed embeddings, LLM prefix caches
+# Large files, reproducible from source, never commit
+benchmark_cache/
+
+# Fine-tuned model weights and training checkpoints — large binaries, not for git
+# Reproduce: cd RetrievalEngine && python3 training/build_reranker_pairs.py && python3 training/finetune_reranker.py
+models/
+checkpoints/
+
+# Training data JSONL — generated from cached datasets, not for git
+training/reranker_train.jsonl
+training/reranker_val.jsonl
+training/triplets_train.jsonl
+training/triplets_val.jsonl
+
+# Internal dev logs and planning docs — not for public repo
+PHASE3_NOTES.md
+PHASE4_NOTES.md
+Phase-3_enhancements.md

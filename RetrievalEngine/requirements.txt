@@ -1,0 +1,22 @@
+# Phase 2 — RetrievalEngine dependencies
+# Install Phase 1 first: cd ../project-memory-core && pip install -r requirements.txt
+
+# LLM extraction backends
+anthropic>=0.40.0           # Claude (cloud_llm backend)
+openai>=1.50.0              # OpenAI GPT-4o-mini (cloud_llm backend)
+httpx>=0.27.0               # Ollama HTTP client (local_llm backend)
+
+# Already in Phase 1 but listed for clarity
+sentence-transformers>=2.7.0
+numpy>=1.26.0
+sqlalchemy>=2.0.0
+alembic>=1.13.0
+fastapi>=0.111.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-mock>=3.14.0
+httpx>=0.27.0               # ASGI test client

@@ -1,0 +1,602 @@
+{
+  "flowdesk_founder_01": [
+    "FlowDesk is a B2B SaaS product targeting 5-20 person law firms as of 2026-02-24.",
+    "Maya is concerned that FlowDesk is building too many workflows.",
+    "Ravi reports that prospects don't understand FlowDesk's value proposition.",
+    "Priya needs final UI scope decision by Friday 2026-02-28 to complete dashboard screens.",
+    "The original target customer segment was solo lawyers but the team shifted to 5-20 person firms to reduce sales friction and engineering complexity.",
+    "Key decision rule: document all FlowDesk target market changes with dates and reasons to prevent the team from reopening the same debate without new data."
+  ],
+  "flowdesk_founder_02": [
+    "Postgres chosen as the database for FlowDesk.",
+    "Maya raised concerns that too many workflows are being built.",
+    "Ravi identified that prospects do not understand FlowDesk's value proposition.",
+    "Priya is waiting on final UI scope before completing dashboard screens.",
+    "Priya requested a final database decision by Friday 2026-03-01 to avoid wasting the frontend sprint.",
+    "The team should document the Postgres vs MongoDB decision with trade-offs and reversal conditions to prevent reopening the debate without new data."
+  ],
+  "flowdesk_founder_03": [
+    "FlowDesk is targeting Clerk for MVP authentication instead of Auth0 or rolling custom auth.",
+    "Priya needs final authentication decision by Friday 2026-03-06 to complete dashboard UI screens.",
+    "Maya has flagged that the team is building too many workflows.",
+    "Ravi reports that prospects don't understand FlowDesk's value proposition.",
+    "FlowDesk is selling to small law firms as the target B2B SaaS customer segment.",
+    "The authentication decision should not be reopened without new data to prevent wasting the frontend sprint."
+  ],
+  "flowdesk_founder_04": [
+    "FlowDesk's pricing model decision is hybrid seat-based with usage add-ons.",
+    "Maya raised concerns that the team is building too many workflows.",
+    "Ravi indicated that prospects don't understand the value proposition.",
+    "Priya needed final UI scope clarification before Friday to complete dashboard screens.",
+    "The team should document pricing decisions with dated reasons to prevent reopening debates without new data.",
+    "FlowDesk targets small law firms as the customer segment."
+  ],
+  "flowdesk_founder_05": [
+    "FlowDesk is targeting poor discovery calls as the core problem to solve.",
+    "Maya says the team is building too many workflows.",
+    "Ravi reports that prospects don't understand the product's value.",
+    "Priya needs final UI scope before Friday to complete dashboard screens.",
+    "The decided direction is to implement a structured discovery script.",
+    "FlowDesk's customer segment is small law firms using B2B SaaS."
+  ],
+  "flowdesk_founder_06": [
+    "FlowDesk's current decision is to freeze new features and hire a backend contractor later.",
+    "Priya needs a final answer on UI scope before Friday 2026-03-21 to complete dashboard screens.",
+    "Maya says FlowDesk is building too many workflows, Ravi says prospects don't understand the value, and Priya is waiting on final UI scope.",
+    "FlowDesk has $180K runway remaining and FirstCheck committed $250K in funding.",
+    "The key people are Maya (engineering load), Ravi (sales learning), and Priya (frontend clarity).",
+    "The decision to freeze new features and hire backend contractor later should not drift without a dated reason documented."
+  ],
+  "flowdesk_founder_07": [
+    "FlowDesk's target ICP is firms with 5-20 people, not solo lawyers.",
+    "Daniel Chen advised that the buyer is the managing partner or firm admin, not the solo attorney.",
+    "Maya is concerned that FlowDesk is building too many workflows.",
+    "Ravi reports that prospects don't understand the value proposition.",
+    "Priya needs final UI scope clarification before Friday to complete the dashboard screens.",
+    "The team should not reopen the ICP decision without new data to support a change."
+  ],
+  "flowdesk_founder_08": [
+    "FlowDesk is targeting $250K committed funding from FirstCheck Ventures.",
+    "Maya identified that the team is building too many workflows.",
+    "Ravi identified that prospects don't understand the product's value proposition.",
+    "Priya needs final UI scope clarification before Friday 2026-03-31 to complete dashboard screens.",
+    "FlowDesk's customer segment is small law firms in the B2B SaaS space.",
+    "The team has $180K runway remaining as of 2026-02-17."
+  ],
+  "flowdesk_founder_09": [
+    "FlowDesk's matter timeline prototype was due April 5, 2026.",
+    "Priya required final dashboard UI scope decisions before Friday, April 5, 2026 to complete the frontend sprint.",
+    "Maya flagged that the team was building too many workflows for FlowDesk.",
+    "Ravi identified that prospects do not understand FlowDesk's value proposition.",
+    "FlowDesk targets small law firms as its customer segment.",
+    "The core unresolved tension on February 22, 2026 was dashboard UX clarity and specificity."
+  ],
+  "flowdesk_founder_10": [
+    "FlowDesk's core MVP features are intake, matter timeline, reminders, and document checklist.",
+    "Maya is concerned that FlowDesk is building too many workflows.",
+    "Ravi reports that prospects don't understand FlowDesk's value proposition.",
+    "Priya needed final UI scope confirmation by Friday 2026-04-10 to complete dashboard screens.",
+    "The core tension in FlowDesk's scope is balancing feature count against sales clarity and engineering complexity.",
+    "Key stakeholders for FlowDesk decisions are Maya (engineering load), Ravi (sales learning), and Priya (frontend implementation)."
+  ],
+  "flowdesk_founder_11": [
+    "FlowDesk's onboarding approach is guided import plus 30 minute concierge onboarding.",
+    "Maya is concerned that the team is building too many workflows.",
+    "Ravi reports that prospects don't understand the value proposition.",
+    "Priya needed final UI scope confirmation before Friday 2026-04-19 to complete dashboard screens.",
+    "The decision to document is whether guided import plus concierge onboarding is reversible or irreversible without new data.",
+    "Do not reopen the onboarding flow decision without a dated reason and new evidence."
+  ],
+  "flowdesk_founder_12": [
+    "FlowDesk is targeting SOC2 compliance as a core positioning concern.",
+    "The decided direction is to build a security page, encryption feature, and audit log roadmap.",
+    "Priya needed final UI scope confirmation by Friday 2026-04-20 to complete dashboard screens.",
+    "Maya is concerned about building too many workflows and Ravi reports prospects don't understand the value proposition.",
+    "The team should document decisions with dated reasons and mark old versions as superseded rather than deleting them.",
+    "FlowDesk had $180K runway remaining and received a $250K commitment from FirstCheck during an active seed raise."
+  ],
+  "flowdesk_founder_13": [
+    "FlowDesk is targeting small law firms as the customer segment.",
+    "The core pitch decision is to focus on recovering billable time and reducing missed deadlines.",
+    "Maya raised concerns that FlowDesk is building too many workflows.",
+    "Ravi identified that prospects don't understand the value proposition.",
+    "Priya needed final UI scope confirmed before Friday 2026-04-25 to complete dashboard screens.",
+    "FirstCheck committed $250K in funding for FlowDesk."
+  ],
+  "flowdesk_founder_14": [
+    "FlowDesk is targeting 8 pilot firms by May 20, 2026.",
+    "Maya raised concern that the team is building too many workflows.",
+    "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "Priya needed final UI scope decision by Friday 2026-05-03 to complete dashboard screens.",
+    "The customer segment (small law firms) and data model are irreversible decisions for FlowDesk.",
+    "Key stakeholders are Maya (engineering), Ravi (sales), and Priya (frontend/design)."
+  ],
+  "flowdesk_founder_15": [
+    "FlowDesk is targeting users not returning as the core problem to solve.",
+    "Maya believes FlowDesk is building too many workflows.",
+    "Ravi says prospects don't understand the value proposition.",
+    "Priya needs final UI scope decided before Friday 2026-05-05 to finish dashboard screens.",
+    "The working decision for FlowDesk is to build daily reminder workflow and first matter checklist.",
+    "FlowDesk had $180K runway remaining and received a $250K commitment from FirstCheck."
+  ],
+  "flowdesk_founder_16": [
+    "FlowDesk is targeting co-founder tension as the core problem to solve.",
+    "Maya believes FlowDesk is building too many workflows.",
+    "Ravi reports that prospects don't understand the product's value.",
+    "Priya requested a final answer by Friday 2026-05-10 to complete dashboard screens.",
+    "The decided direction is to implement weekly founder reset and establish clearer hiring budget.",
+    "FlowDesk has $180K runway remaining and a committed $250K investment from FirstCheck."
+  ],
+  "flowdesk_founder_17": [
+    "FlowDesk's pricing decision is $49/user/month with a minimum of 5 seats.",
+    "Maya has flagged that the team is building too many workflows.",
+    "Ravi identified that prospects don't understand the product value proposition.",
+    "Priya needs final UI scope confirmation before Friday 2026-05-15 to complete dashboard screens.",
+    "The core problem to solve first is usage pricing confusion, not workflow breadth.",
+    "FlowDesk has $180K runway remaining with FirstCheck committed at $250K and an active seed raise."
+  ],
+  "flowdesk_founder_18": [
+    "FlowDesk is targeting a seed raise with unclear specifics as of April 8, 2026.",
+    "Maya raised concerns that FlowDesk is building too many workflows.",
+    "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "Priya requested a final UI scope decision by Friday, May 22, 2026 to complete dashboard screens.",
+    "The working strategic direction for FlowDesk is pipeline, pilots, and revenue milestones.",
+    "FlowDesk has $180K runway remaining and FirstCheck committed $250K in funding."
+  ],
+  "flowdesk_founder_19": [
+    "FlowDesk is targeting a fast MVP while accumulating technical debt.",
+    "Maya raised concerns that the team is building too many workflows.",
+    "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "Priya is waiting on final UI scope to complete dashboard screens before Friday (2026-05-25).",
+    "The team decided on a two-week stabilization sprint as the working direction.",
+    "FlowDesk's target customer segment is small law firms in the B2B SaaS space."
+  ],
+  "flowdesk_founder_20": [
+    "FlowDesk is targeting a Postgres relational model with JSONB metadata for the data model.",
+    "Maya raised concern that the team is building too many workflows.",
+    "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "Priya needed final UI scope decision by Friday 2026-05-30 to complete dashboard screens.",
+    "The core tension for FlowDesk is schema tension and whether the current approach is specific enough.",
+    "FirstCheck committed $250K in funding for FlowDesk."
+  ],
+  "flowdesk_founder_21": [
+    "Priya needs final UI scope clarity before Friday 2026-06-04 to complete dashboard screens.",
+    "FlowDesk is targeting low close rate as a metric but lacks sufficient specificity for the team.",
+    "Maya believes FlowDesk is building too many workflows.",
+    "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "The working decision for FlowDesk is to prioritize quality pipeline metrics before quota.",
+    "FlowDesk has $180K runway remaining with FirstCheck committed to $250K and a seed raise still active."
+  ],
+  "flowdesk_founder_22": [
+    "FlowDesk's contract end date is the current decision checkpoint as of 2026-04-28.",
+    "Maya raised concern that the team is building too many workflows.",
+    "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "Priya is waiting on final UI scope and needs a decision before Friday 2026-06-09 to finish dashboard screens.",
+    "The recommended decision is to proceed with handoff docs and component map.",
+    "Key people roles: Maya owns engineering load, Ravi owns sales learning, and Priya owns frontend clarity."
+  ],
+  "flowdesk_founder_23": [
+    "FlowDesk is targeting a $1.2M seed raise with a close deadline of August 15.",
+    "Maya has raised concerns that FlowDesk is building too many workflows.",
+    "Ravi has identified that prospects do not understand FlowDesk's value proposition.",
+    "Priya requires final UI scope confirmation by Friday (2026-06-14) to complete dashboard screens.",
+    "FlowDesk had $180K runway remaining as of early May 2026.",
+    "FirstCheck committed $250K to FlowDesk's funding round."
+  ],
+  "flowdesk_founder_24": [
+    "FlowDesk's target customer segment is firm admins and managing partners, not solo lawyers.",
+    "Maya raised concern that the team is building too many workflows.",
+    "Ravi identified that prospects don't understand FlowDesk's value proposition.",
+    "Priya needed final UI scope decision by Friday 2026-06-19 to complete dashboard screens.",
+    "The solo lawyer feedback was determined to be too noisy to serve as a reliable signal for product direction.",
+    "Customer segment and data model decisions are treated as irreversible, while most other product choices are reversible."
+  ],
+  "flowdesk_founder_25": [
+    "FlowDesk is targeting messy decisions as the core problem but needs greater specificity around the target market.",
+    "Maya has raised concerns that the team is building too many workflows.",
+    "Ravi has identified that prospects don't understand FlowDesk's value proposition.",
+    "Priya needs final UI scope decision by Friday 2026-06-24 to complete dashboard screens.",
+    "The key irreversible decisions for FlowDesk are customer segment and data model.",
+    "The working strategic direction is: clear ICP, pricing, MVP, hiring, and fundraising plan."
+  ],
+  "cornell_compbio_phd_01": [
+    "User's PhD project at Cornell focuses on GNNs for protein-protein interactions in cancer cells.",
+    "Prof. Anita Sharma is the advisor but is almost never available, requiring concise decision memos.",
+    "The working research decision is to define the task around cancer-specific PPI edge prediction.",
+    "User has a qualifying exam in February and NeurIPS deadline in November.",
+    "Lab dynamics include Jonas working on adjacent ideas and Wei controlling GPU access.",
+    "User's personal constraints include moving to Seattle, visa renewal stress, and a $28K/year stipend."
+  ],
+  "cornell_compbio_phd_02": [
+    "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells at Cornell.",
+    "The working technical approach is GraphSAGE + MLP edge decoder with GAT as an ablation study.",
+    "Prof. Anita Sharma is the advisor and is rarely available, so decisions should be documented in concise memos.",
+    "The qualifying exam is scheduled for February 2027.",
+    "NeurIPS deadline is in November 2027.",
+    "Lab constraints include Jonas working on adjacent ideas and Wei controlling GPU access."
+  ],
+  "cornell_compbio_phd_03": [
+    "Prof. Anita Sharma is the advisor for a PhD project on STRING DB v12 edges, confidence scores, and cancer gene filtering at Cornell.",
+    "The research topic involves GNNs for protein-protein interaction prediction in cancer cells.",
+    "A reproducible preprocessing pipeline with provenance is the working decision for the PhD project.",
+    "Wei controls GPU access in the lab.",
+    "A qualifying exam is scheduled for February.",
+    "The NeurIPS deadline is in November."
+  ],
+  "cornell_compbio_phd_04": [
+    "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available, so decision memos should be concise.",
+    "Wei controls A100 GPU access and prioritizes postdoc experiments over PhD projects.",
+    "The research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "The working decision is to request scheduled GPU blocks and keep CPU-friendly baselines running in parallel.",
+    "The qualifying exam deadline is in February 2027.",
+    "The annual stipend is $28,000 per year with visa renewal stress and a planned move to Seattle."
+  ],
+  "cornell_compbio_phd_05": [
+    "Prof. Anita Sharma at Cornell is the advisor but is almost never available, requiring concise decision memos instead of frequent meetings.",
+    "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "The February qualifying exam and NeurIPS submission deadline (November) are competing priorities creating research pressure.",
+    "Weekly reading blocks should be reserved starting immediately as the working decision to manage the dual deadline pressure.",
+    "Wei controls GPU access in the lab and Jonas works on adjacent research ideas.",
+    "Personal constraints include relocation to Seattle, visa renewal stress, a $28K/year stipend, and a February qualifying exam deadline."
+  ],
+  "cornell_compbio_phd_06": [
+    "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available for meetings.",
+    "The research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "Jonas repeatedly presents similar cancer-network ideas that overlap with the PhD project.",
+    "The qualifying exam is scheduled for February.",
+    "Wei controls GPU access in the lab.",
+    "NeurIPS submission deadline is in November."
+  ],
+  "cornell_compbio_phd_07": [
+    "Prof. Anita Sharma is the advisor for the Cornell PhD project but is almost never available.",
+    "The research topic is robust cancer-specific protein-protein interaction (PPI) prediction using graph neural networks.",
+    "The target deadline is November NeurIPS for submitting a paper.",
+    "Wei controls GPU access in the lab.",
+    "The qualifying exam is scheduled for February 2027.",
+    "The annual stipend is $28,000 per year."
+  ],
+  "cornell_compbio_phd_08": [
+    "User's PhD research topic is GNNs for protein-protein interaction prediction in cancer cells at Cornell.",
+    "Prof. Anita Sharma is the advisor and is rarely available, requiring concise decision memos for communication.",
+    "Alex is moving to Seattle in four months from the initial conversation date of 2026-08-18.",
+    "User's qualifying exam is scheduled for February 2027.",
+    "NeurIPS submission deadline is in November.",
+    "User has a $28K/year stipend and is managing visa renewal stress as personal constraints."
+  ],
+  "cornell_compbio_phd_09": [
+    "User's PhD project at Cornell focuses on STRING DB v12 leakage and noisy high-confidence edges in protein-protein interaction prediction.",
+    "Prof. Anita Sharma is the advisor but is rarely available, requiring concise decision memos for communication.",
+    "Two months of work were invalidated due to discovered leakage where high-confidence edges overlap with evaluation labels.",
+    "User is deciding whether to write two stronger papers or aim for a third thesis paper.",
+    "User has a qualifying exam in February and is facing visa renewal stress with a $28K/year stipend.",
+    "NeurIPS in November is an upcoming deadline relevant to the research timeline."
+  ],
+  "cornell_compbio_phd_10": [
+    "Prof. Anita Sharma is the user's PhD advisor at Cornell and is rarely available, requiring concise decision memos.",
+    "Two months of experiments were invalidated in the user's PhD project on GNNs for protein-protein interaction prediction in cancer cells.",
+    "The user's qualifying exam is in February.",
+    "Jonas has adjacent research ideas and Wei controls GPU access in the lab.",
+    "The user has a $28K/year stipend and is experiencing visa renewal stress while planning to move to Seattle.",
+    "NeurIPS has a November deadline that applies to the user's research timeline."
+  ],
+  "cornell_compbio_phd_11": [
+    "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available.",
+    "The research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "The working communication strategy is to send concise weekly decision memos requiring yes/no approval from the advisor.",
+    "Jonas in the lab overlaps adjacent research ideas and Wei controls GPU access.",
+    "The qualifying exam is scheduled for February.",
+    "NeurIPS deadline is in November."
+  ],
+  "cornell_compbio_phd_12": [
+    "User's PhD project at Cornell focuses on visa paperwork delays and travel uncertainty.",
+    "Prof. Anita Sharma is the advisor but is rarely available, requiring concise decision memos.",
+    "User's research topic shifted to GNNs for protein-protein interaction prediction in cancer cells.",
+    "User has a qualifying exam deadline in February.",
+    "Wei controls GPU access in the lab.",
+    "User's annual stipend is $28,000 and is experiencing visa renewal stress while considering a move to Seattle."
+  ],
+  "cornell_compbio_phd_13": [
+    "User's PhD project at Cornell focuses on negative sampling leakage and confounded labels in GNNs for protein-protein interaction prediction in cancer cells.",
+    "The working research decision is to use time-split / evidence-heldout validation and stronger negatives.",
+    "Prof. Anita Sharma is the advisor but is rarely available, so the user should communicate via concise decision memos.",
+    "Wei controls GPU access in the lab and Jonas works on adjacent research ideas.",
+    "User has a qualifying exam in February 2027 and NeurIPS deadline in November 2027.",
+    "User receives a $28K/year stipend, is managing visa renewal stress, and is relocating to Seattle."
+  ],
+  "cornell_compbio_phd_14": [
+    "Prof. Anita Sharma is the advisor for the PhD project at Cornell and is rarely available, so decision memos should be concise.",
+    "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "The working decision is to drop the broad cancer generalization claim and focus on reliability instead.",
+    "Wei controls GPU access in the lab.",
+    "The qualifying exam is in February.",
+    "NeurIPS deadline is in November."
+  ],
+  "cornell_compbio_phd_15": [
+    "User's PhD research topic is GNNs for protein-protein interaction prediction in cancer cells at Cornell.",
+    "User's stipend is $28K/year and money stress is a current concern.",
+    "Prof. Anita Sharma is the advisor and is rarely available, so user should communicate via concise decision memos.",
+    "User should consider taking a TA position only if it does not derail the November submission deadline.",
+    "Jonas and Wei are lab members where Jonas overlaps adjacent research ideas and Wei controls GPU access.",
+    "User has a qualifying exam in February 2027 and is managing visa renewal stress while planning a move to Seattle."
+  ],
+  "cornell_compbio_phd_16": [
+    "Prof. Anita Sharma is the user's PhD advisor at Cornell and is rarely available.",
+    "The user's PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "The user's qualifying exam is in February.",
+    "NeurIPS deadline is in November.",
+    "The user's annual stipend is $28,000 per year.",
+    "The user's working decision is to apply selectively to DeepMind internships without letting it hijack thesis progress."
+  ],
+  "cornell_compbio_phd_17": [
+    "The user's PhD research topic at Cornell is GNNs for protein-protein interaction prediction in cancer cells.",
+    "Prof. Anita Sharma is the user's advisor and is rarely available, so the user should communicate via concise decision memos.",
+    "The user has a November deadline for incomplete ablations and must submit only if evaluation is honest without overclaiming.",
+    "Jonas and Wei are lab members where Jonas overlaps adjacent ideas and Wei controls GPU access.",
+    "The user has a qualifying exam in February and receives a $28K/year stipend.",
+    "The user is moving to Seattle and managing visa renewal stress while considering DeepMind internship applications."
+  ],
+  "cornell_compbio_phd_18": [
+    "Prof. Anita Sharma is the advisor for this Cornell PhD project and is rarely available, requiring concise decision memos.",
+    "The PhD research topic is using GNNs for protein-protein interaction prediction in cancer cells, with a core concern that reviewers may attack STRING DB quality.",
+    "The working research decision is to make dataset quality a core contribution rather than treat it as a weakness.",
+    "Wei controls GPU access in the lab and Jonas works on adjacent research ideas.",
+    "The qualifying exam is scheduled for February and NeurIPS submission deadline is in November.",
+    "The user has a $28K/year stipend, is moving to Seattle, and is managing visa renewal stress."
+  ],
+  "cornell_compbio_phd_19": [
+    "User's PhD project at Cornell focuses on relationship logistics and emotional distraction.",
+    "Prof. Anita Sharma is the advisor but is rarely available, requiring concise decision memos.",
+    "The research plan includes protecting two fixed weekly calls and one December visit plan.",
+    "User should create a dated experiment log entry with hypothesis, dataset version, split strategy, GPU requirement, and expected failure mode.",
+    "User's qualifying exam is in February.",
+    "NeurIPS deadline is in November."
+  ],
+  "cornell_compbio_phd_20": [
+    "User's PhD program is at Cornell with advisor Prof. Anita Sharma.",
+    "User's research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "User's working decision is to finish early unless a third paper clearly derisks the job market.",
+    "User's annual stipend is $28K and includes visa renewal stress and a planned move to Seattle.",
+    "User's qualifying exam deadline is February and NeurIPS submission deadline is November.",
+    "Prof. Anita Sharma is rarely available, so user should communicate via concise decision memos."
+  ],
+  "cornell_compbio_phd_21": [
+    "The user's PhD research at Cornell focuses on GNN explainability and cancer pathway plausibility.",
+    "Prof. Anita Sharma is the advisor but is rarely available, requiring concise decision memos instead of frequent meetings.",
+    "The research plan should include pathway-level sanity checks and ablations as a working decision.",
+    "The user should maintain a dated experiment log with hypothesis, dataset version, split strategy, GPU requirement, and expected failure mode.",
+    "Jonas and Wei are lab members with overlapping research ideas and GPU access control respectively.",
+    "NeurIPS in November is a relevant deadline for the PhD project."
+  ],
+  "cornell_compbio_phd_22": [
+    "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available, requiring concise decision memos.",
+    "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "Jonas creates overlapping research ideas and Wei controls GPU access in the lab.",
+    "Alex is moving to Seattle while managing visa renewal stress and a $28K/year stipend.",
+    "The qualifying exam is scheduled for February.",
+    "NeurIPS deadline is in November."
+  ],
+  "cornell_compbio_phd_23": [
+    "Prof. Anita Sharma at Cornell is rarely available, so decision memos should be concise and written.",
+    "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "The working decision is to prepare rebuttal artifacts and backup journal plan for uncertain NeurIPS outcome.",
+    "Jonas overlaps adjacent research ideas and Wei controls GPU access in the lab.",
+    "Qualifying exam is scheduled for February.",
+    "NeurIPS deadline is in November."
+  ],
+  "cornell_compbio_phd_24": [
+    "User's PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "User's February qualifying exam is approaching and requires structured exam prep without abandoning experiments.",
+    "Prof. Anita Sharma is user's advisor at Cornell but is almost never available, so user should communicate via concise decision memos.",
+    "Wei controls GPU access in the lab and Jonas works on adjacent research ideas.",
+    "User has a $28K/year stipend, is relocating to Seattle, and faces visa renewal stress.",
+    "NeurIPS deadline in November is a key milestone for user's research publication."
+  ],
+  "cornell_compbio_phd_25": [
+    "Prof. Anita Sharma is the PhD advisor at Cornell and is rarely available, requiring concise decision memos.",
+    "The PhD research topic is GNNs for protein-protein interaction prediction in cancer cells.",
+    "Jonas overlaps adjacent research ideas and Wei controls GPU access in the lab.",
+    "The qualifying exam is scheduled for February.",
+    "NeurIPS submission deadline is in November.",
+    "Personal constraints include moving to Seattle, visa renewal stress, and a $28K/year stipend."
+  ],
+  "meridian_pay_pm_01": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "Sarah is supportive but overcommitted, Marcus from compliance blocks progress with KYC concerns, and Tom says the timeline is unrealistic.",
+    "The original timeline promise was 8 weeks.",
+    "Tom estimated 14 weeks for the full project.",
+    "User research with 6 small business owners revealed document upload friction, confusion about acceptable proof types and file formats, and uncertainty about whether users could return later to complete verification.",
+    "Document verification decision involves choosing between building in-house or using Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails."
+  ],
+  "meridian_pay_pm_02": [
+    "PM promised leadership 8-week timeline for Meridian Pay's instant business account opening feature.",
+    "Engineering estimated 14 weeks for the same feature, assuming no compliance surprises.",
+    "Marcus from compliance is blocking progress with KYC concerns.",
+    "User research with 6 small business owners identified document upload friction as the biggest surprise, including confusion about proof requirements, file formats, and whether users could return later.",
+    "The team debated building document verification in-house versus using Persona at $4 per transaction.",
+    "Sarah is supportive of the project but is overcommitted on other work."
+  ],
+  "meridian_pay_pm_03": [
+    "The PM is leading the instant business account opening feature for Meridian Pay.",
+    "Sarah is supportive but overcommitted on the project.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom believes the timeline is unrealistic.",
+    "User research with 6 small business owners found document upload confusion as a major friction point.",
+    "The team is deciding between building document verification in-house or using Persona at $4 per verification."
+  ],
+  "meridian_pay_pm_04": [
+    "User is the PM on Meridian Pay's instant business account opening feature.",
+    "Marcus from compliance blocks features citing KYC and fraud risk concerns.",
+    "Sarah is supportive but overcommitted on the project.",
+    "Tom says the timeline is unrealistic and estimated 14 weeks for delivery.",
+    "User research with 6 small business owners revealed document upload confusion as the biggest friction point in the MVP.",
+    "The team debated document verification between building in-house versus using Persona at $4 per verification."
+  ],
+  "meridian_pay_pm_05": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "Decision: use Persona at $4 per verification for MVP, revisit in-house build after volume data.",
+    "Sarah is supportive but overcommitted; Marcus from compliance blocks with KYC concerns; Tom says timeline is unrealistic.",
+    "User research with 6 small business owners found document upload friction\u2014confusion about acceptable proof types, file formats, and ability to return later.",
+    "Tom estimated 14 weeks for build; leadership heard 8 weeks.",
+    "Original timeline promise was 8 weeks; later reset to phased approach due to scope and stakeholder conflict."
+  ],
+  "meridian_pay_pm_06": [
+    "The PM is responsible for the instant business account opening feature at Meridian Pay with an 8-week timeline.",
+    "Sarah is supportive but overcommitted, Marcus from compliance blocks features due to KYC concerns, and Tom says the timeline is unrealistic.",
+    "The decision is to cut the non-critical admin dashboard and manual review polish to fit the 8-week scope.",
+    "User research with 6 small business owners identified document upload friction as the biggest surprise, with confusion about acceptable proof types, file formats, and whether users could return later.",
+    "The team is debating whether to build document verification in-house or use Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "Tom estimated the realistic timeline at 14 weeks, while leadership committed to 8 weeks, creating a gap that must be resolved through scope reduction, phased rollout, or accepted risk."
+  ],
+  "meridian_pay_pm_07": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "Document upload friction in the current flow is worse than expected, with users confused about proof requirements, file formats, and save-and-resume capability.",
+    "User research with 6 small business owners revealed document upload friction as the biggest surprise (conducted 2026-11-21).",
+    "Tom estimated the timeline at 14 weeks while leadership was told 8 weeks.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "The recommended MVP changes are to redesign the upload flow and add save-and-resume functionality."
+  ],
+  "meridian_pay_pm_08": [
+    "User is the PM on Meridian Pay's instant business account opening feature.",
+    "NovaCash launched a similar feature and received press coverage.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimates the timeline is 14 weeks, but leadership was told 8 weeks.",
+    "User research with 6 small business owners identified document upload confusion as the biggest friction point in the MVP.",
+    "Persona charges $4 per verification for document verification services, with Tom opposing vendor dependency while Marcus trusts vendor audit trails."
+  ],
+  "meridian_pay_pm_09": [
+    "User is PM on Meridian Pay's instant business account opening feature with activation target of 60% (current 34%) and time-to-first-transaction target of 2 days (current 6.2 days).",
+    "Sarah is supportive but overcommitted on the Meridian Pay project.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimates the timeline as unrealistic and originally estimated 14 weeks while leadership heard 8 weeks.",
+    "User research with 6 small business owners revealed document upload friction as the biggest issue, including confusion about what counts as proof, file formats, and whether users could return later.",
+    "Document verification decision: build in-house versus use Persona vendor at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor approach."
+  ],
+  "meridian_pay_pm_10": [
+    "The PM is responsible for the instant business account opening feature at Meridian Pay.",
+    "Sarah is supportive but unavailable and overcommitted.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimates the timeline is unrealistic and originally estimated 14 weeks.",
+    "Document verification options are building in-house versus using Persona at $4 per verification.",
+    "User research with 6 small business owners revealed confusion about document upload requirements, file formats, and whether users could return to complete verification later."
+  ],
+  "meridian_pay_pm_11": [
+    "You are the PM on Meridian Pay's instant business account opening feature.",
+    "Tom pushes back on the timeline and estimated 14 weeks for delivery.",
+    "Leadership was told an 8-week delivery promise that Tom considers unrealistic.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Sarah is supportive of the project but is overcommitted.",
+    "Document upload confusion in user research with 6 small business owners showed people were unclear about accepted proof types, file formats, and whether they could return later to complete verification."
+  ],
+  "meridian_pay_pm_12": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "MVP scope is locked to: KYC intake, Persona verification, bank account creation, and first transaction nudge.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "User research on 2026-12-11 with 6 small business owners revealed document upload friction and confusion around proof requirements, file formats, and resubmission options.",
+    "Document verification decision: build in-house versus use Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "Original timeline promise was 8 weeks; Tom estimated 14 weeks."
+  ],
+  "meridian_pay_pm_13": [
+    "Meridian Pay is building an instant business account opening feature with the user as PM.",
+    "The original 8-week delivery promise is no longer credible.",
+    "The revised timeline plan is 8-week beta launch followed by 14-week general availability.",
+    "Sarah is supportive but overcommitted; Marcus (compliance) blocks progress with KYC concerns; Tom says the timeline is unrealistic.",
+    "User research with 6 small business owners revealed document upload friction as the biggest surprise, including confusion about proof types, file formats, and whether users could resume later.",
+    "The document verification decision is between building in-house or using Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trail."
+  ],
+  "meridian_pay_pm_14": [
+    "User is the PM on Meridian Pay's instant business account opening feature.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimated the timeline at 14 weeks while leadership heard 8 weeks.",
+    "The decision is to define a low-risk cohort for instant approval.",
+    "Document upload friction was identified as the biggest surprise in user research with 6 small business owners.",
+    "Persona charges $4 per verification for document verification services."
+  ],
+  "meridian_pay_pm_15": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "Sarah is supportive but overcommitted; Marcus from compliance blocks with KYC concerns; Tom says the timeline is unrealistic.",
+    "Q4 promotion depends on project evidence and cross-functional leadership.",
+    "Document verification decision: build in-house vs. use Persona at $4 per verification, with Tom opposing vendor dependency.",
+    "User research with 6 small business owners identified document upload friction as the biggest issue, with confusion about acceptable proof formats and resubmission ability.",
+    "Tom estimated 14 weeks for the project while leadership heard an 8-week promise."
+  ],
+  "meridian_pay_pm_16": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "The $4 per verification cost impacts margin and requires cost-benefit modeling against activation lift and fraud risk reduction.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimates the timeline is unrealistic and originally estimated 14 weeks.",
+    "Leadership expects an 8-week delivery promise.",
+    "User research with 6 small business owners revealed document upload friction, including confusion about acceptable proof types, file formats, and whether users could return to complete verification later."
+  ],
+  "meridian_pay_pm_17": [
+    "User is the PM on Meridian Pay's instant business account opening feature.",
+    "Beta missed original timeline but clarified risk as of 2026-10-10.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimates the timeline is unrealistic and quoted 14 weeks.",
+    "User research with 6 small business owners (2026-12-31) identified document upload confusion as the biggest friction point in the MVP.",
+    "Document verification decision is between building in-house or using Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails."
+  ],
+  "meridian_pay_pm_18": [
+    "The PM is leading the instant business account opening feature for Meridian Pay.",
+    "User research with 6 small business owners identified document upload as the biggest friction point, with confusion about acceptable proof types, file formats, and session resumption.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimated a 14-week timeline while leadership committed to 8 weeks.",
+    "The team is debating whether to build document verification in-house or use Persona at $4 per verification.",
+    "The recommended MVP approach is to prioritize mobile upload, examples, and progress state."
+  ],
+  "meridian_pay_pm_19": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "Marcus from compliance blocks progress with KYC concerns and needs earlier involvement with clearly bounded decision rights.",
+    "Tom estimated the timeline at 14 weeks but leadership heard a promise of 8 weeks.",
+    "User research with 6 small business owners identified document upload friction as the biggest surprise, including confusion about accepted proof types, file formats, and ability to return later.",
+    "The document verification decision involves a choice between building in-house or using Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails.",
+    "Sarah is supportive but overcommitted, and prioritizes speed in the document verification decision."
+  ],
+  "meridian_pay_pm_20": [
+    "User is the PM for Meridian Pay's instant business account opening feature.",
+    "Sarah is supportive but overcommitted on the project.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimates the timeline is unrealistic (14 weeks estimated vs 8 weeks promised).",
+    "User research with 6 small business owners identified document upload confusion as the biggest friction point in the MVP.",
+    "The working decision is to ship staged GA to low-risk businesses rather than full launch."
+  ],
+  "meridian_pay_pm_21": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "Current problem: activation improved but time-to-first-transaction (TTF) transaction still lagging.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Document verification decision: build in-house or use Persona at $4 per verification.",
+    "User research with 6 small business owners revealed document upload friction as biggest surprise.",
+    "Original timeline commitment was 8 weeks; Tom estimated 14 weeks."
+  ],
+  "meridian_pay_pm_22": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "Sarah is supportive but overcommitted, Marcus from compliance blocks with KYC concerns, and Tom says the timeline is unrealistic.",
+    "The team is debating document verification: build in-house or use Persona at $4 per verification.",
+    "Tom estimated 14 weeks but leadership heard 8 weeks as the timeline promise.",
+    "User research with 6 small business owners found that document upload friction was the biggest surprise, with confusion about what counts as proof, file formats, and whether users could return later.",
+    "For promotion evidence, evaluation criteria are: ambiguous problem, stakeholder conflict, measurable baseline, decision quality, scope discipline, and impact against activation and time-to-first-transaction."
+  ],
+  "meridian_pay_pm_23": [
+    "User is the PM on Meridian Pay's instant business account opening feature.",
+    "Persona works for document verification but cost may scale poorly at $4 per verification.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimated the timeline at 14 weeks but leadership heard 8 weeks.",
+    "User research with 6 small business owners identified document upload friction as the biggest problem, with confusion over proof types, file formats, and whether users could return later.",
+    "The decision is to keep Persona through GA and start in-house discovery later."
+  ],
+  "meridian_pay_pm_24": [
+    "User is PM on Meridian Pay's instant business account opening feature.",
+    "Marcus from compliance blocks progress with KYC concerns.",
+    "Tom estimates the timeline as 14 weeks and says the original 8-week promise is unrealistic.",
+    "Persona charges $4 per document verification, and Tom opposes adding vendor dependency while Marcus trusts vendor audit trails.",
+    "User research with 6 small business owners identified document upload confusion as the biggest friction point, specifically around what qualifies as proof, file formats, and whether applicants can return later.",
+    "Sarah is supportive of the project but is overcommitted."
+  ],
+  "meridian_pay_pm_25": [
+    "User is PM for Meridian Pay's instant business account opening feature.",
+    "Sarah is supportive but overcommitted; Marcus from compliance blocks progress with KYC concerns; Tom says the timeline is unrealistic.",
+    "User research with 6 small business owners identified document upload friction as the biggest surprise, with confusion about acceptable proof types, file formats, and whether users could return later.",
+    "The original timeline promise was 8 weeks.",
+    "Tom estimated 14 weeks for the project.",
+    "Document verification decision: build in-house versus use Persona at $4 per verification, with Tom opposing vendor dependency and Marcus trusting vendor audit trails."
+  ]
+}

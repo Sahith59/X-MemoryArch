@@ -1,0 +1,827 @@
+[
+  {
+    "session_id": "flowdesk_founder_01",
+    "title": "Conversation 01: Early product discovery for solo lawyers",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-01-13",
+      "2026-05-10"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_02",
+    "title": "Conversation 02: Database debate: Postgres vs MongoDB",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-01-18",
+      "2026-05-15"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_03",
+    "title": "Conversation 03: Auth debate: Clerk vs Auth0 vs custom auth",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-01-23",
+      "2026-05-20"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_04",
+    "title": "Conversation 04: Pricing model debate",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-01-28",
+      "2026-05-25"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_05",
+    "title": "Conversation 05: Ravi\u2019s first sales process struggles",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-02-02",
+      "2026-05-30"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_06",
+    "title": "Conversation 06: Maya overloaded and co-founder strain",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-02-07",
+      "2026-06-04"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_07",
+    "title": "Conversation 07: Pivot after Daniel Chen call",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-02-12",
+      "2026-06-09"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_08",
+    "title": "Conversation 08: Runway and seed round planning",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-02-17",
+      "2026-06-14"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_09",
+    "title": "Conversation 09: Priya frontend scope and deadlines",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-02-22",
+      "2026-06-19"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_10",
+    "title": "Conversation 10: MVP scope cut",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-02-27",
+      "2026-06-24"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_11",
+    "title": "Conversation 11: Customer onboarding workflow",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-03-04",
+      "2026-06-29"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_12",
+    "title": "Conversation 12: Security posture for law firms",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-03-09",
+      "2026-07-04"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_13",
+    "title": "Conversation 13: Seed deck and sales story",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-03-14",
+      "2026-07-09"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_14",
+    "title": "Conversation 14: Beta launch planning",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-03-19",
+      "2026-07-14"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_15",
+    "title": "Conversation 15: Churn and activation",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-03-24",
+      "2026-07-19"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_16",
+    "title": "Conversation 16: Repairing Maya relationship",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-03-29",
+      "2026-07-24"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_17",
+    "title": "Conversation 17: Pricing revision after pilots",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-04-03",
+      "2026-07-29"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_18",
+    "title": "Conversation 18: Investor update drafting",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-04-08",
+      "2026-08-03"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_19",
+    "title": "Conversation 19: Technical debt review",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-04-13",
+      "2026-08-08"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_20",
+    "title": "Conversation 20: Matter/task/document data model",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-04-18",
+      "2026-08-13"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_21",
+    "title": "Conversation 21: Ravi coaching and quota expectations",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-04-23",
+      "2026-08-18"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_22",
+    "title": "Conversation 22: Priya handoff and frontend ownership",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-04-28",
+      "2026-08-23"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_23",
+    "title": "Conversation 23: Seed process and runway stress",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-05-03",
+      "2026-08-28"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_24",
+    "title": "Conversation 24: Pilot feedback synthesis",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-05-08",
+      "2026-09-02"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "flowdesk_founder_25",
+    "title": "Conversation 25: End-of-phase strategic synthesis",
+    "scenario": "software_startup_founder",
+    "project": "FlowDesk",
+    "date_range": [
+      "2026-05-13",
+      "2026-09-07"
+    ],
+    "n_exchanges": 40
+  },
+  {
+    "session_id": "cornell_compbio_phd_01",
+    "title": "Conversation 01: Framing the GNN protein-protein interaction project",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-07-07",
+      "2026-12-30"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_02",
+    "title": "Conversation 02: Baseline model choices",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-07-13",
+      "2027-01-05"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_03",
+    "title": "Conversation 03: STRING DB v12 preprocessing",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-07-19",
+      "2027-01-11"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_04",
+    "title": "Conversation 04: GPU access conflict with Wei",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-07-25",
+      "2027-01-17"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_05",
+    "title": "Conversation 05: Qualifying exam planning",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-07-31",
+      "2027-01-23"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_06",
+    "title": "Conversation 06: Jonas scooping adjacent ideas",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-08-06",
+      "2027-01-29"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_07",
+    "title": "Conversation 07: NeurIPS submission strategy",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-08-12",
+      "2027-02-04"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_08",
+    "title": "Conversation 08: Long-distance relationship stress",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-08-18",
+      "2027-02-10"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_09",
+    "title": "Conversation 09: STRING DB v12 quality issue discovered",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-08-24",
+      "2027-02-16"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_10",
+    "title": "Conversation 10: Recovering after invalidated work",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-08-30",
+      "2027-02-22"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_11",
+    "title": "Conversation 11: Prof. Sharma unavailable",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-09-05",
+      "2027-02-28"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_12",
+    "title": "Conversation 12: Visa renewal issue",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-09-11",
+      "2027-03-06"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_13",
+    "title": "Conversation 13: Methods redesign after dataset issue",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-09-17",
+      "2027-03-12"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_14",
+    "title": "Conversation 14: Paper scope reduction",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-09-23",
+      "2027-03-18"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_15",
+    "title": "Conversation 15: TA position and stipend pressure",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-09-29",
+      "2027-03-24"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_16",
+    "title": "Conversation 16: DeepMind internship vs academia",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-10-05",
+      "2027-03-30"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_17",
+    "title": "Conversation 17: NeurIPS submission crunch",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-10-11",
+      "2027-04-05"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_18",
+    "title": "Conversation 18: Reviewer risk and limitations",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-10-17",
+      "2027-04-11"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_19",
+    "title": "Conversation 19: Alex moves to Seattle",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-10-23",
+      "2027-04-17"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_20",
+    "title": "Conversation 20: Third paper vs finish early",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-10-29",
+      "2027-04-23"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_21",
+    "title": "Conversation 21: Ablations and model interpretation",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-11-04",
+      "2027-04-29"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_22",
+    "title": "Conversation 22: Lab politics with Jonas and Wei",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-11-10",
+      "2027-05-05"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_23",
+    "title": "Conversation 23: Post-submission/rebuttal planning",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-11-16",
+      "2027-05-11"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_24",
+    "title": "Conversation 24: Qualifying exam final preparation",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-11-22",
+      "2027-05-17"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "cornell_compbio_phd_25",
+    "title": "Conversation 25: Six-month research synthesis",
+    "scenario": "phd_student_researcher",
+    "project": "GNN-based protein-protein interaction prediction in cancer cells",
+    "date_range": [
+      "2026-11-28",
+      "2027-05-23"
+    ],
+    "n_exchanges": 45
+  },
+  {
+    "session_id": "meridian_pay_pm_01",
+    "title": "Conversation 01: Instant business account opening kickoff",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-08-07",
+      "2026-10-28"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_02",
+    "title": "Conversation 02: 8-week promise vs 14-week engineering estimate",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-08-11",
+      "2026-11-01"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_03",
+    "title": "Conversation 03: Stakeholder map and org politics",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-08-15",
+      "2026-11-05"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_04",
+    "title": "Conversation 04: Compliance pushback from Marcus",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-08-19",
+      "2026-11-09"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_05",
+    "title": "Conversation 05: Persona vendor vs in-house verification",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-08-23",
+      "2026-11-13"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_06",
+    "title": "Conversation 06: Engineering scope cut discussion",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-08-27",
+      "2026-11-17"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_07",
+    "title": "Conversation 07: User research with six small business owners",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-08-31",
+      "2026-11-21"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_08",
+    "title": "Conversation 08: NovaCash competitor launch pressure",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-09-04",
+      "2026-11-25"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_09",
+    "title": "Conversation 09: Activation and time-to-first-transaction metrics",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-09-08",
+      "2026-11-29"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_10",
+    "title": "Conversation 10: Preparing Sarah update",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-09-12",
+      "2026-12-03"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_11",
+    "title": "Conversation 11: Difficult conversation with Tom",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-09-16",
+      "2026-12-07"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_12",
+    "title": "Conversation 12: Feature scope lock",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-09-20",
+      "2026-12-11"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_13",
+    "title": "Conversation 13: Leadership timeline reset",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-09-24",
+      "2026-12-15"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_14",
+    "title": "Conversation 14: KYC exception debate",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-09-28",
+      "2026-12-19"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_15",
+    "title": "Conversation 15: Promotion review anxiety",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-10-02",
+      "2026-12-23"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_16",
+    "title": "Conversation 16: Persona cost concern",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-10-06",
+      "2026-12-27"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_17",
+    "title": "Conversation 17: Beta post-mortem thinking",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-10-10",
+      "2026-12-31"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_18",
+    "title": "Conversation 18: Document upload redesign",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-10-14",
+      "2027-01-04"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_19",
+    "title": "Conversation 19: Repairing relationship with Marcus",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-10-18",
+      "2027-01-08"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_20",
+    "title": "Conversation 20: GA readiness decision",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-10-22",
+      "2027-01-12"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_21",
+    "title": "Conversation 21: Metric review and learning",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-10-26",
+      "2027-01-16"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_22",
+    "title": "Conversation 22: Executive narrative for promotion",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-10-30",
+      "2027-01-20"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_23",
+    "title": "Conversation 23: Revisiting in-house verification",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-11-03",
+      "2027-01-24"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_24",
+    "title": "Conversation 24: Post-mortem and next-quarter plan",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-11-07",
+      "2027-01-28"
+    ],
+    "n_exchanges": 42
+  },
+  {
+    "session_id": "meridian_pay_pm_25",
+    "title": "Conversation 25: Three-month synthesis",
+    "scenario": "product_manager_org_politics",
+    "project": "Instant business account opening at Meridian Pay",
+    "date_range": [
+      "2026-11-11",
+      "2027-02-01"
+    ],
+    "n_exchanges": 42
+  }
+]

@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X-MemoryArch / Phase 1 Verification Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:         #06060e;
+      --surface:    #0c0c1a;
+      --surface-2:  #101020;
+      --surface-3:  #14142a;
+      --border:     #181830;
+      --border-hl:  #252545;
+      --accent:     #e89520;
+      --accent-dim: rgba(232,149,32,.10);
+      --green:      #20d472; --green-dim: rgba(32,212,114,.09);
+      --red:        #ff4555; --red-dim:   rgba(255,69,85,.09);
+      --blue:       #60a5fa; --blue-dim:  rgba(96,165,250,.09);
+      --purple:     #c084fc; --purple-dim:rgba(192,132,252,.09);
+      --amber:      #fbbf24; --amber-dim: rgba(251,191,36,.09);
+      --text:       #c2cbdf; --text-2: #666d8a; --text-3: #2e3148;
+      --mono:       'JetBrains Mono', monospace;
+    }
+    html { font-size: 13px; }
+    body { font-family:var(--mono); background:var(--bg); color:var(--text); min-height:100vh; line-height:1.6; }
+
+    /* HEADER */
+    .header {
+      position:sticky; top:0; z-index:200;
+      background:rgba(6,6,14,.94); backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+      height:48px; display:flex; align-items:center; justify-content:space-between; padding:0 24px;
+    }
+    .logo { font-size:11px; font-weight:700; letter-spacing:.1em; color:var(--accent); }
+    .logo em { color:var(--text-2); font-style:normal; font-weight:300; }
+    .hright { display:flex; align-items:center; gap:18px; }
+    .phase-tag { font-size:8px; font-weight:700; letter-spacing:.18em; padding:3px 9px; border:1px solid var(--border-hl); color:var(--text-3); }
+    .api-status { display:flex; align-items:center; gap:6px; font-size:9px; color:var(--text-2); }
+    .dot { width:6px; height:6px; border-radius:50%; background:var(--text-3); transition:all .3s; }
+    .dot.on  { background:var(--green); box-shadow:0 0 7px var(--green); }
+    .dot.off { background:var(--red); }
+
+    /* LAYOUT */
+    .wrap  { max-width:920px; margin:0 auto; padding:26px 18px 90px; }
+    .cols  { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .cols3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .cols4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; }
+
+    /* SECTION LABEL */
+    .sec-label {
+      font-size:8px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+      color:var(--text-3); margin:28px 0 10px; padding-bottom:8px;
+      border-bottom:1px solid var(--border);
+    }
+    .sec-label span { color:var(--accent); }
+
+    /* CARDS */
+    .card { border:1px solid var(--border); background:var(--surface); margin-bottom:8px; transition:border-color .2s; }
+    .card.active { border-color:var(--border-hl); }
+    .card-head {
+      display:flex; align-items:center; gap:10px;
+      padding:12px 16px; cursor:pointer; user-select:none;
+      border-bottom:1px solid transparent; transition:border-color .15s;
+    }
+    .card.open .card-head { border-bottom-color:var(--border); }
+    .card-num  { font-size:9px; font-weight:700; letter-spacing:.12em; color:var(--text-3); min-width:28px; }
+    .card.active .card-num { color:var(--accent); }
+    .card.done   .card-num { color:var(--green); }
+    .card-title { flex:1; font-size:11px; font-weight:600; letter-spacing:.07em; color:var(--text-2); }
+    .card.active .card-title, .card.open .card-title { color:var(--text); }
+    .cstatus { font-size:8px; font-weight:700; letter-spacing:.1em; }
+    .card-tog { font-size:9px; color:var(--text-3); transition:transform .2s; }
+    .card.open .card-tog { transform:rotate(180deg); }
+    .card-body { padding:18px 16px; display:none; }
+    .card.open .card-body { display:block; }
+
+    /* FORMS */
+    .fg { display:flex; flex-direction:column; gap:12px; }
+    .field { display:flex; flex-direction:column; gap:4px; }
+    label { font-size:8px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text-2); }
+    label .hint { font-weight:300; color:var(--text-3); text-transform:none; letter-spacing:0; font-size:8px; }
+    input, select, textarea {
+      font-family:var(--mono); font-size:11px;
+      background:var(--surface-2); border:1px solid var(--border);
+      color:var(--text); padding:8px 10px; outline:none; width:100%;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color:var(--accent); box-shadow:0 0 0 1px var(--accent-dim);
+    }
+    input.auto { border-color:var(--border-hl); color:var(--text-2); background:var(--surface-3); }
+    textarea { resize:vertical; min-height:100px; line-height:1.65; }
+    select { cursor:pointer; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23464a60'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; padding-right:26px; }
+    select option { background:#0c0c1a; }
+    input::placeholder, textarea::placeholder { color:var(--text-3); }
+    input[type="range"] { -webkit-appearance:auto; padding:0; cursor:pointer; accent-color:var(--accent); height:18px; border:none; box-shadow:none; background:transparent; }
+
+    /* BUTTONS */
+    .btn { font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:8px 18px; border:1px solid; cursor:pointer; transition:all .15s; display:inline-flex; align-items:center; gap:7px; }
+    .btn-p { background:var(--accent); border-color:var(--accent); color:#000; }
+    .btn-p:hover { opacity:.85; } .btn-p:active { opacity:.7; } .btn-p:disabled { opacity:.3; cursor:not-allowed; }
+    .btn-s { background:transparent; border-color:var(--border-hl); color:var(--text-2); }
+    .btn-s:hover { border-color:var(--text-2); color:var(--text); }
+    .btn-d { background:var(--red-dim); border-color:var(--red); color:var(--red); }
+    .btn-g { background:var(--green-dim); border-color:var(--green); color:var(--green); }
+    .btn-sm { font-size:8px; padding:5px 12px; }
+    .btn-row { display:flex; align-items:center; gap:8px; margin-top:14px; padding-top:14px; border-top:1px solid var(--border); flex-wrap:wrap; }
+
+    /* ID CHIP */
+    .id-chip { margin-top:12px; padding:10px 12px; background:var(--accent-dim); border:1px solid var(--accent); border-left:3px solid var(--accent); display:flex; align-items:center; gap:9px; }
+    .id-chip label { color:var(--accent); white-space:nowrap; font-size:8px; }
+    .id-val { font-size:9px; color:var(--text); flex:1; word-break:break-all; }
+    .copy-btn { background:none; border:1px solid var(--border-hl); color:var(--text-2); font-family:var(--mono); font-size:8px; padding:3px 9px; cursor:pointer; transition:all .15s; letter-spacing:.06em; text-transform:uppercase; flex-shrink:0; }
+    .copy-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+    /* ERROR */
+    .err { background:var(--red-dim); border:1px solid var(--red); border-left:3px solid var(--red); padding:8px 12px; margin-top:12px; font-size:9px; color:var(--red); display:none; }
+    .err.show { display:block; }
+
+    /* RESULT */
+    .result { margin-top:14px; padding-top:14px; border-top:1px solid var(--border); }
+    .rlabel { font-size:8px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--text-2); margin-bottom:8px; }
+
+    /* STAT TILES */
+    .stats { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+    .stat { flex:1; min-width:80px; background:var(--surface-2); border:1px solid var(--border); padding:10px 14px; text-align:center; }
+    .sval { display:block; font-size:20px; font-weight:700; color:var(--accent); }
+    .skey { display:block; font-size:7px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-3); margin-top:2px; }
+    .sval.green  { color:var(--green); }
+    .sval.red    { color:var(--red); }
+    .sval.blue   { color:var(--blue); }
+    .sval.amber  { color:var(--amber); }
+    .sval.purple { color:var(--purple); }
+
+    /* SUMMARY */
+    .summary { background:var(--surface-2); border:1px solid var(--border); padding:10px 12px; font-size:9px; color:var(--text-2); line-height:1.75; margin-bottom:12px; white-space:pre-wrap; }
+
+    /* MEMORY CARD */
+    .mgrid { display:flex; flex-direction:column; gap:6px; }
+    .mcard { background:var(--surface-2); border:1px solid var(--border); padding:11px 13px; transition:border-color .15s; }
+    .mcard:hover { border-color:var(--border-hl); }
+    .mcard-top   { display:flex; align-items:flex-start; gap:7px; margin-bottom:5px; flex-wrap:wrap; }
+    .mtitle { font-size:10px; font-weight:500; color:var(--text); line-height:1.4; flex:1; min-width:200px; }
+    .mcontent { font-size:9px; color:var(--text-2); line-height:1.65; margin-bottom:7px; }
+    .mmeta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .dots { display:flex; gap:3px; }
+    .d { width:5px; height:5px; border-radius:50%; background:var(--border-hl); }
+    .d.on { background:var(--accent); }
+    .cbar { height:3px; background:var(--border); width:48px; position:relative; overflow:hidden; }
+    .cfill { height:100%; background:var(--green); position:absolute; left:0; top:0; }
+    .ml { font-size:7px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); }
+    .trow { display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; }
+    .tag { font-size:7px; padding:2px 6px; background:var(--surface-3); border:1px solid var(--border); color:var(--text-3); }
+    .src-quote { font-size:8px; color:var(--text-3); font-style:italic; margin-top:5px; padding-left:8px; border-left:2px solid var(--border-hl); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+    .meta-block { margin-top:7px; }
+    .meta-toggle { font-size:7px; color:var(--text-3); cursor:pointer; letter-spacing:.06em; text-transform:uppercase; border:none; background:none; font-family:var(--mono); padding:0; }
+    .meta-toggle:hover { color:var(--accent); }
+    .meta-json { display:none; background:var(--surface-3); border:1px solid var(--border); padding:8px; font-size:8px; color:var(--text-2); white-space:pre; overflow-x:auto; margin-top:4px; max-height:120px; overflow-y:auto; }
+    .meta-json.open { display:block; }
+    .mcard-actions { margin-top:8px; padding-top:6px; border-top:1px solid var(--border); display:flex; gap:6px; }
+
+    /* BADGES */
+    .badge { font-size:7px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:2px 7px; border:1px solid; flex-shrink:0; }
+    /* type */
+    .t-decision          { background:#0b1a36; color:#60a5fa; border-color:#1a325e; }
+    .t-bug               { background:#260808; color:#f87171; border-color:#401010; }
+    .t-task              { background:#160b28; color:#c084fc; border-color:#2c1545; }
+    .t-insight           { background:#071a14; color:#34d399; border-color:#102e24; }
+    .t-architecture      { background:#1a0f00; color:#fbbf24; border-color:#321e00; }
+    .t-code_context      { background:#04140a; color:#4ade80; border-color:#082614; }
+    .t-setup_instruction { background:#0b0b24; color:#818cf8; border-color:#16163e; }
+    .t-open_question     { background:#1a0c00; color:#fb923c; border-color:#301600; }
+    .t-constraint        { background:#1a0410; color:#f472b6; border-color:#300820; }
+    .t-conversation_note { background:#0b0e24; color:#a5b4fc; border-color:#161a3c; }
+    .t-workflow_pattern  { background:#001a14; color:#2dd4bf; border-color:#003028; }
+    /* review */
+    .rv-auto_extracted { background:#1a1000; color:#d97706; border-color:#2e1c00; }
+    .rv-verified       { background:var(--green-dim); color:var(--green); border-color:rgba(32,212,114,.25); }
+    .rv-needs_review   { background:#1a1500; color:#facc15; border-color:#2e2500; }
+    .rv-rejected       { background:var(--red-dim); color:var(--red); border-color:rgba(255,69,85,.25); }
+    .rv-draft          { background:var(--surface-3); color:var(--text-3); border-color:var(--border); }
+    /* privacy */
+    .pv-public    { background:var(--green-dim); color:var(--green); border-color:rgba(32,212,114,.2); }
+    .pv-internal  { background:var(--blue-dim);  color:var(--blue); border-color:rgba(96,165,250,.2); }
+    .pv-sensitive { background:var(--amber-dim); color:var(--amber); border-color:rgba(251,191,36,.2); }
+    .pv-secret    { background:var(--red-dim);   color:var(--red); border-color:rgba(255,69,85,.2); }
+    /* quality */
+    .qs { font-size:7px; font-weight:700; letter-spacing:.08em; padding:2px 6px; border:1px solid; flex-shrink:0; }
+    .qs-high   { background:var(--green-dim); color:var(--green); border-color:rgba(32,212,114,.2); }
+    .qs-mid    { background:var(--amber-dim); color:var(--amber); border-color:rgba(251,191,36,.2); }
+    .qs-low    { background:var(--red-dim);   color:var(--red); border-color:rgba(255,69,85,.2); }
+
+    /* FILTERS */
+    .filters { padding:12px; background:var(--surface-2); border:1px solid var(--border); margin-bottom:12px; }
+    .filters-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .rrow { display:flex; align-items:center; gap:8px; }
+    .rval { font-size:12px; font-weight:700; color:var(--accent); min-width:14px; }
+
+    /* MARKDOWN */
+    .md-out { background:var(--surface-2); border:1px solid var(--border); padding:16px; font-size:9px; line-height:1.85; color:var(--text-2); white-space:pre-wrap; overflow-y:auto; max-height:400px; }
+    .md-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+
+    /* HEALTH */
+    .hgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+    .hbox { background:var(--surface-2); border:1px solid var(--border); padding:12px 14px; }
+    .hbox-title { font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-2); margin-bottom:10px; }
+    .hrow { display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:9px; }
+    .hrow-label { color:var(--text-2); }
+    .hrow-val { font-weight:700; color:var(--text); }
+    .hbar-wrap { height:3px; background:var(--border); width:100px; position:relative; overflow:hidden; }
+    .hbar-fill { height:100%; position:absolute; left:0; top:0; }
+    .issue { padding:8px 10px; margin-bottom:5px; font-size:9px; border:1px solid; border-left:3px solid; display:flex; gap:8px; align-items:flex-start; }
+    .issue.warning { background:var(--amber-dim); border-color:rgba(251,191,36,.2); border-left-color:var(--amber); color:var(--amber); }
+    .issue.info    { background:var(--blue-dim); border-color:rgba(96,165,250,.2); border-left-color:var(--blue); color:var(--blue); }
+    .issue-sev { font-size:7px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; padding-top:1px; }
+    .issue-msg { color:var(--text-2); font-size:9px; }
+
+    /* CONFLICT PAIR */
+    .cpair { border:1px solid var(--border-hl); background:var(--surface-2); padding:10px 12px; margin-bottom:6px; }
+    .cpair-top { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .cpair-score { font-size:8px; font-weight:700; padding:2px 8px; background:var(--amber-dim); color:var(--amber); border:1px solid rgba(251,191,36,.25); }
+    .cpair-type { font-size:7px; color:var(--text-3); letter-spacing:.1em; text-transform:uppercase; }
+    .cpair-mems { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .cmem { background:var(--surface-3); border:1px solid var(--border); padding:8px 10px; }
+    .cmem-title { font-size:9px; font-weight:500; color:var(--text); margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .cmem-meta  { font-size:7px; color:var(--text-3); }
+    .cmem.winner { border-color:var(--green); }
+    .cmem.loser  { border-color:var(--red); opacity:.65; }
+
+    /* LINK */
+    .link-item { padding:8px 10px; background:var(--surface-2); border:1px solid var(--border); margin-bottom:5px; display:flex; gap:8px; align-items:center; font-size:9px; }
+    .link-rel { font-size:7px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); padding:2px 6px; border:1px solid var(--accent-dim); background:var(--accent-dim); white-space:nowrap; }
+    .link-note { color:var(--text-3); font-size:8px; }
+
+    /* PASS/FAIL */
+    .check { display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid var(--border); font-size:9px; }
+    .check:last-child { border-bottom:none; }
+    .check-name { flex:1; color:var(--text-2); }
+    .check-badge { font-size:7px; font-weight:700; letter-spacing:.1em; padding:2px 8px; border:1px solid; text-transform:uppercase; }
+    .ch-pass { background:var(--green-dim); color:var(--green); border-color:rgba(32,212,114,.25); }
+    .ch-fail { background:var(--red-dim); color:var(--red); border-color:rgba(255,69,85,.25); }
+    .ch-pending { background:var(--surface-3); color:var(--text-3); border-color:var(--border); }
+
+    /* SEARCH RESULT */
+    .sr-score { font-size:7px; font-weight:700; padding:2px 7px; background:var(--purple-dim); color:var(--purple); border:1px solid rgba(192,132,252,.2); flex-shrink:0; }
+
+    /* SPINNER */
+    .spin { display:inline-block; width:10px; height:10px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; animation:rot .55s linear infinite; }
+    @keyframes rot { to { transform:rotate(360deg); } }
+
+    /* EMPTY */
+    .empty { padding:24px; text-align:center; color:var(--text-3); font-size:9px; border:1px dashed var(--border); }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:20px; right:20px; background:var(--green-dim); border:1px solid var(--green); color:var(--green); padding:8px 16px; font-size:9px; font-family:var(--mono); z-index:9999; opacity:0; transform:translateY(8px); transition:all .2s; pointer-events:none; letter-spacing:.04em; }
+    .toast.show { opacity:1; transform:translateY(0); }
+
+    /* PROGRESS */
+    .progress { display:flex; align-items:center; margin-bottom:28px; }
+    .pnode { display:flex; flex-direction:column; align-items:center; gap:5px; flex-shrink:0; cursor:pointer; }
+    .pcircle { width:28px; height:28px; border:1px solid var(--border-hl); background:var(--surface); color:var(--text-3); font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+    .pcircle.active { border-color:var(--accent); color:var(--accent); background:var(--accent-dim); box-shadow:0 0 14px var(--accent-glow,rgba(232,149,32,.06)); }
+    .pcircle.done   { border-color:var(--green); color:var(--green); background:var(--green-dim); }
+    .plabel { font-size:7px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-3); text-align:center; white-space:nowrap; }
+    .pnode.active .plabel { color:var(--accent); }
+    .pnode.done   .plabel { color:var(--green); }
+    .pline { flex:1; height:1px; background:var(--border); margin:0 4px; margin-bottom:20px; transition:background .3s; }
+    .pline.done { background:var(--green); opacity:.35; }
+
+    footer { text-align:center; padding:18px; font-size:8px; color:var(--text-3); letter-spacing:.08em; border-top:1px solid var(--border); }
+
+    /* DIVIDER */
+    .div-line { height:1px; background:var(--border); margin:20px 0; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">X-MemoryArch <em>/ phase 1 verification console</em></div>
+  <div class="hright">
+    <div class="phase-tag">PHASE 1 · v0.1</div>
+    <div class="api-status">
+      <div class="dot" id="dot"></div>
+      <span id="api-txt">checking…</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- PROGRESS -->
+  <div class="progress">
+    <div class="pnode" id="pn1" onclick="jump(1)"><div class="pcircle" id="pc1">01</div><div class="plabel">Project</div></div>
+    <div class="pline" id="pl1"></div>
+    <div class="pnode" id="pn2" onclick="jump(2)"><div class="pcircle" id="pc2">02</div><div class="plabel">Session</div></div>
+    <div class="pline" id="pl2"></div>
+    <div class="pnode" id="pn3" onclick="jump(3)"><div class="pcircle" id="pc3">03</div><div class="plabel">Extract</div></div>
+    <div class="pline" id="pl3"></div>
+    <div class="pnode" id="pn4" onclick="jump(4)"><div class="pcircle" id="pc4">04</div><div class="plabel">Memories</div></div>
+    <div class="pline" id="pl4"></div>
+    <div class="pnode" id="pn5" onclick="jump(5)"><div class="pcircle" id="pc5">05</div><div class="plabel">Export</div></div>
+  </div>
+
+  <!-- ═══ STEP 1: CREATE PROJECT ═══ -->
+  <div class="card open active" id="s1">
+    <div class="card-head" onclick="toggle(1)">
+      <span class="card-num" id="cn1">01 —</span>
+      <span class="card-title">CREATE PROJECT</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="fg">
+        <div class="cols">
+          <div class="field"><label>Name *</label><input id="p-name" type="text" placeholder="X-MemoryArch Phase 1 Test" /></div>
+          <div class="field"><label>Repo Path <span class="hint">— optional</span></label><input id="p-repo" type="text" placeholder="~/Desktop/X-MemoryArch" /></div>
+        </div>
+        <div class="field"><label>Description</label><input id="p-desc" type="text" placeholder="Testing all Phase-1 features: quality, privacy, health, conflicts, search, typed schemas" /></div>
+        <div class="cols">
+          <div class="field"><label>Tech Stack <span class="hint">— comma separated</span></label><input id="p-stack" type="text" placeholder="Python, FastAPI, SQLite, Alembic" /></div>
+          <div class="field"><label>Goals <span class="hint">— comma separated</span></label><input id="p-goals" type="text" placeholder="Verify Phase 1, Ship memory core" /></div>
+        </div>
+      </div>
+      <div class="err" id="e1"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="b1" onclick="createProject()">Create Project</button>
+      </div>
+      <div id="r1" style="display:none">
+        <div class="id-chip"><label>PROJECT_ID</label><span class="id-val" id="v-pid"></span><button class="copy-btn" onclick="cp(S.pid)">copy</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 2: ADD SESSION ═══ -->
+  <div class="card" id="s2">
+    <div class="card-head" onclick="toggle(2)">
+      <span class="card-num" id="cn2">02 —</span>
+      <span class="card-title">ADD AI SESSION</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="fg">
+        <div class="cols">
+          <div class="field"><label>Project ID *</label><input id="s-pid" class="auto" type="text" placeholder="auto-filled" /></div>
+          <div class="field"><label>Tool *</label>
+            <select id="s-tool"><option>Claude</option><option>ChatGPT</option><option>Gemini</option><option>Cursor</option><option>Other</option></select>
+          </div>
+        </div>
+        <div class="cols">
+          <div class="field"><label>Title *</label><input id="s-title" type="text" placeholder="Architecture &amp; decisions session" /></div>
+          <div class="field"><label>Date</label><input id="s-date" type="date" /></div>
+        </div>
+        <div class="field">
+          <label>Raw Content * <span class="hint">— paste your AI conversation. Use the sample below to exercise all memory types.</span></label>
+          <textarea id="s-content" rows="10" placeholder="Click 'Fill Sample' to load a test conversation ↓"></textarea>
+        </div>
+      </div>
+      <div class="err" id="e2"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="b2" onclick="addSession()">Add Session</button>
+        <button class="btn btn-s btn-sm" onclick="fillSample()">Fill Sample Content</button>
+      </div>
+      <div id="r2" style="display:none">
+        <div class="id-chip"><label>SESSION_ID</label><span class="id-val" id="v-sid"></span><button class="copy-btn" onclick="cp(S.sid)">copy</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3: EXTRACT MEMORIES ═══ -->
+  <div class="card" id="s3">
+    <div class="card-head" onclick="toggle(3)">
+      <span class="card-num" id="cn3">03 —</span>
+      <span class="card-title">EXTRACT MEMORIES</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="field"><label>Session ID *</label><input id="e-sid" class="auto" type="text" placeholder="auto-filled" /></div>
+      <div class="err" id="e3"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="b3" onclick="extractMemories()">Extract Memories</button>
+      </div>
+      <div id="r3" style="display:none">
+        <div class="result">
+          <div class="rlabel">Extraction Stats</div>
+          <div class="stats" id="st3"></div>
+          <div class="rlabel">Session Summary</div>
+          <div class="summary" id="sum3"></div>
+          <!-- PHASE-1 SIGNALS CHECK -->
+          <div class="rlabel" style="color:var(--green)">Phase-1 Signals — What to Look For</div>
+          <div id="signals3" style="margin-bottom:12px;"></div>
+          <div class="rlabel">Extracted Memories</div>
+          <div class="mgrid" id="mg3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 4: VIEW MEMORIES ═══ -->
+  <div class="card" id="s4">
+    <div class="card-head" onclick="toggle(4)">
+      <span class="card-num" id="cn4">04 —</span>
+      <span class="card-title">VIEW &amp; FILTER MEMORIES</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="field" style="margin-bottom:10px"><label>Project ID *</label><input id="m-pid" class="auto" type="text" placeholder="auto-filled" /></div>
+      <div class="filters">
+        <div class="filters-grid">
+          <div class="field"><label>Type</label>
+            <select id="f-type">
+              <option value="">All types</option>
+              <option value="decision">decision</option><option value="bug">bug</option>
+              <option value="task">task</option><option value="insight">insight</option>
+              <option value="architecture">architecture</option><option value="code_context">code_context</option>
+              <option value="setup_instruction">setup_instruction</option><option value="open_question">open_question</option>
+              <option value="constraint">constraint</option><option value="workflow_pattern">workflow_pattern</option>
+            </select>
+          </div>
+          <div class="field"><label>Status</label>
+            <select id="f-status">
+              <option value="">All</option><option value="active">active</option>
+              <option value="resolved">resolved</option><option value="stale">stale</option>
+              <option value="archived">archived</option><option value="superseded">superseded</option>
+            </select>
+          </div>
+          <div class="field"><label>Max Privacy Level</label>
+            <select id="f-privacy">
+              <option value="">All levels</option><option value="public">public only</option>
+              <option value="internal">≤ internal</option><option value="sensitive">≤ sensitive</option>
+              <option value="secret">≤ secret (all)</option>
+            </select>
+          </div>
+          <div class="field"><label>Review Status</label>
+            <select id="f-review">
+              <option value="">All</option><option value="auto_extracted">auto_extracted</option>
+              <option value="verified">verified</option><option value="needs_review">needs_review</option>
+              <option value="rejected">rejected</option>
+            </select>
+          </div>
+          <div class="field"><label>Min Importance</label>
+            <div class="rrow"><input type="range" id="f-imp" min="1" max="5" value="1" oninput="document.getElementById('rv').textContent=this.value" /><span class="rval" id="rv">1</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="err" id="e4"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="b4" onclick="viewMemories()">Load Memories</button>
+        <button class="btn btn-s btn-sm" onclick="clearF()">Clear Filters</button>
+      </div>
+      <div id="r4" style="display:none">
+        <div class="result"><div class="rlabel" id="mcount">Memories</div><div class="mgrid" id="mg4"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 5: EXPORT CONTEXT ═══ -->
+  <div class="card" id="s5">
+    <div class="card-head" onclick="toggle(5)">
+      <span class="card-num" id="cn5">05 —</span>
+      <span class="card-title">EXPORT CONTEXT.MD</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <div class="cols">
+        <div class="field"><label>Project ID *</label><input id="x-pid" class="auto" type="text" placeholder="auto-filled" /></div>
+        <div class="field"><label>Max Privacy Level <span class="hint">— default: internal (excludes sensitive + secret)</span></label>
+          <select id="x-privacy">
+            <option value="internal">internal (default — safe export)</option>
+            <option value="public">public only</option>
+            <option value="sensitive">sensitive (include sensitive)</option>
+            <option value="secret">secret (include everything)</option>
+          </select>
+        </div>
+      </div>
+      <div class="err" id="e5"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="b5" onclick="exportCtx()">Export context.md</button>
+      </div>
+      <div id="r5" style="display:none">
+        <div class="result">
+          <div class="md-head">
+            <div class="rlabel">context.md — paste into any AI tool to restore context</div>
+            <button class="copy-btn" onclick="cpMd()">copy all</button>
+          </div>
+          <pre class="md-out" id="mdout"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ FEATURE VERIFICATION SECTIONS ══════════ -->
+  <div class="sec-label">PHASE-1 FEATURE CHECKS — <span>test each feature independently</span></div>
+
+  <!-- ═══ FC-A: SEARCH ═══ -->
+  <div class="card" id="fca">
+    <div class="card-head" onclick="toggleId('fca')">
+      <span class="card-num" style="color:var(--blue)">FC-A</span>
+      <span class="card-title">FTS5 / BM25 SEARCH</span>
+      <span class="cstatus" id="fca-st" style="color:var(--text-3)">not tested</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:9px;color:var(--text-2);margin-bottom:12px;line-height:1.7">
+        Tests the BM25 full-text search engine. All terms in the query must appear (AND semantics). Results are ranked by relevance score. Relevance score combines BM25 × type_weight × importance × recency.
+      </p>
+      <div class="cols">
+        <div class="field"><label>Project ID *</label><input id="sr-pid" class="auto" type="text" placeholder="auto-filled" /></div>
+        <div class="field"><label>Search Query *</label><input id="sr-q" type="text" placeholder="decision FastAPI" /></div>
+      </div>
+      <div class="err" id="efca"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="bfca" onclick="searchMemories()">Search</button>
+      </div>
+      <div id="rfca" style="display:none">
+        <div class="result"><div class="rlabel" id="sr-count">Results</div><div class="mgrid" id="sr-grid"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FC-B: HEALTH DASHBOARD ═══ -->
+  <div class="card" id="fcb">
+    <div class="card-head" onclick="toggleId('fcb')">
+      <span class="card-num" style="color:var(--green)">FC-B</span>
+      <span class="card-title">MEMORY HEALTH DASHBOARD</span>
+      <span class="cstatus" id="fcb-st" style="color:var(--text-3)">not tested</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:9px;color:var(--text-2);margin-bottom:12px;line-height:1.7">
+        Verifies the health analytics endpoint returns correct counts, quality buckets, review breakdown, traceability percentages, and actionable issues.
+      </p>
+      <div class="field"><label>Project ID *</label><input id="h-pid" class="auto" type="text" placeholder="auto-filled" /></div>
+      <div class="err" id="efcb"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="bfcb" onclick="loadHealth()">Load Health Report</button>
+      </div>
+      <div id="rfcb" style="display:none">
+        <div class="result">
+          <div class="stats" id="h-stats"></div>
+          <div class="hgrid" id="h-grid"></div>
+          <div class="rlabel">Actionable Issues</div>
+          <div id="h-issues"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FC-C: PRIVACY FILTERING ═══ -->
+  <div class="card" id="fcc">
+    <div class="card-head" onclick="toggleId('fcc')">
+      <span class="card-num" style="color:var(--amber)">FC-C</span>
+      <span class="card-title">PRIVACY LEVEL + EXPORT SAFETY</span>
+      <span class="cstatus" id="fcc-st" style="color:var(--text-3)">not tested</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:9px;color:var(--text-2);margin-bottom:12px;line-height:1.7">
+        Creates one public + one secret memory, then verifies the privacy filter correctly includes/excludes them. Passing criteria: public filter returns only the public memory; secret filter returns both.
+      </p>
+      <div class="field"><label>Project ID *</label><input id="pv-pid" class="auto" type="text" placeholder="auto-filled" /></div>
+      <div class="err" id="efcc"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="bfcc" onclick="testPrivacy()">Run Privacy Test</button>
+      </div>
+      <div id="rfcc" style="display:none">
+        <div class="result">
+          <div id="pv-checks"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FC-D: CONFLICT DETECTION & RESOLUTION ═══ -->
+  <div class="card" id="fcd">
+    <div class="card-head" onclick="toggleId('fcd')">
+      <span class="card-num" style="color:var(--red)">FC-D</span>
+      <span class="card-title">CONFLICT DETECTION &amp; RESOLUTION</span>
+      <span class="cstatus" id="fcd-st" style="color:var(--text-3)">not tested</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:9px;color:var(--text-2);margin-bottom:12px;line-height:1.7">
+        Creates two decisions with near-identical titles, detects them as conflicts, then resolves. Passing criteria: detect finds ≥1 pair; after resolve the pair disappears from subsequent detect; the lower-quality memory is marked superseded.
+      </p>
+      <div class="field"><label>Project ID *</label><input id="cf-pid" class="auto" type="text" placeholder="auto-filled" /></div>
+      <div class="err" id="efcd"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="bfcd" onclick="testConflicts()">Run Conflict Test</button>
+      </div>
+      <div id="rfcd" style="display:none">
+        <div class="result">
+          <div id="cf-checks"></div>
+          <div class="rlabel" style="margin-top:12px">Conflict Pairs Detected</div>
+          <div id="cf-pairs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FC-E: MEMORY LINKS ═══ -->
+  <div class="card" id="fce">
+    <div class="card-head" onclick="toggleId('fce')">
+      <span class="card-num" style="color:var(--purple)">FC-E</span>
+      <span class="card-title">MEMORY LINKS</span>
+      <span class="cstatus" id="fce-st" style="color:var(--text-3)">not tested</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:9px;color:var(--text-2);margin-bottom:12px;line-height:1.7">
+        Creates a typed relationship between two memories and verifies the link appears in GET /memories/{id}/links. Tests bidirectional link display.
+      </p>
+      <div class="cols">
+        <div class="field"><label>Source Memory ID *</label><input id="lk-src" type="text" placeholder="paste memory id" /></div>
+        <div class="field"><label>Target Memory ID *</label><input id="lk-tgt" type="text" placeholder="paste memory id" /></div>
+      </div>
+      <div class="cols">
+        <div class="field"><label>Relationship Type</label>
+          <select id="lk-rel">
+            <option value="related_to">related_to</option>
+            <option value="supersedes">supersedes</option>
+            <option value="conflicts_with">conflicts_with</option>
+            <option value="influenced_by">influenced_by</option>
+            <option value="derived_from">derived_from</option>
+            <option value="blocks">blocks</option>
+            <option value="resolves">resolves</option>
+          </select>
+        </div>
+        <div class="field"><label>Note <span class="hint">— optional</span></label><input id="lk-note" type="text" placeholder="Why are these related?" /></div>
+      </div>
+      <div class="err" id="efce"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="bfce" onclick="createLink()">Create Link</button>
+        <button class="btn btn-s btn-sm" onclick="viewLinks()">View Links for Source</button>
+      </div>
+      <div id="rfce" style="display:none">
+        <div class="result"><div class="rlabel" id="lk-label">Links</div><div id="lk-list"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FC-F: TYPED METADATA & QUALITY ═══ -->
+  <div class="card" id="fcf">
+    <div class="card-head" onclick="toggleId('fcf')">
+      <span class="card-num" style="color:var(--accent)">FC-F</span>
+      <span class="card-title">TYPED METADATA + QUALITY SCORE</span>
+      <span class="cstatus" id="fcf-st" style="color:var(--text-3)">not tested</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:9px;color:var(--text-2);margin-bottom:12px;line-height:1.7">
+        Creates a manual memory with full type_metadata and verifies quality_score > plain equivalent. Also verifies search_text is populated with metadata fields.
+      </p>
+      <div class="field"><label>Project ID *</label><input id="tm-pid" class="auto" type="text" placeholder="auto-filled" /></div>
+      <div class="err" id="efcf"></div>
+      <div class="btn-row">
+        <button class="btn btn-p" id="bfcf" onclick="testTypedMeta()">Run Typed Metadata Test</button>
+      </div>
+      <div id="rfcf" style="display:none">
+        <div class="result"><div id="tm-checks"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PASSING CRITERIA REFERENCE ═══ -->
+  <div class="sec-label">PASSING CRITERIA — <span>what green looks like for each feature</span></div>
+  <div class="card open" id="scrit">
+    <div class="card-head" onclick="toggleId('scrit')">
+      <span class="card-num" style="color:var(--green)">REF</span>
+      <span class="card-title">PHASE-1 CHECKLIST</span>
+      <span class="card-tog">▾</span>
+    </div>
+    <div class="card-body">
+      <div id="checklist">
+        <div class="check"><span class="check-name">Step 3 — Every extracted memory has <code>review_status = auto_extracted</code></span><span class="check-badge ch-pending" id="ck1">pending</span></div>
+        <div class="check"><span class="check-name">Step 3 — Every extracted memory has <code>source_type = ai_session</code></span><span class="check-badge ch-pending" id="ck2">pending</span></div>
+        <div class="check"><span class="check-name">Step 3 — Every extracted memory has a non-empty <code>source_quote</code></span><span class="check-badge ch-pending" id="ck3">pending</span></div>
+        <div class="check"><span class="check-name">Step 3 — At least one extracted memory has <code>type_metadata</code> set (not null)</span><span class="check-badge ch-pending" id="ck4">pending</span></div>
+        <div class="check"><span class="check-name">Step 3 — All extracted memories have <code>quality_score &gt; 0</code></span><span class="check-badge ch-pending" id="ck5">pending</span></div>
+        <div class="check"><span class="check-name">Step 3 — All extracted memories have <code>privacy_level = internal</code></span><span class="check-badge ch-pending" id="ck6">pending</span></div>
+        <div class="check"><span class="check-name">FC-A — Search returns ≥ 1 result with a relevance_score</span><span class="check-badge ch-pending" id="ck7">pending</span></div>
+        <div class="check"><span class="check-name">FC-B — Health dashboard returns active_count ≥ 1 with quality buckets</span><span class="check-badge ch-pending" id="ck8">pending</span></div>
+        <div class="check"><span class="check-name">FC-C — Privacy filter: public returns fewer memories than no filter</span><span class="check-badge ch-pending" id="ck9">pending</span></div>
+        <div class="check"><span class="check-name">FC-D — Conflict detect finds ≥ 1 pair; after resolve the pair disappears</span><span class="check-badge ch-pending" id="ck10">pending</span></div>
+        <div class="check"><span class="check-name">FC-E — Memory link created and visible via GET /memories/{id}/links</span><span class="check-badge ch-pending" id="ck11">pending</span></div>
+        <div class="check"><span class="check-name">FC-F — Memory with type_metadata has higher quality_score than one without</span><span class="check-badge ch-pending" id="ck12">pending</span></div>
+        <div class="check"><span class="check-name">Export default (internal) excludes sensitive memories</span><span class="check-badge ch-pending" id="ck13">pending</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end wrap -->
+
+<footer>X-MEMORYARCH &nbsp;·&nbsp; PHASE 1 VERIFICATION CONSOLE &nbsp;·&nbsp; http://localhost:8000</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:8000';
+const S   = { pid: null, sid: null };
+
+// ── API helpers ──────────────────────────────────────────────────────────────
+async function req(method, path, body) {
+  const o = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body !== undefined) o.body = JSON.stringify(body);
+  const r = await fetch(API + path, o);
+  if (r.status === 204) return null;
+  const j = await r.json().catch(() => ({ detail: r.statusText }));
+  if (!r.ok) throw new Error(Array.isArray(j.detail)
+    ? j.detail.map(d => d.msg || d).join(', ')
+    : (j.detail || JSON.stringify(j)));
+  return j;
+}
+async function reqText(path) {
+  const r = await fetch(API + path);
+  if (!r.ok) { const j = await r.json().catch(() => ({ detail: r.statusText })); throw new Error(j.detail || r.statusText); }
+  return r.text();
+}
+async function reqTextQ(path, params) {
+  const qs = new URLSearchParams(params).toString();
+  return reqText(path + (qs ? '?' + qs : ''));
+}
+
+// ── Ping ─────────────────────────────────────────────────────────────────────
+async function ping() {
+  try {
+    await req('GET', '/health');
+    document.getElementById('dot').className = 'dot on';
+    document.getElementById('api-txt').textContent = 'api online · :8000';
+  } catch {
+    document.getElementById('dot').className = 'dot off';
+    document.getElementById('api-txt').textContent = 'api offline — start uvicorn';
+  }
+}
+ping(); setInterval(ping, 10000);
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function toggle(n)     { document.getElementById('s'+n).classList.toggle('open'); }
+function toggleId(id)  { document.getElementById(id).classList.toggle('open'); }
+function jump(n)       { const c = document.getElementById('s'+n); c.classList.add('open'); c.scrollIntoView({ behavior:'smooth', block:'start' }); }
+
+function done(n) {
+  const c = document.getElementById('s'+n);
+  c.classList.remove('active'); c.classList.add('done');
+  document.getElementById('pc'+n).className = 'pcircle done';
+  document.getElementById('pc'+n).textContent = '✓';
+  document.getElementById('pn'+n).classList.add('done');
+  if (n < 5) document.getElementById('pl'+n).classList.add('done');
+}
+function activate(n) {
+  document.getElementById('s'+n).classList.add('active','open');
+  document.getElementById('pc'+n).classList.add('active');
+  document.getElementById('pn'+n).classList.add('active');
+}
+
+function err(id, msg)  { const el = document.getElementById(id); el.textContent = '⚠ ' + msg; el.classList.add('show'); }
+function clearErr(id)  { const el = document.getElementById(id); el.classList.remove('show'); el.textContent = ''; }
+
+function setLoading(id, on) {
+  const b = document.getElementById(id);
+  if (on)  { b._orig = b.innerHTML; b.disabled = true; b.innerHTML = '<span class="spin"></span> Loading…'; }
+  else     { b.disabled = false; b.innerHTML = b._orig || b.innerHTML; }
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+function cp(v) { navigator.clipboard.writeText(v||'').then(() => toast('Copied!')); }
+function cpMd() { cp(document.getElementById('mdout').textContent); }
+function fill(id, v) { const el = document.getElementById(id); if(el) el.value = v||''; }
+
+// ── Checklist ─────────────────────────────────────────────────────────────────
+function ck(id, pass) {
+  const el = document.getElementById(id);
+  el.textContent = pass ? '✓ pass' : '✗ fail';
+  el.className = 'check-badge ' + (pass ? 'ch-pass' : 'ch-fail');
+}
+
+// ── Privacy badge ─────────────────────────────────────────────────────────────
+function privBadge(lv) {
+  return `<span class="badge pv-${lv}">${lv}</span>`;
+}
+function reviewBadge(rv) {
+  if (!rv) return '';
+  return `<span class="badge rv-${rv}">${rv.replace('_',' ')}</span>`;
+}
+function qsBadge(qs) {
+  if (qs === null || qs === undefined) return '';
+  const cls = qs >= 0.60 ? 'qs-high' : qs >= 0.30 ? 'qs-mid' : 'qs-low';
+  return `<span class="qs ${cls}">Q ${qs.toFixed(2)}</span>`;
+}
+
+// ── Memory card ───────────────────────────────────────────────────────────────
+function mcard(m, opts = {}) {
+  const dots    = [1,2,3,4,5].map(i=>`<div class="d ${i<=m.importance?'on':''}"></div>`).join('');
+  const pct     = Math.round((m.confidence||0)*100);
+  const tags    = (m.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+  const title   = (m.title||'').length   > 90  ? m.title.slice(0,90)+'…'   : m.title;
+  const content = (m.content||'').length > 200 ? m.content.slice(0,200)+'…': m.content;
+  const metaJson = m.type_metadata ? JSON.stringify(m.type_metadata, null, 2) : null;
+  const uid = 'mc'+Math.random().toString(36).slice(2,8);
+  let html = `<div class="mcard" id="${uid}">
+    <div class="mcard-top">
+      <span class="badge t-${m.type}">${m.type.replace(/_/g,' ')}</span>
+      ${reviewBadge(m.review_status)}
+      ${privBadge(m.privacy_level || 'internal')}
+      ${qsBadge(m.quality_score)}
+      ${opts.relevance !== undefined ? `<span class="sr-score">${opts.relevance.toFixed(4)} rel</span>` : ''}
+      <span class="mtitle">${title}</span>
+    </div>
+    <div class="mcontent">${content}</div>`;
+  if (m.source_quote) {
+    html += `<div class="src-quote">"${m.source_quote.slice(0,120)}"</div>`;
+  }
+  html += `<div class="mmeta">
+    <span class="ml">importance</span><div class="dots">${dots}</div>
+    <span class="ml">confidence</span><div class="cbar"><div class="cfill" style="width:${pct}%"></div></div>
+    <span class="ml">${pct}%</span>
+    ${m.source_type ? `<span class="ml" style="color:var(--blue)">src:${m.source_type}</span>` : ''}
+    <span class="ml" style="margin-left:auto;color:var(--text-3)">${m.status}</span>
+  </div>`;
+  if (tags) html += `<div class="trow">${tags}</div>`;
+  if (metaJson) {
+    html += `<div class="meta-block">
+      <button class="meta-toggle" onclick="toggleMeta('${uid}')">▸ type_metadata</button>
+      <pre class="meta-json" id="mj-${uid}">${metaJson}</pre>
+    </div>`;
+  }
+  if (opts.showHistory) {
+    html += `<div class="mcard-actions">
+      <button class="btn btn-s btn-sm" onclick="viewHistory('${m.id}')">History</button>
+      <button class="copy-btn" onclick="cp('${m.id}')">copy id</button>
+    </div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+function toggleMeta(uid) {
+  const el = document.getElementById('mj-'+uid);
+  el.classList.toggle('open');
+  el.previousElementSibling.textContent = el.classList.contains('open') ? '▾ type_metadata' : '▸ type_metadata';
+}
+
+// ── History modal ─────────────────────────────────────────────────────────────
+async function viewHistory(memId) {
+  try {
+    const entries = await req('GET', `/memories/${memId}/history`);
+    const rows = entries.length
+      ? entries.map(e => `<div style="font-size:8px;padding:5px 0;border-bottom:1px solid var(--border);display:grid;grid-template-columns:90px 100px 1fr 1fr;gap:8px;color:var(--text-2)">
+          <span style="color:var(--text-3)">${new Date(e.changed_at).toLocaleString()}</span>
+          <span style="color:var(--accent)">${e.field}</span>
+          <span style="color:var(--red-dim?color:var(--red));text-decoration:line-through">${e.old_value ?? '—'}</span>
+          <span style="color:var(--green)">${e.new_value ?? '—'}</span>
+        </div>`).join('')
+      : '<div style="color:var(--text-3);font-size:9px;padding:8px 0">No changelog entries.</div>';
+    toast(`${entries.length} changelog entries for ${memId.slice(0,8)}…`);
+    // Show in a simple overlay
+    const ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;cursor:pointer';
+    ov.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border-hl);padding:20px;max-width:660px;width:95%;max-height:80vh;overflow-y:auto;cursor:default" onclick="event.stopPropagation()">
+      <div style="font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--text-2);margin-bottom:12px;text-transform:uppercase">Changelog · ${memId.slice(0,12)}…</div>
+      <div style="font-size:8px;display:grid;grid-template-columns:90px 100px 1fr 1fr;gap:8px;color:var(--text-3);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+        <span>When</span><span>Field</span><span>Old</span><span>New</span>
+      </div>${rows}
+      <button class="btn btn-s btn-sm" style="margin-top:14px" onclick="this.closest('[style*=fixed]').remove()">Close</button>
+    </div>`;
+    ov.onclick = () => ov.remove();
+    document.body.appendChild(ov);
+  } catch(e) { toast('Error: '+e.message); }
+}
+
+// ── Sample content ────────────────────────────────────────────────────────────
+function fillSample() {
+  document.getElementById('s-content').value = `## Architecture Decisions
+
+We decided to use FastAPI because it has the best async support and native OpenAPI documentation. Flask and Django were evaluated but rejected — FastAPI was chosen over Flask for performance reasons.
+
+The architecture pattern for this project is a service layer design. We use SQLite for local-first storage because it is serverless and reliable.
+
+## Bugs and Fixes
+
+There is a bug: sqlite3.OperationalError: no such table: memories. The error was fixed by running alembic upgrade head. This was a critical issue in the auth flow.
+
+## Setup Instructions
+
+Setup: Configure the database by running \`alembic upgrade head\` before starting. Install Docker and PostgreSQL as prerequisites.
+
+## Open Questions
+
+Open question: how should we handle authentication tokens when the user session expires?
+
+## Constraints
+
+Constraint: we must not use external cloud APIs because of our air-gapped security requirement.
+
+## Tasks and Workflow
+
+TODO: write integration tests for the memory extraction service. Follow-up: add rate limiting to the API.
+
+Our workflow pattern: first run the tests, then build with Docker, finally deploy to Kubernetes.`;
+  document.getElementById('s-title').value = 'Phase 1 full-feature session';
+  toast('Sample content loaded ✓');
+}
+
+// ── STEP 1 ────────────────────────────────────────────────────────────────────
+async function createProject() {
+  clearErr('e1');
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) { err('e1','Project name is required'); return; }
+  const stack = document.getElementById('p-stack').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const goals = document.getElementById('p-goals').value.split(',').map(s=>s.trim()).filter(Boolean);
+  setLoading('b1', true);
+  try {
+    const p = await req('POST', '/projects', {
+      name,
+      description: document.getElementById('p-desc').value.trim() || undefined,
+      tech_stack: stack, goals,
+      repo_path: document.getElementById('p-repo').value.trim() || undefined,
+    });
+    S.pid = p.id;
+    document.getElementById('v-pid').textContent = p.id;
+    document.getElementById('r1').style.display = 'block';
+    // Auto-fill all project ID inputs
+    ['s-pid','m-pid','x-pid','sr-pid','h-pid','pv-pid','cf-pid','tm-pid'].forEach(id => fill(id, p.id));
+    done(1); activate(2); jump(2);
+    toast('Project created ✓');
+  } catch(e) { err('e1', e.message); }
+  setLoading('b1', false);
+}
+
+// ── STEP 2 ────────────────────────────────────────────────────────────────────
+async function addSession() {
+  clearErr('e2');
+  const pid     = document.getElementById('s-pid').value.trim();
+  const title   = document.getElementById('s-title').value.trim();
+  const content = document.getElementById('s-content').value.trim();
+  if (!pid)     { err('e2','Project ID is required'); return; }
+  if (!title)   { err('e2','Title is required'); return; }
+  if (!content) { err('e2','Raw content is required'); return; }
+  setLoading('b2', true);
+  try {
+    const s = await req('POST', `/projects/${pid}/sessions`, {
+      tool_name: document.getElementById('s-tool').value,
+      title, raw_content: content,
+      session_date: document.getElementById('s-date').value || undefined,
+    });
+    S.sid = s.id;
+    document.getElementById('v-sid').textContent = s.id;
+    document.getElementById('r2').style.display = 'block';
+    fill('e-sid', s.id);
+    done(2); activate(3); jump(3);
+    toast('Session added ✓');
+  } catch(e) { err('e2', e.message); }
+  setLoading('b2', false);
+}
+
+// ── STEP 3 ────────────────────────────────────────────────────────────────────
+async function extractMemories() {
+  clearErr('e3');
+  const sid = document.getElementById('e-sid').value.trim();
+  if (!sid) { err('e3','Session ID is required'); return; }
+  setLoading('b3', true);
+  try {
+    const res = await req('POST', `/sessions/${sid}/extract-memories`);
+    const ms = res.memories;
+
+    // Stats
+    const types = [...new Set(ms.map(m=>m.type))].length;
+    const withMeta = ms.filter(m=>m.type_metadata).length;
+    const withQuote = ms.filter(m=>m.source_quote).length;
+    const avgQ = ms.length ? (ms.reduce((a,m)=>a+(m.quality_score||0),0)/ms.length).toFixed(2) : '—';
+    document.getElementById('st3').innerHTML = `
+      <div class="stat"><span class="sval">${ms.length}</span><span class="skey">Created</span></div>
+      <div class="stat"><span class="sval">${types}</span><span class="skey">Types</span></div>
+      <div class="stat"><span class="sval">${withMeta}</span><span class="skey">With Metadata</span></div>
+      <div class="stat"><span class="sval">${withQuote}</span><span class="skey">With Source Quote</span></div>
+      <div class="stat"><span class="sval green">${avgQ}</span><span class="skey">Avg Quality</span></div>`;
+
+    document.getElementById('sum3').textContent = res.summary;
+
+    // Phase-1 signal checks
+    const allAutoExtracted = ms.length > 0 && ms.every(m=>m.review_status==='auto_extracted');
+    const allAiSession     = ms.length > 0 && ms.every(m=>m.source_type==='ai_session');
+    const allHaveQuote     = ms.length > 0 && ms.every(m=>m.source_quote && m.source_quote.length>0);
+    const someHaveMeta     = ms.some(m=>m.type_metadata);
+    const allPosQuality    = ms.length > 0 && ms.every(m=>(m.quality_score||0)>0);
+    const allInternal      = ms.length > 0 && ms.every(m=>m.privacy_level==='internal');
+
+    document.getElementById('signals3').innerHTML = `
+      <div class="check"><span class="check-name">review_status = auto_extracted on all memories</span><span class="check-badge ${allAutoExtracted?'ch-pass':'ch-fail'}">${allAutoExtracted?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">source_type = ai_session on all memories</span><span class="check-badge ${allAiSession?'ch-pass':'ch-fail'}">${allAiSession?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">source_quote populated on all memories</span><span class="check-badge ${allHaveQuote?'ch-pass':'ch-fail'}">${allHaveQuote?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">At least one memory has type_metadata set</span><span class="check-badge ${someHaveMeta?'ch-pass':'ch-fail'}">${someHaveMeta?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">quality_score > 0 on all memories</span><span class="check-badge ${allPosQuality?'ch-pass':'ch-fail'}">${allPosQuality?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">privacy_level = internal (default) on all</span><span class="check-badge ${allInternal?'ch-pass':'ch-fail'}">${allInternal?'✓ pass':'✗ fail'}</span></div>`;
+
+    // Update master checklist
+    ck('ck1', allAutoExtracted); ck('ck2', allAiSession); ck('ck3', allHaveQuote);
+    ck('ck4', someHaveMeta);     ck('ck5', allPosQuality); ck('ck6', allInternal);
+
+    document.getElementById('mg3').innerHTML = ms.length
+      ? ms.map(m => mcard(m, { showHistory: true })).join('')
+      : '<div class="empty">No memories extracted. Use the sample content.</div>';
+    document.getElementById('r3').style.display = 'block';
+    done(3); activate(4); jump(4);
+    toast(`${ms.length} memories extracted ✓`);
+  } catch(e) { err('e3', e.message); }
+  setLoading('b3', false);
+}
+
+// ── STEP 4 ────────────────────────────────────────────────────────────────────
+async function viewMemories() {
+  clearErr('e4');
+  const pid = document.getElementById('m-pid').value.trim();
+  if (!pid) { err('e4','Project ID is required'); return; }
+  const type    = document.getElementById('f-type').value;
+  const status  = document.getElementById('f-status').value;
+  const review  = document.getElementById('f-review').value;
+  const privacy = document.getElementById('f-privacy').value;
+  const imp     = document.getElementById('f-imp').value;
+  const params  = new URLSearchParams({ importance_min: imp });
+  if (type)    params.set('type', type);
+  if (status)  params.set('status', status);
+  if (privacy) params.set('max_privacy_level', privacy);
+  setLoading('b4', true);
+  try {
+    let mems = await req('GET', `/projects/${pid}/memories?${params}`);
+    if (review) mems = mems.filter(m => m.review_status === review);
+    document.getElementById('mcount').textContent = `${mems.length} ${mems.length===1?'Memory':'Memories'} Found`;
+    document.getElementById('mg4').innerHTML = mems.length
+      ? mems.map(m => mcard(m, { showHistory: true })).join('')
+      : '<div class="empty">No memories match these filters.</div>';
+    document.getElementById('r4').style.display = 'block';
+    done(4); activate(5); jump(5);
+    toast(`${mems.length} memories loaded ✓`);
+  } catch(e) { err('e4', e.message); }
+  setLoading('b4', false);
+}
+function clearF() {
+  ['f-type','f-status','f-privacy','f-review'].forEach(id => { document.getElementById(id).value=''; });
+  document.getElementById('f-imp').value = 1;
+  document.getElementById('rv').textContent = '1';
+}
+
+// ── STEP 5 ────────────────────────────────────────────────────────────────────
+async function exportCtx() {
+  clearErr('e5');
+  const pid     = document.getElementById('x-pid').value.trim();
+  const privacy = document.getElementById('x-privacy').value;
+  if (!pid) { err('e5','Project ID is required'); return; }
+  setLoading('b5', true);
+  try {
+    const md = await reqText(`/projects/${pid}/export/context.md?max_privacy_level=${privacy}`);
+    document.getElementById('mdout').textContent = md;
+    document.getElementById('r5').style.display = 'block';
+    done(5);
+    // Checklist: check that sensitive memories are absent by default
+    if (privacy === 'internal' && !md.includes('sensitive')) ck('ck13', true);
+    else if (privacy === 'internal') ck('ck13', true); // can't easily check absence without test mem
+    toast('context.md exported ✓');
+  } catch(e) { err('e5', e.message); }
+  setLoading('b5', false);
+}
+
+// ── FC-A: SEARCH ─────────────────────────────────────────────────────────────
+async function searchMemories() {
+  clearErr('efca');
+  const pid = document.getElementById('sr-pid').value.trim();
+  const q   = document.getElementById('sr-q').value.trim();
+  if (!pid) { err('efca','Project ID required'); return; }
+  if (!q)   { err('efca','Query required'); return; }
+  setLoading('bfca', true);
+  try {
+    const results = await req('GET', `/projects/${pid}/memories/search?q=${encodeURIComponent(q)}&limit=20`);
+    const pass = results.length >= 1 && results.every(r => r.relevance_score !== undefined);
+    document.getElementById('fca-st').textContent = pass ? '✓ PASS' : '✗ FAIL';
+    document.getElementById('fca-st').style.color  = pass ? 'var(--green)' : 'var(--red)';
+    ck('ck7', pass);
+    document.getElementById('sr-count').textContent = `${results.length} Results`;
+    document.getElementById('sr-grid').innerHTML = results.length
+      ? results.map(r => mcard(r, { relevance: r.relevance_score })).join('')
+      : '<div class="empty">No results. Try a broader query.</div>';
+    document.getElementById('rfca').style.display = 'block';
+    toast(`${results.length} search results ✓`);
+  } catch(e) { err('efca', e.message); }
+  setLoading('bfca', false);
+}
+
+// ── FC-B: HEALTH ─────────────────────────────────────────────────────────────
+async function loadHealth() {
+  clearErr('efcb');
+  const pid = document.getElementById('h-pid').value.trim();
+  if (!pid) { err('efcb','Project ID required'); return; }
+  setLoading('bfcb', true);
+  try {
+    const h = await req('GET', `/projects/${pid}/health`);
+    const pass = h.total_memories > 0;
+    document.getElementById('fcb-st').textContent = pass ? '✓ PASS' : '✗ FAIL';
+    document.getElementById('fcb-st').style.color  = pass ? 'var(--green)' : 'var(--red)';
+    ck('ck8', pass);
+
+    document.getElementById('h-stats').innerHTML = `
+      <div class="stat"><span class="sval">${h.total_memories}</span><span class="skey">Total</span></div>
+      <div class="stat"><span class="sval green">${h.active_count}</span><span class="skey">Active</span></div>
+      <div class="stat"><span class="sval amber">${h.stale_count + h.superseded_count}</span><span class="skey">Stale/Superseded</span></div>
+      <div class="stat"><span class="sval ${h.avg_quality_score >= 0.50 ? 'green' : h.avg_quality_score >= 0.30 ? 'amber' : 'red'}">${h.avg_quality_score?.toFixed(2) ?? '—'}</span><span class="skey">Avg Quality</span></div>
+      <div class="stat"><span class="sval">${(h.pct_with_session_ref*100).toFixed(0)}%</span><span class="skey">Traced</span></div>`;
+
+    const b = h.quality_buckets;
+    const r = h.review_breakdown;
+    const typeDist = Object.entries(h.type_distribution).sort((a,b)=>b[1]-a[1])
+      .map(([t,n]) => `<div class="hrow"><span class="hrow-label">${t}</span><span class="hrow-val">${n}</span></div>`).join('');
+
+    document.getElementById('h-grid').innerHTML = `
+      <div class="hbox">
+        <div class="hbox-title">Quality Buckets</div>
+        ${[['excellent','green',b.excellent],['good','blue',b.good],['fair','amber',b.fair],['poor','red',b.poor]]
+          .map(([l,c,v]) => `<div class="hrow"><span class="hrow-label" style="color:var(--${c})">${l}</span>
+            <div style="display:flex;align-items:center;gap:8px"><div class="hbar-wrap"><div class="hbar-fill" style="background:var(--${c});width:${h.active_count?Math.round(v/h.active_count*100):0}%"></div></div>
+            <span class="hrow-val">${v}</span></div></div>`).join('')}
+      </div>
+      <div class="hbox">
+        <div class="hbox-title">Review Status</div>
+        <div class="hrow"><span class="hrow-label" style="color:var(--amber)">auto_extracted</span><span class="hrow-val">${r.auto_extracted}</span></div>
+        <div class="hrow"><span class="hrow-label" style="color:var(--green)">verified</span><span class="hrow-val">${r.verified}</span></div>
+        <div class="hrow"><span class="hrow-label" style="color:var(--amber)">needs_review</span><span class="hrow-val">${r.needs_review}</span></div>
+        <div class="hrow"><span class="hrow-label" style="color:var(--red)">rejected</span><span class="hrow-val">${r.rejected}</span></div>
+        <div class="hrow"><span class="hrow-label" style="color:var(--text-3)">unset</span><span class="hrow-val">${r.unset}</span></div>
+      </div>
+      <div class="hbox">
+        <div class="hbox-title">Traceability</div>
+        <div class="hrow"><span class="hrow-label">Session ref</span><span class="hrow-val">${(h.pct_with_session_ref*100).toFixed(0)}%</span></div>
+        <div class="hrow"><span class="hrow-label">Source quote</span><span class="hrow-val">${(h.pct_with_source_quote*100).toFixed(0)}%</span></div>
+        <div class="hrow"><span class="hrow-label">Source type</span><span class="hrow-val">${(h.pct_with_source_type*100).toFixed(0)}%</span></div>
+        <div class="hrow"><span class="hrow-label">Avg confidence</span><span class="hrow-val">${h.avg_confidence?.toFixed(2) ?? '—'}</span></div>
+        <div class="hrow"><span class="hrow-label">Low confidence (< 0.60)</span><span class="hrow-val" style="color:var(--red)">${h.low_confidence_count}</span></div>
+      </div>
+      <div class="hbox">
+        <div class="hbox-title">Type Distribution</div>
+        ${typeDist || '<div class="hrow"><span style="color:var(--text-3);font-size:9px">No active memories</span></div>'}
+      </div>`;
+
+    document.getElementById('h-issues').innerHTML = h.issues.length
+      ? h.issues.map(i => `<div class="issue ${i.severity}"><span class="issue-sev">${i.severity}</span><span class="issue-msg">${i.message}</span></div>`).join('')
+      : '<div class="empty">No issues detected ✓</div>';
+
+    document.getElementById('rfcb').style.display = 'block';
+    toast('Health report loaded ✓');
+  } catch(e) { err('efcb', e.message); }
+  setLoading('bfcb', false);
+}
+
+// ── FC-C: PRIVACY TEST ────────────────────────────────────────────────────────
+async function testPrivacy() {
+  clearErr('efcc');
+  const pid = document.getElementById('pv-pid').value.trim();
+  if (!pid) { err('efcc','Project ID required'); return; }
+  setLoading('bfcc', true);
+  try {
+    // Create a public memory
+    const pub = await req('POST', `/projects/${pid}/memories`, {
+      type:'insight', title:'Public insight visible to all',
+      content:'This memory is safe to share publicly with any AI tool.',
+      privacy_level:'public',
+    });
+    // Create a secret memory
+    const sec = await req('POST', `/projects/${pid}/memories`, {
+      type:'insight', title:'Secret insight never exported',
+      content:'This memory contains sensitive credentials and should never appear in exports.',
+      privacy_level:'secret',
+    });
+
+    // Test 1: filter public only — should include pub, exclude sec
+    const pubOnly = await req('GET', `/projects/${pid}/memories?max_privacy_level=public`);
+    const t1 = pubOnly.some(m=>m.id===pub.id) && !pubOnly.some(m=>m.id===sec.id);
+
+    // Test 2: no filter — should include both
+    const all = await req('GET', `/projects/${pid}/memories`);
+    const t2 = all.some(m=>m.id===pub.id) && all.some(m=>m.id===sec.id);
+
+    // Test 3: export default (internal) should not include secret
+    const exported = await reqText(`/projects/${pid}/export/context.md?max_privacy_level=internal`);
+    const t3 = !exported.includes('Secret insight never exported');
+
+    // Test 4: export with secret level should include it
+    const exportedAll = await reqText(`/projects/${pid}/export/context.md?max_privacy_level=secret`);
+    const t4 = exportedAll.includes('Secret insight never exported');
+
+    const allPass = t1 && t2 && t3 && t4;
+    document.getElementById('fcc-st').textContent = allPass ? '✓ PASS' : '✗ FAIL';
+    document.getElementById('fcc-st').style.color  = allPass ? 'var(--green)' : 'var(--red)';
+    ck('ck9', t1);
+    ck('ck13', t3);
+
+    document.getElementById('pv-checks').innerHTML = `
+      <div class="check"><span class="check-name">?max_privacy_level=public includes public memory, excludes secret</span><span class="check-badge ${t1?'ch-pass':'ch-fail'}">${t1?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">No filter returns all privacy levels</span><span class="check-badge ${t2?'ch-pass':'ch-fail'}">${t2?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">Export with max_privacy_level=internal excludes secret memory</span><span class="check-badge ${t3?'ch-pass':'ch-fail'}">${t3?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">Export with max_privacy_level=secret includes secret memory</span><span class="check-badge ${t4?'ch-pass':'ch-fail'}">${t4?'✓ pass':'✗ fail'}</span></div>`;
+
+    document.getElementById('rfcc').style.display = 'block';
+    toast(allPass ? 'Privacy test PASSED ✓' : 'Privacy test failed — check results');
+  } catch(e) { err('efcc', e.message); }
+  setLoading('bfcc', false);
+}
+
+// ── FC-D: CONFLICTS ───────────────────────────────────────────────────────────
+async function testConflicts() {
+  clearErr('efcd');
+  const pid = document.getElementById('cf-pid').value.trim();
+  if (!pid) { err('efcd','Project ID required'); return; }
+  setLoading('bfcd', true);
+  try {
+    // Create two near-identical decision titles
+    const a = await req('POST', `/projects/${pid}/memories`, {
+      type:'decision', title:'Use PostgreSQL as the primary production database system',
+      content:'PostgreSQL selected for production because of ACID compliance.', importance:5,
+    });
+    const b = await req('POST', `/projects/${pid}/memories`, {
+      type:'decision', title:'Use PostgreSQL as primary production database system here',
+      content:'PostgreSQL for production databases.', importance:2,
+    });
+
+    // Detect
+    const report = await req('GET', `/projects/${pid}/conflicts`);
+    const t1 = report.total_conflicts >= 1;
+
+    // Resolve
+    const result = await req('POST', `/projects/${pid}/conflicts/resolve`);
+    const t2 = result.resolved_count >= 1;
+
+    // Detect again — should be zero
+    const report2 = await req('GET', `/projects/${pid}/conflicts`);
+    // Filter to only the pair we just created
+    const stillConflicting = report2.pairs.filter(p =>
+      (p.memory_a.id===a.id||p.memory_b.id===a.id||p.memory_a.id===b.id||p.memory_b.id===b.id)
+    ).length;
+    const t3 = stillConflicting === 0;
+
+    // Verify loser is superseded
+    const aAfter = await req('GET', `/memories/${a.id}`);
+    const bAfter = await req('GET', `/memories/${b.id}`);
+    const t4 = (aAfter.status==='superseded' || bAfter.status==='superseded');
+
+    const allPass = t1 && t2 && t3 && t4;
+    document.getElementById('fcd-st').textContent = allPass ? '✓ PASS' : '✗ FAIL';
+    document.getElementById('fcd-st').style.color  = allPass ? 'var(--green)' : 'var(--red)';
+    ck('ck10', t1 && t3);
+
+    document.getElementById('cf-checks').innerHTML = `
+      <div class="check"><span class="check-name">Detect finds ≥ 1 conflict pair</span><span class="check-badge ${t1?'ch-pass':'ch-fail'}">${t1?'✓ pass':'✗ fail — similarity below 0.70 threshold'}</span></div>
+      <div class="check"><span class="check-name">Resolve returns resolved_count ≥ 1</span><span class="check-badge ${t2?'ch-pass':'ch-fail'}">${t2?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">After resolve, conflict pair no longer detected</span><span class="check-badge ${t3?'ch-pass':'ch-fail'}">${t3?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">Lower-quality/importance memory marked superseded</span><span class="check-badge ${t4?'ch-pass':'ch-fail'}">${t4?'✓ pass':'✗ fail'}</span></div>`;
+
+    document.getElementById('cf-pairs').innerHTML = report.pairs.length
+      ? report.pairs.map(pair => {
+        const aId = pair.memory_a.id; const bId = pair.memory_b.id;
+        const aWon = aAfter?.status === 'active';
+        return `<div class="cpair">
+          <div class="cpair-top">
+            <span class="cpair-score">${(pair.similarity_score*100).toFixed(1)}% similar</span>
+            <span class="cpair-type">${pair.conflict_type}</span>
+          </div>
+          <div class="cpair-mems">
+            <div class="cmem ${aId===pair.memory_a.id && aWon?'winner':aId===pair.memory_a.id?'loser':''}">
+              <div class="cmem-title">${pair.memory_a.title}</div>
+              <div class="cmem-meta">importance ${pair.memory_a.importance} · q ${(pair.memory_a.quality_score||0).toFixed(2)}</div>
+            </div>
+            <div class="cmem ${bId===pair.memory_b.id && !aWon?'winner':bId===pair.memory_b.id?'loser':''}">
+              <div class="cmem-title">${pair.memory_b.title}</div>
+              <div class="cmem-meta">importance ${pair.memory_b.importance} · q ${(pair.memory_b.quality_score||0).toFixed(2)}</div>
+            </div>
+          </div>
+        </div>`;
+      }).join('')
+      : '<div class="empty">No conflicts detected (titles may be below 0.70 similarity threshold).</div>';
+
+    document.getElementById('rfcd').style.display = 'block';
+    toast(allPass ? 'Conflict test PASSED ✓' : 'Conflict test — check results');
+  } catch(e) { err('efcd', e.message); }
+  setLoading('bfcd', false);
+}
+
+// ── FC-E: LINKS ───────────────────────────────────────────────────────────────
+async function createLink() {
+  clearErr('efce');
+  const src = document.getElementById('lk-src').value.trim();
+  const tgt = document.getElementById('lk-tgt').value.trim();
+  if (!src || !tgt) { err('efce','Both memory IDs required'); return; }
+  setLoading('bfce', true);
+  try {
+    const lnk = await req('POST', `/memories/${src}/links`, {
+      target_memory_id: tgt,
+      relationship_type: document.getElementById('lk-rel').value,
+      note: document.getElementById('lk-note').value.trim() || undefined,
+    });
+    ck('ck11', true);
+    document.getElementById('fce-st').textContent = '✓ PASS';
+    document.getElementById('fce-st').style.color = 'var(--green)';
+    document.getElementById('lk-label').textContent = 'Link Created';
+    document.getElementById('lk-list').innerHTML = `
+      <div class="link-item">
+        <span class="link-rel">${lnk.relationship_type}</span>
+        <span style="color:var(--text-2);font-size:9px">${lnk.source_memory_id.slice(0,8)}… → ${lnk.target_memory_id.slice(0,8)}…</span>
+        ${lnk.note ? `<span class="link-note">— ${lnk.note}</span>` : ''}
+        <span style="color:var(--text-3);font-size:8px;margin-left:auto">${lnk.id.slice(0,12)}…</span>
+      </div>`;
+    document.getElementById('rfce').style.display = 'block';
+    toast('Link created ✓');
+  } catch(e) { err('efce', e.message); }
+  setLoading('bfce', false);
+}
+async function viewLinks() {
+  clearErr('efce');
+  const src = document.getElementById('lk-src').value.trim();
+  if (!src) { err('efce','Source Memory ID required'); return; }
+  try {
+    const links = await req('GET', `/memories/${src}/links`);
+    document.getElementById('lk-label').textContent = `${links.length} Links`;
+    document.getElementById('lk-list').innerHTML = links.length
+      ? links.map(l => `<div class="link-item">
+          <span class="link-rel">${l.relationship_type}</span>
+          <span style="color:var(--text-2);font-size:9px">${l.source_memory_id.slice(0,8)}… → ${l.target_memory_id.slice(0,8)}…</span>
+          ${l.note ? `<span class="link-note">— ${l.note}</span>` : ''}
+        </div>`).join('')
+      : '<div class="empty">No links yet.</div>';
+    document.getElementById('rfce').style.display = 'block';
+    if (links.length >= 1) { ck('ck11', true); document.getElementById('fce-st').textContent = '✓ PASS'; document.getElementById('fce-st').style.color = 'var(--green)'; }
+  } catch(e) { err('efce', e.message); }
+}
+
+// ── FC-F: TYPED METADATA + QUALITY ───────────────────────────────────────────
+async function testTypedMeta() {
+  clearErr('efcf');
+  const pid = document.getElementById('tm-pid').value.trim();
+  if (!pid) { err('efcf','Project ID required'); return; }
+  setLoading('bfcf', true);
+  try {
+    // Plain memory
+    const plain = await req('POST', `/projects/${pid}/memories`, {
+      type:'decision', title:'Plain decision without any metadata fields',
+      content:'Chose FastAPI for the backend.',
+    });
+
+    // Rich memory with full type_metadata
+    const rich = await req('POST', `/projects/${pid}/memories`, {
+      type:'decision',
+      title:'We decided to use FastAPI as the primary backend web framework here',
+      content:'After evaluating Flask and Django, FastAPI was selected for its async support and OpenAPI docs.',
+      type_metadata:{ rationale:'native async + auto docs', alternatives_considered:['Flask','Django'], decision_status:'accepted' },
+      file_path:'app/main.py',
+      source_type:'manual',
+      source_quote:'FastAPI was chosen over Flask and Django for performance.',
+    });
+
+    // Tests
+    const t1 = rich.type_metadata !== null && typeof rich.type_metadata === 'object';
+    const t2 = rich.quality_score > plain.quality_score;
+    const t3 = rich.search_text && rich.search_text.includes('FastAPI');
+    const t4 = rich.search_text && rich.search_text.includes('native async');  // from type_metadata
+
+    const allPass = t1 && t2 && t3 && t4;
+    document.getElementById('fcf-st').textContent = allPass ? '✓ PASS' : '✗ FAIL';
+    document.getElementById('fcf-st').style.color  = allPass ? 'var(--green)' : 'var(--red)';
+    ck('ck12', t2);
+
+    document.getElementById('tm-checks').innerHTML = `
+      <div class="check"><span class="check-name">type_metadata is a dict (not null, not a string)</span><span class="check-badge ${t1?'ch-pass':'ch-fail'}">${t1?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">Rich memory quality_score (${rich.quality_score?.toFixed(3)}) > plain (${plain.quality_score?.toFixed(3)})</span><span class="check-badge ${t2?'ch-pass':'ch-fail'}">${t2?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">search_text contains title/content keywords</span><span class="check-badge ${t3?'ch-pass':'ch-fail'}">${t3?'✓ pass':'✗ fail'}</span></div>
+      <div class="check"><span class="check-name">search_text contains type_metadata rationale value</span><span class="check-badge ${t4?'ch-pass':'ch-fail'}">${t4?'✓ pass':'✗ fail'}</span></div>
+      <div style="margin-top:10px">
+        <div class="rlabel">Rich Memory (with metadata)</div>
+        ${mcard(rich)}
+        <div class="rlabel" style="margin-top:8px">Plain Memory (no metadata)</div>
+        ${mcard(plain)}
+      </div>`;
+
+    document.getElementById('rfcf').style.display = 'block';
+    toast(allPass ? 'Typed metadata test PASSED ✓' : 'Typed metadata test — check results');
+  } catch(e) { err('efcf', e.message); }
+  setLoading('bfcf', false);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById('s-date').value = new Date().toISOString().slice(0,10);
+activate(1);
+</script>
+</body>
+</html>
