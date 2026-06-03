@@ -8,7 +8,7 @@ A research project building a production-grade long-term memory retrieval engine
 
 Most LLM memory systems store raw conversation history and retrieve it by brute-force embedding search. X-MemoryArch takes a different approach: it extracts structured, temporally-grounded memories from each session, indexes them across multiple retrieval signals, and ranks results with a cross-encoder reranker. Every architectural decision is documented, benchmarked, and justified.
 
-This started as a rule-based keyword engine (Phase 1) and has evolved into a multi-signal retrieval system. On the **full 690-query LoCoMo set**, it scores **92.3% R@5 — ahead of Mem0 NEW (91.6%)**, Honcho (89.9%), Letta (74.0%), and Zep on LME (71.2%). LoCoMo crossed Mem0 in Phase 5.6 after a failure diagnostic revealed that session content was being truncated to 42% before extraction; feeding full sessions lifted R@5 from 0.738 → 0.920 (full set) / 0.930 (200-query sample).
+This started as a rule-based keyword engine (Phase 1) and has evolved into a multi-signal retrieval system. On the **full 690-query LoCoMo set**, it scores **92.3% R@5 — ahead of Mem0 NEW (91.6%)**, Honcho (89.9%), Letta (74.0%), and Zep on LME (71.2%). LoCoMo crossed Mem0 in Phase 5.6 after a failure diagnostic revealed that session content was being truncated to 42% before extraction; feeding full sessions lifted R@5 from 0.738 → 0.923 (full set) / 0.930 (200-query sample).
 
 ---
 
@@ -280,17 +280,17 @@ Concrete example — query *"When did Caroline go to the adoption meeting?"*: th
 
 **The fix:** content cap 1,200 → 6,000 chars; extractor `_CONTENT_LIMIT` 4,000 → 6,000; a completeness prompt ("extract EVERY concrete fact from BOTH speakers, never vague-summarize, scan the entire conversation"); memory target 8-10 → 10-16.
 
-**Result:**
+**Result** (full 690-query LoCoMo set; pool widened to 50 in the same phase):
 
 | Metric | Phase 4 | Phase 5.6 | Mem0 NEW |
 |---|---|---|---|
-| LoCoMo R@5 | 0.738 | **0.930** | 0.916 |
+| LoCoMo R@5 | 0.738 | **0.923** | 0.916 |
 | LoCoMo R@10 | 0.806 | **0.965** | — |
-| LoCoMo MRR@10 | 0.613 | **0.821** | — |
+| LoCoMo MRR@10 | 0.613 | **0.819** | — |
 
-R@10 jumped 0.828 → 0.965 (119 → 24 misses out of 690). **LoCoMo R@5 = 0.930 crosses Mem0's 0.916 — the first time ahead of the state of the art.**
+R@10 jumped 0.828 → 0.965 (119 → 24 misses out of 690). **On the full 690-query set, LoCoMo R@5 = 0.923 crosses Mem0's 0.916 — the first time ahead of the state of the art** (0.930 on a 200-query sample).
 
-**Next:** LME is at 0.905 (Mem0 = 0.948). LME has milder per-turn caps (300 chars/turn, 20 turns). A diagnostic run will confirm whether LME misses are coverage gaps before a full-content re-extraction.
+**Next:** LME is at 0.908 (Mem0 = 0.948). A failure diagnostic confirmed LME's misses are genuine *ranking* misses (facts extracted but ranked low), not coverage gaps — so the fix is ranking-side (pool widening lifted it 0.900 → 0.908), not re-extraction. The remaining gap is largely multi-hop / "how many" aggregation queries.
 
 ---
 
@@ -314,14 +314,14 @@ A6r  (comprehensive facts, Phase 3.7)                   → LoCoMo 0.710 Phase 3
 A10  (Triple-fact RRF + reranker)                       → LoCoMo 0.683 / LME 0.728
 A11s (Rich memories, Phase 4.4)                         → LoCoMo 0.716 / LME 0.898 ← LME +0.170!
 A11  (Multi-signal, Phase 4.5 + 5.1 tuning)            → LoCoMo 0.738 / LME 0.900
-──── Phase 5.6: full-session extraction (truncation bug fixed) ────
-A11  (full content + completeness prompt)               → LoCoMo 0.930 / LME 0.905 ★ BEAT MEM0 (0.916)
+──── Phase 5.6: full-session extraction (truncation bug fixed) + wider pool ────
+A11  (full content + completeness prompt)               → LoCoMo 0.923 / LME 0.908 ★ BEAT MEM0 (0.916)
 ```
 
-Per-dataset leaders:
+Per-dataset leaders (full query sets):
 - **SQuAD:** A4mvr / A8r — R@5 = 0.970
-- **LoCoMo:** A11-sonnet (Phase 5.6) — R@5 = **0.930** ★ beats Mem0 (0.916)
-- **LongMemEval:** A11-sonnet — R@5 = **0.905**
+- **LoCoMo:** A11-sonnet (Phase 5.6) — R@5 = **0.923** ★ beats Mem0 (0.916)
+- **LongMemEval:** A11-sonnet — R@5 = **0.908**
 
 ---
 
@@ -449,9 +449,9 @@ What is **included**:
 
 ## Roadmap
 
-**LoCoMo: DONE — beat Mem0 (0.930 vs 0.916).** Date grounding (Phase 5.5) and full-session extraction (Phase 5.6) both shipped.
+**LoCoMo: DONE — beat Mem0 (0.923 vs 0.916, full 690-query set).** Date grounding (Phase 5.5), full-session extraction (Phase 5.6), and pool widening all shipped.
 
-**Next — LME full-session re-extraction:** Apply the same diagnostic-then-fix loop to LongMemEval. LME is at 0.905 vs Mem0's 0.948. LME has its own per-turn caps (300 chars/turn, 20 turns). Run `diagnose` to confirm misses are coverage gaps, then re-extract with full content to chase the LME crown.
+**Next — LME multi-hop queries:** LME is at 0.908 vs Mem0's 0.948. The failure diagnostic already ran: LME's misses are genuine *ranking* misses, not coverage gaps, so re-extraction won't help (it was skipped). Pool widening recovered +0.8 pts. The remaining gap is dominated by multi-hop / "how many" aggregation queries (e.g. *"How many museums did I visit in December?"*) that single-memory retrieval can't answer — the fix is an aggregation/multi-hop retrieval path inside the single pipeline, not a re-extraction.
 
 **Remaining LoCoMo frontier:** 24 genuine RANKING misses (gold memory exists with high cosine but loses in pool/rerank). This is now the real ceiling — a ranking problem, not an extraction one. Candidate fixes: reranker fine-tuning, entity-store cleanup (month names currently leak in as entities from date text).
 
