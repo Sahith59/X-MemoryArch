@@ -29,9 +29,17 @@ import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model-tag", default="sonnet")
+parser.add_argument("--dataset", choices=["locomo", "lme"], default="locomo")
 parser.add_argument("--top-k", type=int, default=10)
 parser.add_argument("--max-show", type=int, default=100, help="max misses to print in detail")
 args = parser.parse_args()
+
+# Dataset → (bench cache file, rich-memory file label)
+_DS = {
+    "locomo": ("locomo.json",      "LoCoMo"),
+    "lme":    ("longmemeval.json", "LongMemEval"),
+}[args.dataset]
+_BENCH_FILE, _DS_LABEL = _DS
 
 BENCH_DIR = Path(__file__).resolve().parent.parent
 CACHE     = BENCH_DIR / "benchmark_cache"
@@ -53,13 +61,13 @@ from app.services.retrieval.multi_signal_retrieval import MultiSignalRetriever
 TAG = args.model_tag
 
 # ── Load data ───────────────────────────────────────────────────────────────
-bench = json.loads((CACHE / "locomo.json").read_text())
+bench = json.loads((CACHE / _BENCH_FILE).read_text())
 memories_meta = bench["memories"]   # list of {mid, content, gold_key}
 queries = bench["queries"]          # list of {question, gold_keys}
 
-all_memories = json.loads((CACHE / f"rich_memories_{TAG}_LoCoMo.json").read_text())
-entity_store = json.loads((CACHE / f"entity_store_{TAG}_LoCoMo.json").read_text())
-rich_embs = np.load(str(CACHE / f"embed_rich_gtel_{TAG}_LoCoMo.npy"))
+all_memories = json.loads((CACHE / f"rich_memories_{TAG}_{_DS_LABEL}.json").read_text())
+entity_store = json.loads((CACHE / f"entity_store_{TAG}_{_DS_LABEL}.json").read_text())
+rich_embs = np.load(str(CACHE / f"embed_rich_gtel_{TAG}_{_DS_LABEL}.npy"))
 
 # Build flat arrays in gold_key order (same as benchmark)
 mem_texts, mem_session_keys, mem_positions, mem_ids = [], [], [], []
@@ -87,7 +95,7 @@ for i, sid in enumerate(mem_session_keys):
     session_to_rows.setdefault(sid, []).append(i)
 
 # ── Rephrases ───────────────────────────────────────────────────────────────
-rephrase_cache = CACHE / "mqr_rephrases_LoCoMo.json"
+rephrase_cache = CACHE / f"mqr_rephrases_{_DS_LABEL}.json"
 rephrases_raw = json.loads(rephrase_cache.read_text()) if rephrase_cache.exists() else {}
 
 # ── Embedder ────────────────────────────────────────────────────────────────
@@ -167,7 +175,7 @@ for ms in misses:
 
 n = len(sampled)
 print("\n" + "=" * 70)
-print(f"LoCoMo R@{args.top_k} FAILURE ANALYSIS  ({n} queries)")
+print(f"{_DS_LABEL} R@{args.top_k} FAILURE ANALYSIS  ({n} queries)")
 print("=" * 70)
 print(f"  Hits (gold in top-{args.top_k}): {hits}/{n}  = R@{args.top_k} {hits/n:.3f}")
 print(f"  Misses:                    {len(misses)}/{n}")
@@ -193,7 +201,7 @@ dump("EMBEDDING MISSES — on-topic memory exists but embeds far from query", EM
 dump("RANKING MISSES — close memory exists but lost in pool/rerank", RANKING)
 
 # Save full dump
-out = CACHE / "locomo_miss_analysis.json"
+out = CACHE / f"{_DS_LABEL.lower()}_miss_analysis.json"
 out.write_text(json.dumps({
     "r_at_k": hits / n, "k": args.top_k, "n": n,
     "coverage": COVERAGE, "embedding": EMBEDDING, "ranking": RANKING,
