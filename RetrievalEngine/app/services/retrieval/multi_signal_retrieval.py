@@ -64,8 +64,8 @@ _RECENCY_KEYWORDS = frozenset({
 DEFAULT_ENTITY_BOOST_WEIGHT: float = 5.0   # Phase 5.1 tuned; re-tune after embedding model change
 DEFAULT_RECENCY_WEIGHT:      float = 0.1
 DEFAULT_SEMANTIC_THRESHOLD:  float = 0.3
-DEFAULT_RERANKER_POOL_SIZE:  int   = 40
-_TOP_PER_SEARCH:             int   = 25   # Phase 5.1 tuned value
+DEFAULT_RERANKER_POOL_SIZE:  int   = 60   # Phase 5.6: 40→60, dense corpora (12.6k LME mems) need wider rerank
+_TOP_PER_SEARCH:             int   = 50   # Phase 5.6: 25→50, top-25 too narrow for 12.6k-memory LME pool
 _MAX_PER_SESSION:            int   = 2
 _RRF_K:                      int   = 60
 

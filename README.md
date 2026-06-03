@@ -8,7 +8,7 @@ A research project building a production-grade long-term memory retrieval engine
 
 Most LLM memory systems store raw conversation history and retrieve it by brute-force embedding search. X-MemoryArch takes a different approach: it extracts structured, temporally-grounded memories from each session, indexes them across multiple retrieval signals, and ranks results with a cross-encoder reranker. Every architectural decision is documented, benchmarked, and justified.
 
-This started as a rule-based keyword engine (Phase 1) and has evolved into a multi-signal retrieval system. On the **full 690-query LoCoMo set**, it scores **92.0% R@5 — ahead of Mem0 NEW (91.6%)**, Honcho (89.9%), Letta (74.0%), and Zep on LME (71.2%). LoCoMo crossed Mem0 in Phase 5.6 after a failure diagnostic revealed that session content was being truncated to 42% before extraction; feeding full sessions lifted R@5 from 0.738 → 0.920 (full set) / 0.930 (200-query sample).
+This started as a rule-based keyword engine (Phase 1) and has evolved into a multi-signal retrieval system. On the **full 690-query LoCoMo set**, it scores **92.3% R@5 — ahead of Mem0 NEW (91.6%)**, Honcho (89.9%), Letta (74.0%), and Zep on LME (71.2%). LoCoMo crossed Mem0 in Phase 5.6 after a failure diagnostic revealed that session content was being truncated to 42% before extraction; feeding full sessions lifted R@5 from 0.738 → 0.920 (full set) / 0.930 (200-query sample).
 
 ---
 
@@ -30,10 +30,10 @@ Evaluated on the **full** query sets (690 LoCoMo, 500 LongMemEval) — not a sam
 
 | Dataset | Queries | R@5 | MRR@10 | vs Competitor |
 |---|---|---|---|---|
-| LoCoMo | 690 (full) | **0.920** | **0.819** | **+0.4 pts vs Mem0 NEW (0.916)** ✓ |
-| LongMemEval | 500 (full) | **0.900** | 0.755 | -4.8 pts vs Mem0 NEW (0.948) |
+| LoCoMo | 690 (full) | **0.923** | **0.819** | **+0.7 pts vs Mem0 NEW (0.916)** ✓ |
+| LongMemEval | 500 (full) | **0.908** | 0.760 | -4.0 pts vs Mem0 NEW (0.948) |
 
-*(On a 200-query sample LoCoMo reaches 0.930 R@5 / 0.965 R@10; the full-set 0.920 is the number we report as the headline.)*
+*(On a 200-query sample LoCoMo reaches 0.930 R@5 / 0.965 R@10; the full-set 0.923 is the headline.)*
 
 ### Competitor Comparison
 
@@ -41,12 +41,12 @@ All "Our Best" figures are on the full query sets (690 LoCoMo / 500 LME).
 
 | Competitor | Dataset | Their Score | Our Best | Result |
 |---|---|---|---|---|
-| **Mem0 NEW** | **LoCoMo** | **91.6%** | **92.0%** | ✓ **Beaten by +0.4 pts** |
-| Honcho | LoCoMo | 89.9% | **92.0%** | ✓ Beaten by +2.1 pts |
-| Letta | LoCoMo | 74.0% | **92.0%** | ✓ Beaten by +18 pts |
-| Mem0 OLD | LoCoMo | 71.4% | **92.0%** | ✓ Beaten by +20.6 pts |
-| Zep CE | LongMemEval | 71.2% | **90.0%** | ✓ Beaten by +18.8 pts |
-| Mem0 NEW | LongMemEval | 94.8% | **90.0%** | -4.8 pts (next target) |
+| **Mem0 NEW** | **LoCoMo** | **91.6%** | **92.3%** | ✓ **Beaten by +0.7 pts** |
+| Honcho | LoCoMo | 89.9% | **92.3%** | ✓ Beaten by +2.4 pts |
+| Letta | LoCoMo | 74.0% | **92.3%** | ✓ Beaten by +18 pts |
+| Mem0 OLD | LoCoMo | 71.4% | **92.3%** | ✓ Beaten by +20.9 pts |
+| Zep CE | LongMemEval | 71.2% | **90.8%** | ✓ Beaten by +19.6 pts |
+| Mem0 NEW | LongMemEval | 94.8% | **90.8%** | -4.0 pts (next target) |
 
 ---
 
