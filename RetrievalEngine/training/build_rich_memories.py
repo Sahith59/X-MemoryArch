@@ -135,11 +135,48 @@ def build_dataset(cfg: dict) -> None:
     if needs_extraction:
         extractor = RichMemoryExtractor(api_key=ANTHROPIC_KEY, model=MODEL_ID)
 
+        # Build date lookup for LoCoMo (raw dataset has session_N_date_time fields)
+        locomo_dates: dict[str, str] = {}
+        if ds_label == "LoCoMo":
+            from datetime import datetime as _dt
+            import urllib.request as _urlreq
+            raw_url = "https://raw.githubusercontent.com/snap-research/locomo/main/data/locomo10.json"
+            raw_locomo_path = CACHE / "locomo10_raw.json"
+            if not raw_locomo_path.exists():
+                print("  Downloading raw LoCoMo dataset for session dates...")
+                _urlreq.urlretrieve(raw_url, raw_locomo_path)
+            raw_data = json.loads(raw_locomo_path.read_text())
+            # Mapping: benchmark conv ID (c0-c9) → index in raw_data list
+            # Determined by matching speaker names between locomo.json and raw file
+            CONV_MAP = {"c0":0,"c1":1,"c2":2,"c3":3,"c4":4,
+                        "c5":5,"c6":6,"c7":7,"c8":8,"c9":9}
+            for conv_key, raw_idx in CONV_MAP.items():
+                convo = raw_data[raw_idx]["conversation"]
+                for key, val in convo.items():
+                    if key.endswith("_date_time") and isinstance(val, str):
+                        parts = key.split("_")
+                        try:
+                            sess_num = int(parts[1])
+                            session_id = f"{conv_key}_session_{sess_num}"
+                            for fmt in ("%I:%M %p on %d %B, %Y", "%I:%M %p on %d %B %Y"):
+                                try:
+                                    dt = _dt.strptime(val.strip(), fmt)
+                                    locomo_dates[session_id] = dt.strftime("%B %d, %Y")
+                                    break
+                                except ValueError:
+                                    pass
+                            else:
+                                locomo_dates[session_id] = val.strip()
+                        except (ValueError, IndexError):
+                            pass
+            print(f"  Loaded {len(locomo_dates)} session dates from raw LoCoMo dataset")
+
         sessions_list = [
             {
                 "session_id":       m["gold_key"],
                 "content":          m.get("content") or m.get("search_text", ""),
                 "session_position": session_position_from_id(m["gold_key"]),
+                "session_date":     locomo_dates.get(m["gold_key"]),
                 "dataset":          ds_label,
             }
             for m in needs_extraction

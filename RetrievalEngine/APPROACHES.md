@@ -631,9 +631,66 @@ Our Phase 3 best (0.710 LoCoMo) was at Mem0's OLD level. Phase 4 replicates thei
 
 ---
 
+## Phase 5 — Closing the Gap (Extraction Experiments)
+
+**Goal:** Close the 17.8-pt LoCoMo gap to Mem0 and beat Mem0's 94.8% LME score.
+
+**Key finding from Phase 5:** Extraction volume and memory type experiments consistently hurt performance. The sweet spot is Phase 4 extraction (8.7/session, 2 types, 32.7 avg words). More memories flood the embedding space with near-identical vectors (LoCoMo) or add noise (LME).
+
+### Phase 5 Scoreboard
+
+| Phase | LoCoMo R@5 | LoCoMo R@10 | LME R@5 | Config | Outcome |
+|---|---|---|---|---|---|
+| Phase 4 baseline | 0.738 | 0.806 | 0.900 | 8.7/sess, 2 types | (truncated input) |
+| 5.2 topic-first | 0.700 | 0.780 | — | 5.5/sess | FAILED (too few) |
+| 5.2r diversity | 0.730 | 0.815 | 0.920 | 7.9/sess | Best LME (old extraction) |
+| 5.2s 4-type | 0.720 | 0.800 | 0.905 | 11.8-13.4/sess, 4 types | Regression |
+| 5.5 date grounding | 0.735 | 0.810 | — | dates not session-N | MRR +0.021, R@5 flat |
+| **5.6 FULL CONTENT** | **0.930** | **0.965** | 0.905 | 12.5/sess, full sessions | ★ **BEAT MEM0 (0.916)** |
+
+**THE breakthrough (Phase 5.6):** Every prior phase optimized extraction on only the first
+1,200 chars (42%) of each session — `load_locomo` truncated input before extraction. The back
+58% of every conversation (where ~half the queried facts live) was never seen. Fixing the cap
+(1,200 → 6,000) + a completeness prompt lifted R@5 from 0.738 → **0.930**, crossing Mem0 (0.916).
+
+**Found by failure diagnostic, not guessing.** `training/diagnose_locomo_misses.py` categorizes
+every R@10 miss (COVERAGE / EMBEDDING / RANKING). 96% of misses had the gold session indexed but
+the queried fact missing → traced to truncated input. R@10 went 0.828 → 0.965 (119 → 24 misses).
+
+**Lessons:**
+- **Run failure analysis BEFORE optimizing.** Weeks of prompt experiments chased the wrong 42%.
+- Full-session extraction (12.5/session, both speakers, no vague summaries) is the LoCoMo winner.
+- 4-type extraction failed earlier because it deepened *truncated* dominant topics, not coverage.
+- text-embedding-3-small: no improvement over GTE-large, 10× slower (API latency).
+- LME historical best: 0.920 (Phase 5.2r). LME has milder per-turn caps; full-content re-extraction pending.
+
+### Mem0 Architecture Analysis (why they beat us)
+
+Deep research into Mem0's GitHub and paper (arXiv:2504.19413, ECAI 2025):
+
+| Gap | Mem0 | Us | Est. Impact |
+|---|---|---|---|
+| **Temporal grounding** | **ISO timestamps ("On May 8, 2023")** | **"As of session N" proxy** | **~10 pts LoCoMo temporal** |
+| Anti-topic-dominance | Explicit + 11 worked examples | RULE 1 (imperfect) | ~5 pts |
+| Linked memory IDs | Within-session memory graph | None | ~3 pts |
+| Extraction style | Greedy "extract ALL" | Fixed count cap | ~3 pts |
+
+**The single biggest gap:** Mem0 grounds every memory to the actual conversation date. LoCoMo raw dataset has session timestamps (`session_N_date_time`: "1:56 pm on 8 May, 2023"). Our extraction ignores these completely.
+
+Mem0 scores: **92.5% LoCoMo, 94.4% LME** (+29.6 pts temporal improvement in their new algorithm).
+Honcho (different approach — theory of mind, fine-tuned ingestion model): **89.9% LoCoMo, 90.4% LME**.
+
+### Phase 5.5 — Date Grounding (Next)
+
+**What:** Extract actual session timestamps from the raw LoCoMo dataset and embed them into every memory. Change "As of session 10" → "On March 3, 2024" in all temporal markers.
+
+**Why this is the highest-leverage remaining change:** Temporal queries (+29.6 pts for Mem0) are where we lose the most. When a query asks "When did Caroline first join an activist group?", our reranker cannot distinguish session 1 (correct) from session 10 (also mentions LGBTQ activism) because both say "As of session N" and N is just a number. With actual dates, the reranker can reason "first = earliest date = May 8, 2023 = session 1."
+
+---
+
 ## Gap Analysis: Why Mem0 Still Leads (17.8 pts LoCoMo)
 
-| Aspect | Mem0 likely | Our implementation | Impact |
+| Aspect | Mem0 | Our implementation | Impact |
 |---|---|---|---|
 | Extraction | GPT-4o-mini, 10-20 mems/session | Sonnet, 8.7 mems/session | ~-0.05 pts (less coverage) |
 | Embedding | text-embedding-3-small | GTE-large | Unknown (different semantic space) |

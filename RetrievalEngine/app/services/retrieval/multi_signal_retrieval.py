@@ -61,11 +61,11 @@ _RECENCY_KEYWORDS = frozenset({
 })
 
 # ── Module-level constants (override per-instance for grid search) ─────────────
-DEFAULT_ENTITY_BOOST_WEIGHT: float = 5.0   # Phase 5.1: tuned up from 0.3 — at 0.3/memory_count the boost was sub-0.001, unmeasurable
+DEFAULT_ENTITY_BOOST_WEIGHT: float = 5.0   # Phase 5.1 tuned; re-tune after embedding model change
 DEFAULT_RECENCY_WEIGHT:      float = 0.1
 DEFAULT_SEMANTIC_THRESHOLD:  float = 0.3
 DEFAULT_RERANKER_POOL_SIZE:  int   = 40
-_TOP_PER_SEARCH:             int   = 25   # raised from 20 — more memories/session means we need wider initial pool per variant
+_TOP_PER_SEARCH:             int   = 25   # Phase 5.1 tuned value
 _MAX_PER_SESSION:            int   = 2
 _RRF_K:                      int   = 60
 

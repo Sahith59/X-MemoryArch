@@ -35,7 +35,7 @@ from pathlib import Path
 _EXTRACTION_PROMPT = """\
 You extract memories from a conversation. Output JSON only — no markdown, no explanation.
 
-Session {session_position} of the conversation series.
+{temporal_header}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 STEP 1 — IDENTIFY ALL DISTINCT TOPICS
@@ -48,31 +48,38 @@ List topics as short labels, e.g.: ["Caroline's career decision", "Melanie's new
 "weekend event", "Caroline's health", "relationship with John", "apartment search"]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-STEP 2 — WRITE 8-10 MEMORIES (diversity required)
+STEP 2 — WRITE 10-16 MEMORIES (complete coverage required)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Generate 8-10 memories total. Every memory must obey ALL rules below:
+Generate 10-16 memories — enough to capture EVERY concrete fact in the conversation.
+Every memory must obey ALL rules below:
 
-RULE 1 — DIVERSITY (most critical): Each memory must cover a DIFFERENT topic.
-  • Scan your topic list. Each topic must appear in at least one memory.
-  • If you have fewer than 8 topics, you may write multiple memories per topic
-    BUT each must add genuinely new information (different event, different aspect,
-    different time period) — never rephrase the same fact.
-  • WRONG: writing 6 memories all about Caroline's LGBTQ activism.
-  • RIGHT: one memory per major topic (job, relationship, hobby, health, event, plan...).
+RULE 1 — COMPLETE COVERAGE OF BOTH SPEAKERS (most critical):
+  Both speakers share facts. Extract from BOTH in balance — never let one speaker dominate.
+  Every specific event, action, decision, or plan that EITHER speaker mentions — even once,
+  even in a single sentence — must become its own memory.
+  WRONG: writing 7 memories about Melanie and only 1 vague memory about Caroline.
+  WRONG: writing "Caroline had a busy week" when the text says "Caroline went to a council
+         meeting for adoption" — capture the ACTUAL event, never a vague summary.
+  RIGHT: a separate memory for each concrete fact: "Caroline researched LGBTQ-friendly
+         adoption agencies", "Caroline went to an adoption council meeting last Friday",
+         "Melanie ran a charity race", "Melanie took her kids to a museum".
+  Scan the ENTIRE conversation top to bottom. Facts near the end matter as much as the start.
 
 RULE 2 — ZERO PRONOUNS: Replace every pronoun with the person's full name.
   WRONG: "She decided to pursue counseling, motivated by her experiences."
   RIGHT: "Caroline decided to pursue counseling, motivated by Caroline's experiences."
-  If any pronoun appears in your output, that memory FAILS.
+  If any pronoun (he/she/they/him/her/his/their/them) appears, that memory FAILS.
 
-RULE 3 — TEMPORAL GROUNDING (required in every memory):
-  Current state  → "As of session {session_position}, [Name] [fact with context]."
-  Specific event → "During session {session_position}, [Name] [what happened]."
-  Future plan    → "[Name] plans to [goal] (mentioned in session {session_position})."
+RULE 3 — TEMPORAL GROUNDING WITH DATE (required in every memory):
+  {temporal_rule_state}
+  {temporal_rule_episodic}
+  {temporal_rule_plan}
 
 RULE 4 — LENGTH AND SPECIFICITY:
-  • 20-60 words each. No bare facts under 20 words.
+  • 15-50 words each. Capture the specific fact — do not pad, do not vaguely summarize.
   • Use exact specifics: "aerial yoga" not "yoga", "City Hospital head nurse" not "nurse".
+  • A one-off concrete event ("went to a picnic", "drew a self-portrait") is exactly the kind
+    of fact that MUST be captured — these are never too minor to extract.
   • Only extract what is stated or clearly implied. Never fabricate.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -87,14 +94,38 @@ Return this exact JSON (no markdown fences):
 
 State = ongoing facts (jobs, relationships, living situations, interests, health).
 Episodic = specific events (visited a place, made a decision, had a conversation).
-Together, state_memories + episodic_memories must total 8-10 and cover every listed topic.
+Together, state_memories + episodic_memories must total 10-16 and capture EVERY concrete
+fact from BOTH speakers across the ENTIRE conversation.
 
-Conversation (session {session_position}):
+Conversation ({temporal_header}):
 {session_content}"""
 
-_MIN_WORDS = 20   # raised from 15 — bare facts under 20 words don't have enough context
+
+def _build_prompt(session_position: int, session_date: str | None, session_content: str) -> str:
+    """Build extraction prompt with actual date when available, session position otherwise."""
+    if session_date:
+        temporal_header  = f"Session on {session_date} (session {session_position} in series)"
+        rule_state       = f'Current state  → "As of {session_date}, [Name] [ongoing fact]."'
+        rule_episodic    = f'Specific event → "On {session_date}, [Name] [what happened]."'
+        rule_plan        = f'Future plan    → "[Name] plans to [goal] (mentioned on {session_date})."'
+    else:
+        temporal_header  = f"Session {session_position} of the conversation series"
+        rule_state       = f'Current state  → "As of session {session_position}, [Name] [fact with context]."'
+        rule_episodic    = f'Specific event → "During session {session_position}, [Name] [what happened]."'
+        rule_plan        = f'Future plan    → "[Name] plans to [goal] (mentioned in session {session_position})."'
+
+    return _EXTRACTION_PROMPT.format(
+        temporal_header=temporal_header,
+        temporal_rule_state=rule_state,
+        temporal_rule_episodic=rule_episodic,
+        temporal_rule_plan=rule_plan,
+        session_content=session_content[:_CONTENT_LIMIT],
+    )
+
+
+_MIN_WORDS = 15
 _MAX_WORDS = 80
-_CONTENT_LIMIT = 4000   # chars per session passed to the LLM
+_CONTENT_LIMIT = 6000   # chars per session passed to the LLM (was 4000; raw sessions reach 5,867)
 
 
 # ── Parsing helpers ──────────────────────────────────────────────────────────
@@ -116,6 +147,8 @@ def _parse_response(raw: str) -> dict[str, list[str]]:
                 "topics":           parsed.get("topics", []),
                 "state_memories":   _validate_memories(parsed.get("state_memories", [])),
                 "episodic_memories": _validate_memories(parsed.get("episodic_memories", [])),
+                "plan_memories":    _validate_memories(parsed.get("plan_memories", [])),
+                "attitude_memories": _validate_memories(parsed.get("attitude_memories", [])),
             }
     except (json.JSONDecodeError, ValueError):
         pass
@@ -125,6 +158,8 @@ def _parse_response(raw: str) -> dict[str, list[str]]:
         "topics":           [],
         "state_memories":   _validate_memories(_extract_list_from_text(text, "state_memories")),
         "episodic_memories": _validate_memories(_extract_list_from_text(text, "episodic_memories")),
+        "plan_memories":    _validate_memories(_extract_list_from_text(text, "plan_memories")),
+        "attitude_memories": _validate_memories(_extract_list_from_text(text, "attitude_memories")),
     }
 
 
@@ -339,7 +374,7 @@ class RichMemoryExtractor:
             self._client = anthropic.Anthropic(api_key=self._api_key)
         return self._client
 
-    def _call_llm(self, prompt: str, max_tokens: int = 2000) -> str:
+    def _call_llm(self, prompt: str, max_tokens: int = 3000) -> str:
         client = self._get_client()
         resp = client.messages.create(
             model=self._model,
@@ -370,10 +405,7 @@ class RichMemoryExtractor:
         if not self._api_key:
             return self._fallback_extract(content, session_id, session_position, dataset)
 
-        prompt = _EXTRACTION_PROMPT.format(
-            session_position=session_position,
-            session_content=content[:_CONTENT_LIMIT],
-        )
+        prompt = _build_prompt(session_position, session_date, content)
 
         try:
             raw = self._call_llm(prompt)

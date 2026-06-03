@@ -69,13 +69,14 @@ parser.add_argument("--skip-ollama", action="store_true")
 parser.add_argument("--skip-cloud", action="store_true")
 parser.add_argument("--skip-a5", action="store_true", help="skip approach 5 (extracted facts)")
 parser.add_argument("--embed-model",
-                    choices=["minilm", "bge", "gte", "bgel", "gtel", "te3l", "xma_gte_v1"],
+                    choices=["minilm", "bge", "gte", "bgel", "gtel", "te3l", "te3s", "xma_gte_v1"],
                     default="gtel",
                     help=(
                         "gte=thenlper/gte-small (default, local 384-dim), "
                         "gtel=thenlper/gte-large (local 1024-dim, best local), "
                         "xma_gte_v1=models/gte-large-xma-v1 (Phase 3.4 fine-tuned GTE-large), "
                         "te3l=text-embedding-3-large (OpenAI cloud 3072-dim, best overall), "
+                        "te3s=text-embedding-3-small (OpenAI cloud 1536-dim, Phase 5.4 test), "
                         "bgel=BAAI/bge-large-en-v1.5 (local 1024-dim, passage-biased), "
                         "bge=BAAI/bge-small-en-v1.5, minilm=all-MiniLM-L6-v2"
                     ))
@@ -142,11 +143,13 @@ def _rich_mem_path(ds_name: str, model_tag: str) -> Path:
 
 def _rich_emb_path(ds_name: str, model_tag: str) -> Path:
     tag = {"LoCoMo": "LoCoMo", "LongMemEval": "LongMemEval"}.get(ds_name, ds_name.replace(" ", "_"))
-    return CACHE / f"embed_rich_gtel_{model_tag}_{tag}.npy"
+    embed_tag = EMBED_TAG if EMBED_TAG != "gtel" else "gtel"
+    return CACHE / f"embed_rich_{embed_tag}_{model_tag}_{tag}.npy"
 
 def _rich_ids_path(ds_name: str, model_tag: str) -> Path:
     tag = {"LoCoMo": "LoCoMo", "LongMemEval": "LongMemEval"}.get(ds_name, ds_name.replace(" ", "_"))
-    return CACHE / f"embed_rich_gtel_{model_tag}_{tag}.session_ids.json"
+    embed_tag = EMBED_TAG if EMBED_TAG != "gtel" else "gtel"
+    return CACHE / f"embed_rich_{embed_tag}_{model_tag}_{tag}.session_ids.json"
 
 def _entity_store_path(ds_name: str, model_tag: str) -> Path:
     tag = {"LoCoMo": "LoCoMo", "LongMemEval": "LongMemEval"}.get(ds_name, ds_name.replace(" ", "_"))
@@ -199,6 +202,13 @@ _EMBED_CONFIGS = {
         "openai_name": "text-embedding-3-large",  # 3072-dim, best overall
         "hf_name": None,
         "cache_tag": "te3l",
+        "query_prefix": "",
+    },
+    "te3s": {
+        "backend": "openai",
+        "openai_name": "text-embedding-3-small",  # 1536-dim, Phase 5.4 test — different training distribution
+        "hf_name": None,
+        "cache_tag": "te3s",
         "query_prefix": "",
     },
 }
@@ -352,8 +362,10 @@ def load_locomo(n_queries: int) -> BenchDataset:
                 if not lines:
                     continue
 
-                # One memory per session — full context, capped at 1,200 chars
-                session_content = "\n".join(lines)[:1200]
+                # Full session context, capped at 6,000 chars (max raw session is 5,867).
+                # Was 1,200 — that discarded 58% of session content, dropping facts in
+                # the back half of every session (the dominant cause of R@10 misses).
+                session_content = "\n".join(lines)[:6000]
                 session_id = f"c{conv_idx}_{sk}"
                 date_val = conv_data.get(f"{sk}_date", "")
                 title = f"Conv{conv_idx+1} {sk}" + (f" ({date_val})" if date_val else "")
@@ -2550,7 +2562,7 @@ def run_approach_11_multi_signal(
     entity_store_path = _entity_store_path(ds.name, model_tag)
     rephrase_cache  = CACHE / f"mqr_rephrases_{ds.name.replace(' ', '_')}.json"
 
-    if not rich_mem_path.exists() or not rich_emb_path.exists():
+    if not rich_mem_path.exists():
         print(f"    [skip] A11-{model_tag}: rich memory cache missing — "
               f"run training/build_rich_memories.py --model {model_tag}")
         return None
@@ -2585,7 +2597,20 @@ def run_approach_11_multi_signal(
             mem_positions.append(1)
             mem_ids.append("")
 
-    rich_embs = np.load(str(rich_emb_path))
+    # ── Load or generate embeddings (supports non-gtel embed models) ──────────
+    if not rich_emb_path.exists():
+        if EMBED_BACKEND == "openai":
+            print(f"    Embedding {len(mem_texts):,} memories with {_ECFG['openai_name']} ...")
+            rich_embs = _openai_embed_batch(mem_texts)
+            np.save(str(rich_emb_path), rich_embs)
+            print(f"    Saved: {rich_emb_path}  shape={rich_embs.shape}")
+        else:
+            print(f"    Embedding {len(mem_texts):,} memories with {EMBED_HF_NAME} ...")
+            rich_embs = st_embed_batch(mem_texts)
+            np.save(str(rich_emb_path), rich_embs)
+            print(f"    Saved: {rich_emb_path}  shape={rich_embs.shape}")
+    else:
+        rich_embs = np.load(str(rich_emb_path))
     n_sessions = len(ds.memories)
     avg_per_session = len(mem_texts) / max(1, n_sessions)
     print(f"    {len(mem_texts):,} rich memories from {n_sessions:,} sessions "
