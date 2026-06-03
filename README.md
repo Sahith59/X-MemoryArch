@@ -24,16 +24,26 @@ Three standard datasets, evaluated at 200 sampled queries each:
 
 Primary metric: **R@5** (probability that the relevant session is in the top 5 results).
 
-### Current Best Results (A11-sonnet, Phase 5.6)
+### Current Best Results (Phase 5.6)
 
-Evaluated on the **full** query sets (690 LoCoMo, 500 LongMemEval) — not a sample:
+Evaluated on the **full** query sets (690 LoCoMo, 500 LongMemEval) — not a sample.
+
+**A11-sonnet** (internal / ceiling tier, Claude Sonnet 4.6 extraction):
 
 | Dataset | Queries | R@5 | MRR@10 | vs Competitor |
 |---|---|---|---|---|
 | LoCoMo | 690 (full) | **0.923** | **0.819** | **+0.7 pts vs Mem0 NEW (0.916)** ✓ |
 | LongMemEval | 500 (full) | **0.908** | 0.760 | -4.0 pts vs Mem0 NEW (0.948) |
 
-*(On a 200-query sample LoCoMo reaches 0.930 R@5 / 0.965 R@10; the full-set 0.923 is the headline.)*
+**A11-haiku** (product tier, Claude Haiku 4.5 extraction — ~10× cheaper):
+
+| Dataset | Queries | R@5 | vs Competitor |
+|---|---|---|---|
+| LoCoMo | 690 (full) | **0.900** | beats Honcho (0.899), Letta (0.740); -1.6 vs Mem0 NEW |
+
+The product tier (Haiku) is competitive — it beats Honcho, Letta, Zep, and old Mem0 — but crossing **Mem0 NEW requires the Sonnet tier**. The gap (0.023) comes from Haiku's higher pronoun leakage (6.8% vs 3.8%) and shorter memories under the full-content completeness prompt.
+
+*(On a 200-query sample, Sonnet LoCoMo reaches 0.930 R@5 / 0.965 R@10; the full-set 0.923 is the headline.)*
 
 ### Competitor Comparison
 
