@@ -65,10 +65,15 @@ RULE 1 — COMPLETE COVERAGE OF BOTH SPEAKERS (most critical):
          "Melanie ran a charity race", "Melanie took her kids to a museum".
   Scan the ENTIRE conversation top to bottom. Facts near the end matter as much as the start.
 
-RULE 2 — ZERO PRONOUNS: Replace every pronoun with the person's full name.
+RULE 2 — ZERO PRONOUNS (critical for retrieval): Replace EVERY pronoun with the actual
+  subject — a named person when one is given, otherwise "the user" / "the assistant".
   WRONG: "She decided to pursue counseling, motivated by her experiences."
   RIGHT: "Caroline decided to pursue counseling, motivated by Caroline's experiences."
-  If any pronoun (he/she/they/him/her/his/their/them) appears, that memory FAILS.
+  WRONG: "They asked about it after he recommended it."
+  RIGHT: "The user asked about the smoker after the assistant recommended the smoker."
+  Replace ALL of: he, she, they, him, her, his, their, them, it, this, that.
+  FINAL PASS — before returning, re-read every memory and replace any pronoun you missed.
+  A memory containing any pronoun is a failure.
 
 RULE 3 — TEMPORAL GROUNDING WITH DATE (required in every memory):
   {temporal_rule_state}
@@ -347,6 +352,8 @@ class RichMemoryExtractor:
         api_key: str | None = None,
         model: str = "claude-sonnet-4-6",
     ):
+        # Provider detected from model name: "gpt*" → OpenAI, else Anthropic.
+        self._is_openai = model.lower().startswith("gpt")
         # None → auto-load from env/file. "" → explicit no-key (fallback mode).
         self._api_key = self._load_key() if api_key is None else api_key
         self._model = model
@@ -355,14 +362,15 @@ class RichMemoryExtractor:
     # ── Key loading ───────────────────────────────────────────────────────────
 
     def _load_key(self) -> str:
-        key = os.environ.get("ANTHROPIC_API_KEY", "")
+        var = "OPENAI_API_KEY" if self._is_openai else "ANTHROPIC_API_KEY"
+        key = os.environ.get(var, "")
         if not key:
             env_file = Path(__file__).resolve().parent.parent.parent.parent / ".env"
             if env_file.exists():
                 for line in env_file.read_text().splitlines():
                     if "=" in line and not line.strip().startswith("#"):
                         k, _, v = line.partition("=")
-                        if k.strip() == "ANTHROPIC_API_KEY":
+                        if k.strip() == var:
                             return v.strip()
         return key
 
@@ -370,12 +378,24 @@ class RichMemoryExtractor:
 
     def _get_client(self):
         if self._client is None:
-            import anthropic
-            self._client = anthropic.Anthropic(api_key=self._api_key)
+            if self._is_openai:
+                import openai
+                self._client = openai.OpenAI(api_key=self._api_key)
+            else:
+                import anthropic
+                self._client = anthropic.Anthropic(api_key=self._api_key)
         return self._client
 
     def _call_llm(self, prompt: str, max_tokens: int = 3000) -> str:
         client = self._get_client()
+        if self._is_openai:
+            resp = client.chat.completions.create(
+                model=self._model,
+                max_tokens=max_tokens,
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"},
+            )
+            return (resp.choices[0].message.content or "").strip()
         resp = client.messages.create(
             model=self._model,
             max_tokens=max_tokens,
