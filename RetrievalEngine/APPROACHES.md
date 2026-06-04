@@ -500,7 +500,7 @@ A11-haiku   (RRF + entity boost + recency, Ph 4.5)     → LoCoMo 0.719 / LME 0.
 ```
 
 Plan targets: R@5 ≥ 0.80 ✓ (0.822) · MRR@10 ≥ 0.78 ✗ (0.717) · NDCG@10 ≥ 0.55 ✓ (0.756)
-Phase 4 target: LoCoMo >91.6% / LME >94.8% (beat Mem0 NEW)
+Phase 4 target (retrieval recall): LoCoMo / LME recall ceiling. NOTE: Mem0's 91.6/94.8 are QA accuracy, not recall — not directly comparable.
 Phase 4.6 next: Haiku temporal reranker at retrieval (expected LME >94.8%, LoCoMo +5-8 pts)
 
 **Per-dataset leaders (current):**
@@ -633,7 +633,7 @@ Our Phase 3 best (0.710 LoCoMo) was at Mem0's OLD level. Phase 4 replicates thei
 
 ## Phase 5 — Closing the Gap (Extraction Experiments)
 
-**Goal:** Close the 17.8-pt LoCoMo gap to Mem0 and beat Mem0's 94.8% LME score.
+**Goal:** Maximize LoCoMo/LME retrieval recall. (Mem0's 91.6/94.8 are QA accuracy — a different metric; see the metric note. No recall-vs-QA comparison is claimed.)
 
 **Key finding from Phase 5:** Extraction volume and memory type experiments consistently hurt performance. The sweet spot is Phase 4 extraction (8.7/session, 2 types, 32.7 avg words). More memories flood the embedding space with near-identical vectors (LoCoMo) or add noise (LME).
 
@@ -646,7 +646,12 @@ Our Phase 3 best (0.710 LoCoMo) was at Mem0's OLD level. Phase 4 replicates thei
 | 5.2r diversity | 0.730 | 0.815 | 0.920 | 7.9/sess | Best LME (old extraction) |
 | 5.2s 4-type | 0.720 | 0.800 | 0.905 | 11.8-13.4/sess, 4 types | Regression |
 | 5.5 date grounding | 0.735 | 0.810 | — | dates not session-N | MRR +0.021, R@5 flat |
-| **5.6 FULL CONTENT** | **0.930** | **0.965** | 0.905 | 12.5/sess, full sessions | ★ **BEAT MEM0 (0.916)** |
+| **5.6 FULL CONTENT** | **0.930** | **0.965** | 0.905 | 12.5/sess, full sessions | +19 pts recall (truncation fix) |
+
+> ⚠️ **Metric note:** all numbers in this file are **retrieval recall** (gold session in top-K), NOT
+> QA accuracy. Mem0/Zep/Honcho publish **QA accuracy** (end-to-end answer correctness, LLM-judged),
+> which runs ~20-30 pts lower than recall. These are different metrics — no head-to-head "beat Mem0"
+> claim is valid until the QA-accuracy harness is run. Competitor rows below are context, not comparison.
 
 **THE breakthrough (Phase 5.6):** Every prior phase optimized extraction on only the first
 1,200 chars (42%) of each session — `load_locomo` truncated input before extraction. The back
@@ -736,12 +741,16 @@ python3 -u benchmark_4approaches.py --skip-ollama --n 10000
 
 ## Competitor Targets
 
-| Competitor | Dataset | Their Score | Our Best | Gap | Status |
-|---|---|---|---|---|---|
-| Letta | LoCoMo | 74.0% | **71.9%** (A11-haiku) | -2.1% | Phase 5.1 target |
-| Zep CE | LongMemEval | 71.2% | **89.8%** (A11-sonnet) | +18.6% | ✓ Beaten by 18.6% |
-| Mem0 OLD | LoCoMo | 71.4% | **71.9%** (A11-haiku) | +0.5% | ✓ Beaten |
-| **Mem0 NEW** | **LoCoMo** | **91.6%** | **71.9%** (A11-haiku) | **-19.7%** | Phase 4.6 + 5.1 target |
-| **Mem0 NEW** | **LongMemEval** | **94.8%** | **89.8%** (A11-sonnet) | **-5.0%** | Phase 4.6 target |
+**Competitor scores are QA accuracy (end-to-end); ours are retrieval recall — DIFFERENT metrics, not a head-to-head.**
 
-Phase 4.4 closed the LME gap from 22 pts → 5 pts. Phase 4.5 established the multi-signal infrastructure. Phase 4.6 (Haiku temporal reranker) targets LME > 94.8%. Phase 5.1 (grid search + calibration) targets LoCoMo > 91.6%.
+| System | Dataset | Published score | Metric |
+|---|---|---|---|
+| Mem0 NEW | LoCoMo | 91.6–92.5% | QA accuracy |
+| Mem0 NEW | LongMemEval | 94.4–94.8% | QA accuracy |
+| Honcho | LoCoMo / LME | 89.9% / 90.4% | QA accuracy |
+| Letta | LoCoMo | 74.0% | QA accuracy |
+| Zep | LongMemEval | 71.2% | QA accuracy |
+
+Our retrieval recall (LoCoMo R@5 0.92–0.93, LME-S R@5 0.92) measures whether the right session is
+retrieved — a prerequisite for, but not equal to, QA accuracy. A like-for-like QA-accuracy evaluation
+(retrieve → generate → LLM-judge) is the next milestone; only then can a valid comparison be made.

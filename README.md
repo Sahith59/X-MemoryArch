@@ -1,62 +1,63 @@
 # X-MemoryArch
 
-A research project building a production-grade long-term memory retrieval engine for AI assistants. The goal: match or beat [Mem0](https://mem0.ai)'s published benchmark scores (91.6% LoCoMo, 94.8% LongMemEval) using a fully transparent, reproducible, open architecture.
+A research project building a production-grade long-term memory **retrieval engine** for AI assistants. It extracts structured, temporally-grounded memories from conversations and retrieves the right ones with high accuracy — fully transparent, reproducible, and open.
+
+> ### ⚠️ A note on metrics — read this before the numbers
+> The scores below are **retrieval recall** (R@5 / R@10): *did the relevant session land in the top-K retrieved results?* This is **not the same metric** as the headline scores Mem0, Zep, and Honcho publish, which are **end-to-end QA accuracy** (retrieve → generate an answer → an LLM judge scores answer correctness). Retrieval recall typically runs **20–30 points higher** than QA accuracy, so **our retrieval-recall numbers are NOT directly comparable to their QA-accuracy numbers, and we make no "beat Mem0" claim.** A like-for-like QA-accuracy evaluation (using the same retrieve→generate→judge harness) is in progress; until it lands, treat the competitor numbers as *context for a different metric*, not a head-to-head.
 
 ---
 
 ## What This Is
 
-Most LLM memory systems store raw conversation history and retrieve it by brute-force embedding search. X-MemoryArch takes a different approach: it extracts structured, temporally-grounded memories from each session, indexes them across multiple retrieval signals, and ranks results with a cross-encoder reranker. Every architectural decision is documented, benchmarked, and justified.
+Most LLM memory systems store raw conversation history and retrieve it by brute-force embedding search. X-MemoryArch extracts structured, temporally-grounded memories from each session, indexes them across multiple retrieval signals, and ranks results with a cross-encoder reranker. Every architectural decision is documented, benchmarked, and justified.
 
-This started as a rule-based keyword engine (Phase 1) and has evolved into a multi-signal retrieval system. On the **full 690-query LoCoMo set**, it scores **92.3% R@5 — ahead of Mem0 NEW (91.6%)**, Honcho (89.9%), Letta (74.0%), and Zep on LME (71.2%). LoCoMo crossed Mem0 in Phase 5.6 after a failure diagnostic revealed that session content was being truncated to 42% before extraction; feeding full sessions lifted R@5 from 0.738 → 0.923 (full set) / 0.930 (200-query sample).
+It started as a rule-based keyword engine (Phase 1) and evolved into a multi-signal retrieval system. The headline engineering result: on the full 690-query LoCoMo set, **retrieval recall R@5 rose from 0.738 → 0.923** after a failure diagnostic revealed that session content was being truncated to 42% before extraction — feeding full sessions fixed it.
 
 ---
 
 ## Benchmarks
 
-Three standard datasets, evaluated at 200 sampled queries each:
+Three standard datasets. **Metric reported here: retrieval recall (R@5 / R@10)** — whether the gold session is in the top-K retrieved. (See the metrics note above: this differs from the QA-accuracy scores competitors publish.)
 
-| Dataset | Description | Memories | Queries |
+| Dataset | Description | Memories | Queries (full) |
 |---|---|---|---|
-| **SQuAD v1.1** | Factual QA over Wikipedia paragraphs | 2,067 | 200 |
-| **LoCoMo** | Long-term conversational memory across 10 sessions | 272 | 200 |
-| **LongMemEval** | Multi-session episodic memory recall | 940 | 200 |
+| **SQuAD v1.1** | Factual QA over Wikipedia paragraphs | 2,067 | 10,570 |
+| **LoCoMo** | Long-term conversational memory, 10 conversations | 272 | 690 |
+| **LongMemEval** | Multi-session episodic memory recall | 940 | 500 |
 
-Primary metric: **R@5** (probability that the relevant session is in the top 5 results).
+### Our Retrieval-Recall Results (Phase 5.6, full query sets)
 
-### Current Best Results (Phase 5.6)
+**A11-sonnet** (Claude Sonnet 4.6 extraction, internal/ceiling tier):
 
-Evaluated on the **full** query sets (690 LoCoMo, 500 LongMemEval) — not a sample.
-
-**A11-sonnet** (internal / ceiling tier, Claude Sonnet 4.6 extraction):
-
-| Dataset | Queries | R@5 | MRR@10 | vs Competitor |
+| Dataset | Protocol | R@5 (recall) | R@10 | MRR@10 |
 |---|---|---|---|---|
-| LoCoMo | 690 (full) | **0.923** | **0.819** | **+0.7 pts vs Mem0 NEW (0.916)** ✓ |
-| LongMemEval | 500 (full) | **0.908** | 0.760 | -4.0 pts vs Mem0 NEW (0.948) |
+| LoCoMo | per-conversation scoped (standard) | **0.929** | 0.971 | 0.825 |
+| LoCoMo | global pool (harder) | 0.923 | 0.965 | 0.819 |
+| LongMemEval-oracle | global pool | 0.908 | — | 0.760 |
 
-**A11-haiku** (product tier, Claude Haiku 4.5 extraction — ~10× cheaper):
+**Same engine, cheaper extraction models** (retrieval recall, full sets):
 
-| Dataset | Queries | R@5 | vs Competitor |
+| Extraction model | Dataset | R@5 (recall) | Notes |
 |---|---|---|---|
-| LoCoMo | 690 (full) | **0.900** | beats Honcho (0.899), Letta (0.740); -1.6 vs Mem0 NEW |
+| Claude Haiku 4.5 | LoCoMo | 0.900 | ~10× cheaper than Sonnet |
+| **GPT-4o-mini** | **LongMemEval-S (standard protocol)** | **0.920** | same model Mem0 uses; ~$15 for 19k sessions |
 
-The product tier (Haiku) is competitive — it beats Honcho, Letta, Zep, and old Mem0 — but crossing **Mem0 NEW requires the Sonnet tier**. The gap (0.023) comes from Haiku's higher pronoun leakage (6.8% vs 3.8%) and shorter memories under the full-content completeness prompt.
+The GPT-4o-mini result matters for one reason: it isolates the **retrieval architecture** as the variable (same extraction model as Mem0). But again — this is recall, not QA accuracy.
 
-*(On a 200-query sample, Sonnet LoCoMo reaches 0.930 R@5 / 0.965 R@10; the full-set 0.923 is the headline.)*
+### Competitor Context (different metric — NOT a head-to-head)
 
-### Competitor Comparison
+These are the scores competitors publish. **They are QA accuracy (end-to-end answer correctness), not retrieval recall.** Listed for context only; a comparable QA-accuracy eval of our system is pending.
 
-All "Our Best" figures are on the full query sets (690 LoCoMo / 500 LME).
+| System | Dataset | Their published score | Metric |
+|---|---|---|---|
+| Mem0 NEW | LoCoMo | 91.6–92.5% | QA accuracy |
+| Mem0 NEW | LongMemEval | 94.4–94.8% | QA accuracy |
+| Honcho | LoCoMo | 89.9% | QA accuracy |
+| Honcho | LongMemEval | 90.4% | QA accuracy |
+| Letta | LoCoMo | 74.0% | QA accuracy |
+| Zep | LongMemEval | 71.2% | QA accuracy |
 
-| Competitor | Dataset | Their Score | Our Best | Result |
-|---|---|---|---|---|
-| **Mem0 NEW** | **LoCoMo** | **91.6%** | **92.3%** | ✓ **Beaten by +0.7 pts** |
-| Honcho | LoCoMo | 89.9% | **92.3%** | ✓ Beaten by +2.4 pts |
-| Letta | LoCoMo | 74.0% | **92.3%** | ✓ Beaten by +18 pts |
-| Mem0 OLD | LoCoMo | 71.4% | **92.3%** | ✓ Beaten by +20.9 pts |
-| Zep CE | LongMemEval | 71.2% | **90.8%** | ✓ Beaten by +19.6 pts |
-| Mem0 NEW | LongMemEval | 94.8% | **90.8%** | -4.0 pts (next target) |
+Our retrieval recall (≈0.92) being a higher number than some of these does **not** mean we score higher on their metric — recall is the easier measurement. We will only claim a comparison once we run the same QA-accuracy harness.
 
 ---
 
@@ -276,7 +277,7 @@ Phase 5.1 hyperparameter grid search:
 
 ---
 
-### Phase 5 — Closing the Gap, Then Beating Mem0
+### Phase 5 — Raising the Retrieval-Recall Ceiling
 
 Phase 5 spent weeks tuning extraction prompts (topic-first, quantity+diversity, 4 granularity levels, 15-20 memories/session), swapping embedding models (text-embedding-3-small), and adding actual date grounding. **None moved LoCoMo R@5 off ~0.73.** Every hypothesis was a guess.
 
@@ -290,17 +291,17 @@ Concrete example — query *"When did Caroline go to the adoption meeting?"*: th
 
 **The fix:** content cap 1,200 → 6,000 chars; extractor `_CONTENT_LIMIT` 4,000 → 6,000; a completeness prompt ("extract EVERY concrete fact from BOTH speakers, never vague-summarize, scan the entire conversation"); memory target 8-10 → 10-16.
 
-**Result** (full 690-query LoCoMo set; pool widened to 50 in the same phase):
+**Result** — retrieval recall on the full 690-query LoCoMo set (pool widened to 50 in the same phase):
 
-| Metric | Phase 4 | Phase 5.6 | Mem0 NEW |
-|---|---|---|---|
-| LoCoMo R@5 | 0.738 | **0.923** | 0.916 |
-| LoCoMo R@10 | 0.806 | **0.965** | — |
-| LoCoMo MRR@10 | 0.613 | **0.819** | — |
+| Metric (retrieval recall) | Phase 4 | Phase 5.6 |
+|---|---|---|
+| LoCoMo R@5 | 0.738 | **0.923** |
+| LoCoMo R@10 | 0.806 | **0.965** |
+| LoCoMo MRR@10 | 0.613 | **0.819** |
 
-R@10 jumped 0.828 → 0.965 (119 → 24 misses out of 690). **On the full 690-query set, LoCoMo R@5 = 0.923 crosses Mem0's 0.916 — the first time ahead of the state of the art** (0.930 on a 200-query sample).
+R@10 jumped 0.828 → 0.965 (119 → 24 misses out of 690) — a **+18.5-point gain in retrieval recall** from fixing one truncation bug. (Mem0's published 0.916 LoCoMo is QA accuracy, a different metric — see the metrics note at the top; no head-to-head is claimed here.)
 
-**Next:** LME is at 0.908 (Mem0 = 0.948). A failure diagnostic confirmed LME's misses are genuine *ranking* misses (facts extracted but ranked low), not coverage gaps — so the fix is ranking-side (pool widening lifted it 0.900 → 0.908), not re-extraction. The remaining gap is largely multi-hop / "how many" aggregation queries.
+**Next:** LongMemEval. A failure diagnostic confirmed LME's misses are genuine *ranking* misses (facts extracted but ranked low), not coverage gaps — so the fix is ranking-side (pool widening lifted recall 0.900 → 0.908), not re-extraction. On the standard LongMemEval-S protocol with GPT-4o-mini extraction, retrieval recall R@5 = 0.920. The remaining work is multi-hop / "how many" aggregation queries, plus the pending **QA-accuracy evaluation** that will make competitor comparisons valid.
 
 ---
 
@@ -325,13 +326,15 @@ A10  (Triple-fact RRF + reranker)                       → LoCoMo 0.683 / LME 0
 A11s (Rich memories, Phase 4.4)                         → LoCoMo 0.716 / LME 0.898 ← LME +0.170!
 A11  (Multi-signal, Phase 4.5 + 5.1 tuning)            → LoCoMo 0.738 / LME 0.900
 ──── Phase 5.6: full-session extraction (truncation bug fixed) + wider pool ────
-A11  (full content + completeness prompt)               → LoCoMo 0.923 / LME 0.908 ★ BEAT MEM0 (0.916)
+A11  (full content + completeness prompt)               → LoCoMo 0.923 / LME 0.908  retrieval recall R@5
 ```
 
-Per-dataset leaders (full query sets):
-- **SQuAD:** A4mvr / A8r — R@5 = 0.970
-- **LoCoMo:** A11-sonnet (Phase 5.6) — R@5 = **0.923** ★ beats Mem0 (0.916)
-- **LongMemEval:** A11-sonnet — R@5 = **0.908**
+Per-dataset retrieval recall (R@5, full query sets):
+- **SQuAD:** A4mvr / A8r — 0.970
+- **LoCoMo:** A11-sonnet (Phase 5.6) — **0.929** (scoped) / 0.923 (global)
+- **LongMemEval:** A11-sonnet — **0.908** (oracle) · GPT-4o-mini LME-S standard — **0.920**
+
+All figures above are **retrieval recall**, not QA accuracy — see the metrics note at the top of this README.
 
 ---
 
@@ -459,10 +462,12 @@ What is **included**:
 
 ## Roadmap
 
-**LoCoMo: DONE — beat Mem0 (0.923 vs 0.916, full 690-query set).** Date grounding (Phase 5.5), full-session extraction (Phase 5.6), and pool widening all shipped.
+**The next milestone is the QA-accuracy evaluation.** All current numbers are retrieval recall. To make any valid comparison to Mem0/Zep/Honcho, the system must be run through the same end-to-end harness they use: retrieve → generate an answer → LLM-judge answer correctness. This is the single most important next step for a trustworthy claim, and it's cheap (~$5–10).
 
-**Next — LME multi-hop queries:** LME is at 0.908 vs Mem0's 0.948. The failure diagnostic already ran: LME's misses are genuine *ranking* misses, not coverage gaps, so re-extraction won't help (it was skipped). Pool widening recovered +0.8 pts. The remaining gap is dominated by multi-hop / "how many" aggregation queries (e.g. *"How many museums did I visit in December?"*) that single-memory retrieval can't answer — the fix is an aggregation/multi-hop retrieval path inside the single pipeline, not a re-extraction.
+**LoCoMo retrieval: strong.** Retrieval recall R@5 = 0.923 (global) / 0.929 (scoped), R@10 = 0.965 — up from 0.738 after the truncation fix (Phase 5.5 date grounding, Phase 5.6 full-session extraction, pool widening all shipped).
 
-**Remaining LoCoMo frontier:** 24 genuine RANKING misses (gold memory exists with high cosine but loses in pool/rerank). This is now the real ceiling — a ranking problem, not an extraction one. Candidate fixes: reranker fine-tuning, entity-store cleanup (month names currently leak in as entities from date text).
+**LongMemEval retrieval:** R@5 = 0.908 (oracle) / 0.920 (LME-S standard, GPT-4o-mini). Remaining misses are genuine *ranking* misses, not coverage gaps (diagnostic-confirmed). Dominated by multi-hop / "how many" aggregation queries (e.g. *"How many museums did I visit in December?"*) — the fix is an aggregation retrieval path inside the single pipeline.
+
+**Remaining LoCoMo frontier:** 24 genuine RANKING misses (gold memory exists with high cosine but loses in pool/rerank). Candidate fixes: reranker fine-tuning, entity-store cleanup (month names currently leak in as entities from date text).
 
 **Horizon:** Multi-agent memory consolidation, production deployment with FastAPI streaming, generalization tests on non-benchmark conversation domains.
