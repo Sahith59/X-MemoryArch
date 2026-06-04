@@ -80,7 +80,11 @@ def judge(question: str, gold: str, pred: str) -> bool:
         model=args.judge_model, max_tokens=5, temperature=0,
         messages=[{"role": "user", "content": JUDGE_PROMPT.format(question=question, gold=gold, pred=pred)}],
     )
-    return "CORRECT" in (r.choices[0].message.content or "").upper()
+    out = (r.choices[0].message.content or "").strip().upper()
+    # NOTE: "INCORRECT" contains "CORRECT" — must check INCORRECT first.
+    if "INCORRECT" in out:
+        return False
+    return "CORRECT" in out
 
 
 # ── Load dataset + memories + per-question scope ─────────────────────────────

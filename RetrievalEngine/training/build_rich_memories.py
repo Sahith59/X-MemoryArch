@@ -29,9 +29,9 @@ from pathlib import Path
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "--model",
-    choices=["sonnet", "haiku"],
+    choices=["sonnet", "haiku", "gpt4omini"],
     default="sonnet",
-    help="Extraction model tier. sonnet=Sonnet 4.6 (internal), haiku=Haiku 4.5 (product)",
+    help="Extraction model. sonnet=Sonnet 4.6, haiku=Haiku 4.5, gpt4omini=GPT-4o-mini (same as Mem0)",
 )
 parser.add_argument(
     "--dataset",
@@ -47,8 +47,9 @@ parser.add_argument(
 args = parser.parse_args()
 
 MODEL_IDS = {
-    "sonnet": "claude-sonnet-4-6",
-    "haiku":  "claude-haiku-4-5-20251001",
+    "sonnet":    "claude-sonnet-4-6",
+    "haiku":     "claude-haiku-4-5-20251001",
+    "gpt4omini": "gpt-4o-mini",
 }
 MODEL_TAG = args.model          # "sonnet" or "haiku" — used in filenames
 MODEL_ID  = MODEL_IDS[MODEL_TAG]
@@ -66,10 +67,13 @@ if _env.exists():
             k, _, v = line.partition("=")
             os.environ.setdefault(k.strip(), v.strip())
 
-ANTHROPIC_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-if not ANTHROPIC_KEY:
-    print("ERROR: ANTHROPIC_API_KEY not set in RetrievalEngine/.env")
+# gpt4omini uses OpenAI; otherwise Anthropic. api_key=None lets the extractor auto-load
+# the correct key by provider.
+_NEEDED_KEY = "OPENAI_API_KEY" if MODEL_TAG == "gpt4omini" else "ANTHROPIC_API_KEY"
+if not os.environ.get(_NEEDED_KEY, ""):
+    print(f"ERROR: {_NEEDED_KEY} not set in RetrievalEngine/.env")
     sys.exit(1)
+ANTHROPIC_KEY = None  # extractor auto-loads the right key by provider
 
 # ── Dataset configs ────────────────────────────────────────────────────────────
 DATASET_CONFIGS = {
